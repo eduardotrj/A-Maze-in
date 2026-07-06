@@ -1,0 +1,21 @@
+# A-Maze-ing configuration file
+
+# Maze size
+WIDTH=20
+HEIGHT=15
+
+# Entry and exit coordinates
+# Format: x,y
+ENTRY=0,0
+EXIT=19,14
+
+# Output file
+OUTPUT_FILE=maze.txt
+
+# Perfect maze means exactly one path between entry and exit
+PERFECT=True
+
+# Optional settings
+# SEED=42
+# GENERATOR=recursive_backtracker?
+# DISPLAY=ascii?
