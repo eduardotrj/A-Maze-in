@@ -126,6 +126,24 @@ graph TB;
 
 ## Duties:
 
+- [ ] () Load Settings
+- [ ] () Generate windows
+- [ ] () Algorithm Gener: Recursive Backtracker
+- [ ] () Algorithm Gener: Prim
+- [ ] () Algorithm Gener: Kruskal
+- [ ] () Algorithm Gener: eller
+- [ ] () Algorithm Gener: wilson
+- [ ] () Algorithm Gener: hunt_and_kill
+- [ ] () Algorithm 
+- [ ] () Algorithm 
+- [ ] () Algorithm 
+- [ ] () Algorithm 
+- [ ] () Algorithm 
+- [ ] () Algorithm 
+
+- [ ] () Generate maze
+
+
 
 MODUlE (visual)
 module (parameters)
