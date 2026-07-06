@@ -121,3 +121,4 @@ Then, we decided that by our skills we working mainly in one part of the project
 - [Venv election](https://www.reddit.com/r/Python/comments/10bxkjp/what_are_people_using_to_organize_virtual/) Reddit post about which could be the best venv in Python (to be used in this project).
 - [Git Convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) Conventional commits information.
 - [Gitignore](https://github.com/github/gitignore/blob/main/Python.gitignore) Main Resource of gitignore.
+- [README Struture](https://www.freecodecamp.org/news/how-to-structure-your-readme-file/)
