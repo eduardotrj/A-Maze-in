@@ -16,6 +16,6 @@ OUTPUT_FILE=maze.txt
 PERFECT=True
 
 # Optional settings
-# SEED=42
+SEED=42
 # GENERATOR=recursive_backtracker?
 # DISPLAY=ascii?

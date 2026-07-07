@@ -1,37 +1,52 @@
 from pathlib import Path
 
 
-def load_config(path: str) -> dict[str, str]:
-    """Load KEY=VALUE pairs from a config file.
+class ConfigParser:
+    """Parse a KEY=VALUE configuration file."""
 
-    Lines starting with '#' and empty lines are ignored.
-    """
-    config: dict[str, str] = {}
+    def __init__(self, path: str) -> None:
+        self.path = path
 
-    with Path(path).open("r", encoding="utf-8") as file:
-        for line_number, line in enumerate(file, start=1):
-            line = line.strip()
+    def parse(self) -> dict[str, str]:
+        """Read the config file and return raw string values."""
+        config: dict[str, str] = {}
 
-            if not line:
-                continue
+        with Path(self.path).open("r", encoding="utf-8") as file:
+            for line_number, line in enumerate(file, start=1):
+                line = line.strip()
 
-            if line.startswith("#"):
-                continue
+                if not line:
+                    continue
 
-            if "=" not in line:
-                raise ValueError(
-                    f"Invalid config syntax at line {line_number}: {line}"
-                )
+                if line.startswith("#"):
+                    continue
 
-            key, value = line.split("=", 1)
-            key = key.strip()
-            value = value.strip()
+                key, value = self._parse_line(line, line_number)
 
-            if not key:
-                raise ValueError(
-                    f"Missing key at line {line_number}: {line}"
-                )
+                if key in config:
+                    raise ValueError(
+                        f"Duplicate key at line {line_number}: {key}"
+                    )
 
-            config[key] = value
+                config[key] = value
 
-    return config
+        return config
+
+    def _parse_line(self, line: str, line_number: int) -> tuple[str, str]:
+        """Parse a single KEY=VALUE line."""
+        if "=" not in line:
+            raise ValueError(
+                f"Invalid config syntax at line {line_number}: {line}"
+            )
+
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+
+        if not key:
+            raise ValueError(f"Missing key at line {line_number}: {line}")
+
+        if not value:
+            raise ValueError(f"Missing value at line {line_number}: {line}")
+
+        return key, value
