@@ -7,7 +7,7 @@ from config.validator import ConfigValidator
 
 class MazeApplication:
 
-    def __init__(self, settings) -> None:
+    def __init__(self, settings: dict[str, object]) -> None:
 
         self.settings = settings
 
