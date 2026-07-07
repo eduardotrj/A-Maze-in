@@ -6,7 +6,7 @@
 #   from Config.loader import ...
 #   from Maze.model import
 #   from Maze.solver import
-#   from Algorithms.Generation.recursive_backtracker import 
+#   from Algorithms.Generation.recursive_backtracker import
 
 
 class MazeApplication:
