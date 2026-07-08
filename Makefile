@@ -1,4 +1,4 @@
-PYTHON      := python3.11
+PYTHON      := python3.11.14
 POETRY      := poetry
 MAIN        := config_test.py
 # MAIN        := a_maze_ing.py
@@ -7,8 +7,8 @@ CONFIG		:= config.txt
 
 .PHONY: install run debug clean clean-all lint lint-strict
 
-# if no 3.11 version find we have to install this version:
-# uv python install 3.11
+# if no 3.11.14 version find we have to install this version:
+# uv python install 3.11.14
 
 install:
 	$(POETRY) config virtualenvs.in-project true --local

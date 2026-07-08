@@ -31,9 +31,9 @@ class MazeConfig(BaseModel):
     animation: bool | None = Field(default=None, alias="ANIMATION")
     speed: int | None = Field(default=None, alias="SPEED", ge=0)
 
-    wall: str | None = Field(default=None, alias="WALL_COLOR")
-    floor: str | None = Field(default=None, alias="FLOOR_COLOR")
-    solution: str | None = Field(default=None, alias="SOLUTION_COLOR")
+    wall_color: str | None = Field(default=None, alias="WALL_COLOR")
+    floor_color: str | None = Field(default=None, alias="FLOOR_COLOR")
+    solution_color: str | None = Field(default=None, alias="SOLUTION_COLOR")
     entry_color: str | None = Field(default=None, alias="ENTRY_COLOR")
     exit_color: str | None = Field(default=None, alias="EXIT_COLOR")
 
@@ -108,9 +108,9 @@ class MazeConfig(BaseModel):
         return value.strip().lower()
 
     @field_validator(
-        "wall",
-        "floor",
-        "solution",
+        "wall_color",
+        "floor_color",
+        "solution_color",
         "entry_color",
         "exit_color",
     )
@@ -163,6 +163,6 @@ def validate_config(raw_config: dict[str, str]) -> dict[str, object]:
     config = MazeConfig.model_validate(raw_config)
 
     return config.model_dump(
-        by_alias=True,
+        by_alias=False,
         exclude_none=True,
     )

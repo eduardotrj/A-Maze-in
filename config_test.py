@@ -1,11 +1,10 @@
 
 import sys
 
-from config.parser import ConfigParser
+from config import ConfigParser, validate_config
 from pydantic import ValidationError
 # now we have pydantic so this is not used
 # from config.validator import ConfigValidator
-from config.model import validate_config
 
 
 class MazeApplication:
