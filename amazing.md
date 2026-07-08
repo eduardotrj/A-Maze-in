@@ -303,9 +303,91 @@ def complex(real=0.0, imag=0.0):
 
 <span style="color:blue">some *blue* text</span>.
 
+## MXL Lib:
+
+1. Initiate lib:
+```python
+from mlx import Mlx
+# Inititate graphic mlx (Connection with MXL)
+# Return: MLX Pointer if Ok else -> None
+def mlx_init() -> int: # void *
+
+def mlx_release() -> int: # void 
+```
+
+2. Window Managing:
+```python
+# Create a window. Require size, tittle and MLX pointer from init.
+# Return: Window Pointer if Ok else -> Null
+def mlx_new_window(mlx_ptr: int, width: int, height: int, title: str ) -> int: # void *
+# Clear in Black a window. Return: None
+def mlx_clear_window(mlx_ptr: int, win_ptr: int) -> int:
+# Close the window. Return None
+def mlx_destroy_window(mlx_ptr: int, win_ptr: int ) -> int:
+# *Manage multi-window
+```
+
+3. Draw:
+```python
+# Draw a pixel in x,y coordenates in BGRA color (0-255)
+def mlx_pixel_put(mlx_ptr: int, win_ptr: int, x: int, y: int, color: int) -> int:
+# Show Specific string in x,y coordenates.
+def mlx_string_put(mlx_ptr: int, win_ptr: int, x: int, y: int, color: int, string: str) -> int:
+# *Slow methods, better work with images.
+```
+
+4. Image Manipulation:
+```python
+# Add image into memory. Return -> Image Pointer (To manipulate later)
+# Return Null if error.
+def mlx_new_image(mlx_ptr: int, width: int, height: int) -> int: # void *
+# Sent/return information about the image
+def mlx_get_data_addr(img_ptr: int, bits_per_pixel: int, size_line: int, format: int) -> tuple[memoryview, int, int, int]:
+# Print Image in the x,y coordenates
+def mlx_put_image_to_window(mlx_ptr: int, win_ptr: int, img_ptr: int, x: int, y: int) -> int:
+# Translatae images PNG into readable type with transparency
+def mlx_png_file_to_image(mlx_ptr: int, filename: str) -> int: # void *
+# Delete an image (pointer) Return Null if error
+def mlx_destroy_image(mlx_ptr: int, img_ptr: int) -> int:
+    # *Color is packing in  4-byte ARGB. 
+```
+
+5. Error Handling:
+```python
+# Loop to wait for events
+def mlx_loop(mlx_ptr: int) -> int:
+# f when a key is presset
+def mlx_key_hook(win_ptr: int, callback: Callable[Any], param: Any) -> int:
+# f When mouse click
+def mlx_mouse_hook(win_ptr: int, callback: Callable[Any], param: Any) -> int:
+#
+def mlx_expose_hook(win_ptr: int, callback: Callable[Any], param: Any) -> int:
+# Call f when NOT event
+def mlx_loop_hook(mlx_ptr: int, callback: Callable[Any], param: Any) -> int:
+def mlx_loop_exit(mlx_ptr: int) -> None:
+
+```
+
+6. Extra events:
+```python
+# Show or hide Mouse pointer
+def mlx_mouse_hide(mlx_ptr: int) -> int:
+def mlx_mouse_show(mlx_ptr: int) -> int:
+# Move or get mouse position
+def mlx_mouse_move(mlx_ptr: int, x: int, y: int) -> int:
+def mlx_mouse_get_pos(win_ptr: int) -> tuple(int, int, int):
+# Allow (default) or disable autorepeat -> Call event for each time
+def mlx_do_key_autorepeatoff(mlx_ptr: int) -> int:
+def mlx_do_key_autorepeaton(mlx_ptr: int) -> int:
+# Read screen size
+def mlx_get_screen_size(mlx_ptr: int) -> tuple(int, int, int):
+# Flush and sync actions and functions
+def mlx_do_sync(mlx_ptr: int) -> int:
+def mlx_sync(mlx_ptr: int, cmd: int, img_or_win_ptr: int) -> int:
+```
 
 
 ## External Resources:
-
+https://github.com/dde-fite/42_MiniLibX_Python_Manual
 https://mermaid.ai/open-source/syntax/flowchart.html
 https://python-tcod.readthedocs.io/en/latest/tcod/charmap-reference.html

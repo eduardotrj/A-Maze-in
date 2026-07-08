@@ -18,6 +18,8 @@ Duties for Docs (Index will come from this):
 ---
 
 
+
+
 # A-Maze-ing
 
 Visuals ...
@@ -29,7 +31,7 @@ Overview ...
 ## Table of Contents
 
 - [Description](#description)
-- [Description](#description)
+- [ws](#QuickStart)
 - [Description](#description)
 
 ---
