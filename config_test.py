@@ -2,7 +2,10 @@
 import sys
 
 from config.parser import ConfigParser
-from config.validator import ConfigValidator
+from pydantic import ValidationError
+# now we have pydantic so this is not used
+# from config.validator import ConfigValidator
+from config.model import validate_config
 
 
 class MazeApplication:
@@ -60,12 +63,17 @@ def main() -> None:
 
     try:
         raw_settings = ConfigParser(sys.argv[1]).parse()
-        settings = ConfigValidator(raw_settings).validate()
-    except OSError as exc:
-        print(f"File error: {exc}")
+        # now we have pydantic so this is not used
+        # settings = ConfigValidator(raw_settings).validate()
+        settings = validate_config(raw_settings)
+    except OSError as err:
+        print(f"File error: {err}")
         return
-    except ValueError as exc:
-        print(f"Config error: {exc}")
+    except ValidationError as err:
+        print(f"Config error:\n{err}")
+        return
+    except ValueError as err:
+        print(f"Config error: {err}")
         return
 
     print("Config is valid.")

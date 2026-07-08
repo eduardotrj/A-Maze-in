@@ -17,5 +17,19 @@ PERFECT=True
 
 # Optional settings
 SEED=42
-# GENERATOR=recursive_backtracker?
-# DISPLAY=ascii?
+### Algorithm
+GENERATOR=Prim
+### Show animation
+ANIMATION=True
+### Speed to show animation
+SPEED=300
+### Color for walls
+WALL_COLOR=#000000
+### Color for floor
+FLOOR_COLOR=#FFFFFF
+### Color for solution
+SOLUTION_COLOR=#00AAFF
+### Color for entry
+ENTRY_COLOR=#00FF00
+### Color for exit
+EXIT_COLOR=#ff5100
