@@ -1,4 +1,6 @@
-
+from Graphics.window import IWindow
+from Graphics.canvas import MLXCanvas
+from Graphics.renderer import MazeRenderer
 # Example import:
 # from Folder.file import Class
 
@@ -10,6 +12,7 @@
 
 
 class MazeApplication:
+    """ Class coordinate all objs (controller) """
 
     def __init__(self, settings) -> None:
 
@@ -22,8 +25,10 @@ class MazeApplication:
         self.generator = None
         self.solver = None
 
-        self.window = None
-        self.renderer = None
+        # Init Graphics
+        self.window = IWindow()
+        self.canvas = MLXCanvas(800, 600)
+        self.renderer = MazeRenderer(self.canvas)
 
     def initialize(self) -> None:
         """ Initialize the different classes to generate data """
@@ -51,7 +56,10 @@ class MazeApplication:
     def run(self) -> None:
         """ Execute the functions """
 
-        self.initialize()
+        self.renderer.draw()
+        self.canvas.present()
+
+        #   self.initialize()
 
         #   self.generate_maze()
         #   self.graphic.run()
