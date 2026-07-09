@@ -1,15 +1,15 @@
-from typing import Any
+#   from typing import Any
 from abc import ABC, abstractmethod
 from mlx import Mlx
-from Graphics import eventManager
+#   from Graphics import eventManager
 
 
 class IWindow(ABC):
     """ Abstract class to generate Graphic window control classes """
 
-    @abstractmethod
-    def open(self):
-        pass
+    #@abstractmethod
+    #def open(self):
+    #    pass
 
     @abstractmethod
     def close(self):
@@ -19,6 +19,10 @@ class IWindow(ABC):
     def loop(self):
         pass
 
+    @abstractmethod
+    def end(self):
+        pass
+
     def register_callback(self, event, callback):
         """ Read for Keyboard inputs """
         pass
@@ -26,13 +30,14 @@ class IWindow(ABC):
 
 class MLXWindow(IWindow):
     """ Manage the window creation and inputs control -> Deals With Mlx """
-    def __init__(self, width: int, height: int, title: str) -> None:
+    def __init__(self, width: int, height: int, title: str, engine) -> None:
         self.width = width
         self.height = height
         self.title = title
-        self.mlx = Mlx.mlx_init()
+        self.ve: Mlx = engine
+        self.mlx = self.ve.mlx_init()   # Window
 
-        self.win = Mlx.mlx_new_window(
+        self.win = self.ve.mlx_new_window(
             self.mlx,
             width,
             height,
@@ -45,24 +50,12 @@ class MLXWindow(IWindow):
 
     def loop(self) -> None:
         """ Initiate Graphics """
-        Mlx.mlx_loop(self.mlx)
+        self.ve.mlx_loop(self.mlx)
+
+    def end(self) -> None:
+        """ Initiate Graphics """
+        self.ve.mlx_loop_exit(self.mlx)
 
     def close(self) -> None:
         """ Stop Graphics """
-        Mlx.mlx_destroy_window(self.mlx, self.win)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.ve.mlx_destroy_window(self.mlx, self.win)
