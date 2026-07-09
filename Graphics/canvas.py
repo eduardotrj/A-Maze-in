@@ -33,5 +33,8 @@ class MLXCanvas(Canvas):
         pass
 
     def present(self) -> None:
-        pass
-        # Mlx.mlx_put_image_to_window()
+        Mlx.mlx_put_image_to_window()
+
+
+#define TILE 32
+

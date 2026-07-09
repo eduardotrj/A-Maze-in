@@ -1,4 +1,4 @@
-from Graphics.canvas import Canvas
+from Graphics.canvas import MLXCanvas
 from abc import ABC, abstractmethod
 
 # Working process:
@@ -33,16 +33,18 @@ class Renderer(ABC):
 
 class MazeRenderer(Renderer):
     """
-    Convert data into Graphics
-
+    Render a Maze
     """
 
     def __init__(self, window) -> None:
-        self.canvas = Canvas()  # To print into MiniLibx
+        self.canvas = MLXCanvas()  # To print into MiniLibx
 
     def draw(self) -> None:
         """ Call others Draw() Methods in orden """
-        pass
+        print("Renderer: Drawing maze ")
+
+        self.canvas.clear()
+        self.canvas.draw_pixel()
 
     def draw_grid(self) -> None:
         pass
@@ -51,4 +53,20 @@ class MazeRenderer(Renderer):
         pass
 
     def draw_solution(self, path) -> None:
+        """ Draw the solution (PATH)"""
         pass
+
+    def generate_background(self) -> None:
+        """ Draw Background for the Maze """
+        pass
+
+    def generate_walls(self) -> None:
+        """ Draw the walls: Originally full all with walls """
+        pass
+
+    def generate_floow(self) -> None:
+        """ Draw the floor """
+        pass
+
+    def generate_points(self) -> None:
+        """ Draw start and End point in the maze """

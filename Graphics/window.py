@@ -50,3 +50,19 @@ class MLXWindow(IWindow):
     def close(self) -> None:
         """ Stop Graphics """
         Mlx.mlx_destroy_window(self.mlx, self.win)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
