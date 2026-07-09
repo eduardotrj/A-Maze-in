@@ -1,12 +1,13 @@
-#   from typing import Any
+from typing import Any
 
 
+# rows: tuple[tuple[int, ...], ...],
 class Maze:
     """ Keep the data of the current Maze generated """
 
     def __init__(
             self,
-            rows: tuple[tuple[int]],
+            rows: tuple[Any],
             entry: tuple[int, int],
             exit: tuple[int, int],
             seed: int,
