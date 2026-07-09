@@ -124,3 +124,5 @@ Then, we decided that by our skills we working mainly in one part of the project
 - [Git Convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) Conventional commits information.
 - [Gitignore](https://github.com/github/gitignore/blob/main/Python.gitignore) Main Resource of gitignore.
 - [README Struture](https://www.freecodecamp.org/news/how-to-structure-your-readme-file/)
+- [PIL Library](https://pillow.readthedocs.io/en/stable/reference/Image.html)    - Docs of PIL: to work with images with Python.
+- [OpenCV](https://opencv-opencv.mintlify.app/introduction)     - Docs of OpenCV: Image manage library with Python.
