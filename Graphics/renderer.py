@@ -96,8 +96,8 @@ class MazeRenderer(Renderer):
         SOUTH = 0x4
         WEST = 0x8
 
-        screen_x = x * self.tile_size
-        screen_y = y * self.tile_size
+        screen_x = x * self.tile_size + self.tile_size
+        screen_y = y * self.tile_size + self.tile_size
 
         self.canvas.draw_image(
             self.path,
@@ -110,14 +110,14 @@ class MazeRenderer(Renderer):
                 #   self.wall_north,
                 self.wall,
                 screen_x,
-                screen_y
+                (screen_y + self.tile_size)
             )
 
         if cell & EAST:
             self.canvas.draw_image(
                 #   self.wall_east,
                 self.wall,
-                screen_x,
+                (screen_x + self.tile_size),
                 screen_y
             )
 
@@ -126,14 +126,14 @@ class MazeRenderer(Renderer):
                 #   self.wall_south,
                 self.wall,
                 screen_x,
-                screen_y
+                (screen_y - self.tile_size)
             )
 
         if cell & WEST:
             self.canvas.draw_image(
                 #   self.wall_west,
                 self.wall,
-                screen_x,
+                (screen_x - self.tile_size),
                 screen_y
             )
 
