@@ -41,15 +41,18 @@ class MazeApplication:
     # ! TEMPORALLY UBICATED HERE
     def hook_setup(self) -> None:
         #self.ve.mlx_mouse_hook(self.window, on_mouse, None)
-        self.ve.mlx_key_hook(self.window, self.on_key, None)
-        self.ve.mlx_hook(self.window, 33, 0, self.on_close, None)
+        self.ve.mlx_key_hook(self.window.win, self.on_key, None)
+        self.ve.mlx_hook(self.window.win, 33, 0, self.on_close, None)
 
-    def on_key(self, keynum: int) -> None:
+    def on_key(self, keynum: int, _param) -> None:
         if keynum == 65307:
             self.window.close()
+            self.window.end()
 
-    def on_close(self) -> None:
+    def on_close(self, _param) -> None:
+        self.window.close()
         self.window.end()
+
 
     def initialize(self) -> None:
         """ Initialize the different classes to generate data """
@@ -102,6 +105,7 @@ class MazeApplication:
     def run(self) -> None:
         """ Execute the functions """
 
+        self.hook_setup()
         self.initialize()
         self.ve.mlx_do_sync(self.window.mlx)
         self.window.loop()
