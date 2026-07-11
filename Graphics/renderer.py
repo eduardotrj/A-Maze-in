@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import cv2
+import time
 
 # Working process:
 # Renderer -> Canvas -> MiniLibx
 # Window -> EventManager -> MiniLibx
-
 
 #   renderer.draw(grid)
 class Renderer(ABC):
@@ -43,6 +43,7 @@ class MazeRenderer(Renderer):
         self.tile_size = size   # Pixel size
         self.canvas = canvas    # To print into MiniLibx
         self.theme = 'default'
+        self.animated = False
         # Load Graphics:\
         self.wall = self.img_array('wall.png')
         self.path = self.img_array('path.png')
@@ -82,8 +83,9 @@ class MazeRenderer(Renderer):
         self.draw_grid(maze)
         # 4. Print inner maze
         self.draw_maze(maze)
-        # 5. put markets
-        # 6. Put enter/exit
+        # 5. put enter/exit
+        self.draw_pointers(maze)
+        # 6. Put markets
         print("Renderer: Drawing maze ")
 
     def draw_grid(self, maze) -> None:
@@ -121,6 +123,7 @@ class MazeRenderer(Renderer):
         """ Draw the grid with the maze cells """
         for y in range(maze.height):
             for x in range(maze.width):
+                time.sleep(0.1)
                 self.draw_walls(
                     x,
                     y,
@@ -135,78 +138,179 @@ class MazeRenderer(Renderer):
         EAST = 0x2
         SOUTH = 0x4
         WEST = 0x8
-        tile = self.tile_size
+        #tile = self.tile_size
         x *= 2
         y *= 2
         # Printing in the center
         #screen_x = (x * tile)
         #screen_y = (y * tile)
-
+        self.canvas.syncro()
         if (cell & NORTH):
             self.draw_cell(
                 x,
                 y-1,
-                self.mark     # hexadecimal n
+                self.wall     # hexadecimal n
             )
             self.draw_cell(
                 x-1,
                 y-1,
-                self.mark     # hexadecimal n
+                self.wall     # hexadecimal n
             )
             self.draw_cell(
                 x+1,
                 y-1,
-                self.mark     # hexadecimal n
+                self.wall     # hexadecimal n
             )
 
         if cell & EAST:
             self.draw_cell(
                 x+1,
                 y-1,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x+1,
                 y,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x+1,
                 y+1,
-                self.mark
+                self.wall
             )
         if cell & SOUTH:
             self.draw_cell(
                 x-1,
                 y+1,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x,
                 y+1,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x+1,
                 y+1,
-                self.mark
+                self.wall
             )
         if cell & WEST:
             self.draw_cell(
                 x-1,
                 y-1,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x-1,
                 y,
-                self.mark
+                self.wall
             )
             self.draw_cell(
                 x-1,
                 y+1,
-                self.mark
+                self.wall
             )
+
+    def merge_images(self, bg_data, fg_data, width, height):
+        """ Takes 2 images as BGRA arrays
+            Merge and gives another image
+        """
+        bg_img = np.frombuffer(bg_data, dtype=np.uint8).reshape((height, width, 4)).copy()
+        fg_img = np.frombuffer(fg_data, dtype=np.uint8).reshape((height, width, 4)).copy()
+        
+        # 2. Separar colores (B, G, R) pasándolos a enteros de 16 bits para evitar desbordamientos
+        bg_rgb = bg_img[:, :, 0:3].astype(np.int16)
+        fg_rgb = fg_img[:, :, 0:3].astype(np.int16)
+        
+        # 3. EXTRAER EL ALPHA REAL (Prueba ambas opciones si una se ve rara):
+        # Si tus PNGs originales venían con transparencia estándar: usa fg_img[:, :, 3]
+        # Si tus PNGs ya pasaron por MiniLibX previamente: usa 255 - fg_img[:, :, 3]
+        fg_alpha = fg_img[:, :, 3].astype(np.int16) 
+        
+        # 4. Normalizar el factor Alpha para la mezcla matemática (0 a 255)
+        fg_factor = fg_alpha[:, :, np.newaxis]
+        bg_factor = (255 - fg_alpha)[:, :, np.newaxis]
+        
+        # 5. Fórmula matemática de mezcla (Alpha Blending puro)
+        # Resultado = (Imagen_Frontal * Alpha + Imagen_Fondo * (255 - Alpha)) / 255
+        out_rgb = (fg_rgb * fg_factor + bg_rgb * bg_factor) // 255
+        out_rgb = np.clip(out_rgb, 0, 255).astype(np.uint8)
+        
+        # 6. SOLUCIÓN AL ERROR NEGRO: 
+        # Forzamos el canal Alpha final a 0 (u opaco). MiniLibX ya no intentará
+        # procesar transparencias por su cuenta, ya que OpenCV hizo el trabajo duro.
+        # Nota: Si tu sistema usa 255 para opaco en lugar de 0, cambia np.zeros por np.full(..., 255)
+        out_alpha_mlx = np.zeros((height, width), dtype=np.uint8)
+        
+        # 7. Combinar canales B, G, R y el Alpha limpio
+        merged_img = cv2.merge([out_rgb[:, :, 0], out_rgb[:, :, 1], out_rgb[:, :, 2], out_alpha_mlx])
+        
+        return merged_img
+
+
+        ## Conver buffers into Numpy matrix (uint8) and reshape it
+        #bg_img = np.frombuffer(bg_data, dtype=np.uint8).reshape((height, width, 4))
+        #fg_img = np.frombuffer(fg_data, dtype=np.uint8).reshape((height, width, 4))
+
+        ## Sepparate color+alpha channels for front image.
+        #fg_rgb = fg_img[:, :, 0:3]
+        #fg_alpha = fg_img[:, :, 3] / 255.0  # Normalizar de 0-255 a 0.0-1.0
+
+        ## Sepparate color+alpha channels for background.
+        #bg_rgb = bg_img[:, :, 0:3]
+        #bg_alpha = bg_img[:, :, 3] / 255.0  # Normalizar de 0-255 a 0.0-1.0
+
+        ## Calculate alpha: alpha_out = alpha_fg + alpha_bg * (1 - alpha_fg)
+        #out_alpha = fg_alpha + bg_alpha * (1.0 - fg_alpha)
+
+        ## Avoid zero division for transparent pixels
+        #out_alpha_safe = np.where(out_alpha == 0, 1.0, out_alpha)
+
+        ## Expand transparent zones to multiplicate with channels (B, G, R)
+        #fg_alpha_factor = fg_alpha[:, :, np.newaxis]
+        #bg_alpha_factor = bg_alpha[:, :, np.newaxis]
+        #out_alpha_factor = out_alpha_safe[:, :, np.newaxis]
+
+        ## Apply Alpha Blending for color channels: color_out =
+        ## (color_fg * α_fg + color_bg * α_bg * (1 - α_fg)) / α_out
+        #out_rgb = (fg_rgb * fg_alpha_factor + bg_rgb * bg_alpha_factor
+        #           * (1.0 - fg_alpha_factor)) / out_alpha_factor
+
+        ## Reconversion of channels values into 8 bits 
+        #out_rgb = np.clip(out_rgb, 0, 255).astype(np.uint8)
+        #out_alpha = np.clip(out_alpha * 255, 0, 255).astype(np.uint8)
+
+        ## Rebuild original channels BGRA
+        #merged_img = cv2.merge([out_rgb[:, :, 0], out_rgb[:, :, 1],
+        #                        out_rgb[:, :, 2], out_alpha])
+
+        ## Regenerate raw bytes data for MiniLibx
+        return merged_img  # .tobytes()
+
+    def draw_pointers(self, maze) -> None:
+        start = self.merge_images(self.path, self.start, 32, 32)
+        exit = self.merge_images(self.exit, self.start, 32, 32)
+        #self.canvas.syncro()
+        self.draw_cell(
+            maze.entry[0] * 2,
+            maze.entry[1] * 2,
+            start
+        )
+        self.draw_cell(
+            maze.exit[0] * 2,
+            maze.exit[1] * 2,
+            exit
+        )
+
+    #def draw_complex(self, x, y, img_base, img_top) -> None:
+    #    screen_x = x * self.tile_size + self.tile_size
+    #    screen_y = y * self.tile_size + self.tile_size
+    #    self.canvas.draw_double_image(
+    #        img_base,
+    #        img_top,
+    #        screen_x,
+    #        screen_y
+    #    )
 
     def draw_cell(self, x, y, img_tile) -> None:
         """ Printing a till with """

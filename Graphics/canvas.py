@@ -70,6 +70,10 @@ class MLXCanvas(Canvas):
         self.base_width = (self.maze_width * 2 + 1) * self.tile_size
         self.base_height = (self.maze_height * 2 + 1) * self.tile_size
 
+    def syncro(self) -> None:
+        """ Improve speed and avoid losing data on the window """
+        self.ve.mlx_do_sync(self.window.mlx)
+
     def clear(self, window) -> None:
         #    self.ve.mlx_clear_window(self.mlx, self.window) -> int:
         pass
@@ -94,6 +98,31 @@ class MLXCanvas(Canvas):
             y
         )
 
+    #def draw_double_image(self, image_base, image_top, x, y) -> None:
+    #    #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
+    #    #image = self.create_image(self.base_width, self.base_height)
+    #    image_height, image_width = image_base.shape[:2]
+    #    imageb = self.create_image(image_width, image_height)
+    #    image_height, image_width = image_top.shape[:2]
+    #    imaget = self.create_image(image_width, image_height)
+    #    #mem_img[x:x+self.tile_size, y:y+self.tile_size] = image_data
+    #    self.image_to_memory(image_base, imageb)  # mem_img -> image_data
+    #    self.image_to_memory(image_top, imaget)
+    #    self.ve.mlx_put_image_to_window(
+    #        self.mlx,
+    #        self.window.win,
+    #        imageb.id,
+    #        x,
+    #        y
+    #    )
+    #    self.ve.mlx_put_image_to_window(
+    #        self.mlx,
+    #        self.window.win,
+    #        imaget.id,
+    #        x,
+    #        y
+    #    )
+
     def present(self) -> None:
         # self.ve.mlx_put_image_to_window()
         pass
@@ -104,6 +133,15 @@ class MLXCanvas(Canvas):
 
         buffer = np.frombuffer(image.data, dtype=np.uint8).reshape(array.shape)
         buffer[:, :, :] = array[:, :, :]
+
+        # # Obtener el puntero de memoria de tu imagen de MLX
+        #img_ptr, bpp, line_length, endian = self.ve.mlx_get_data_addr(mlx_image_obj.id)
+        
+        ## Convertir la matriz de OpenCV a bytes crudos aquí
+        #raw_bytes = cv2_image.tobytes()
+        
+        ## Copiar los bytes al buffer de MiniLibX
+        #img_ptr[0:len(raw_bytes)] = raw_bytes
 
     def create_image(self, width: int, height: int) -> ImgData:
         """ Generate IMG objets to print in MLX """
