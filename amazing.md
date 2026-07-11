@@ -386,6 +386,31 @@ def mlx_do_sync(mlx_ptr: int) -> int:
 def mlx_sync(mlx_ptr: int, cmd: int, img_or_win_ptr: int) -> int:
 ```
 
+### Generator structure
+
+Gnerartor:
+```python
+class GeneratorFactory:
+
+    @staticmethod
+    def create(name):
+
+        generators = {
+
+            "prim": PrimGenerator,
+            "dfs": RecursiveBacktracker,
+            "kruskal": KruskalGenerator
+        }
+
+        return generators[name]()
+```
+Use:
+```python
+self.generator = GeneratorFactory.create(
+    self.settings.generator
+)
+```
+
 
 ## External Resources:
 https://github.com/dde-fite/42_MiniLibX_Python_Manual
