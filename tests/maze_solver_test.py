@@ -3,7 +3,7 @@ from maze.model import Maze
 
 # to test:
 # go to root folder and run:
-# python3 -m tests.maze_solver_test
+# poetry run python -m tests.maze_solver_test
 
 raw_maze = [
     "939551553",

@@ -1,9 +1,12 @@
 import sys
 
 from pydantic import ValidationError
-
 from config import ConfigParser, MazeConfig
 
+
+# to test:
+# go to root folder and run:
+# poetry run python -m tests.config_test config.txt
 
 def main() -> None:
     """Test configuration parsing and validation."""
