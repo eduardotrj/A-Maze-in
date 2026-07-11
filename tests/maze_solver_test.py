@@ -1,4 +1,4 @@
-from algorithms import solve_bfs
+from algorithms import solve_bfs, solve_dfs
 from maze.model import Maze
 
 # to test:
@@ -43,7 +43,15 @@ def main() -> None:
 
     print(solution)
     if raw_solutuon == solution:
-        print("It works!!")
+        print("BFS algorithm works!!")
+    else:
+        print("Please try again :(")
+ 
+    solution = solve_dfs(maze)
+
+    print(solution)
+    if raw_solutuon == solution:
+        print("DFS algorithm works!!")
     else:
         print("Please try again :(")
 
