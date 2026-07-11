@@ -215,37 +215,33 @@ class MazeRenderer(Renderer):
         """ Takes 2 images as BGRA arrays
             Merge and gives another image
         """
-        bg_img = np.frombuffer(bg_data, dtype=np.uint8).reshape((height, width, 4)).copy()
-        fg_img = np.frombuffer(fg_data, dtype=np.uint8).reshape((height, width, 4)).copy()
-        
-        # 2. Separar colores (B, G, R) pasándolos a enteros de 16 bits para evitar desbordamientos
-        bg_rgb = bg_img[:, :, 0:3].astype(np.int16)
-        fg_rgb = fg_img[:, :, 0:3].astype(np.int16)
-        
-        # 3. EXTRAER EL ALPHA REAL (Prueba ambas opciones si una se ve rara):
-        # Si tus PNGs originales venían con transparencia estándar: usa fg_img[:, :, 3]
-        # Si tus PNGs ya pasaron por MiniLibX previamente: usa 255 - fg_img[:, :, 3]
-        fg_alpha = fg_img[:, :, 3].astype(np.int16) 
-        
-        # 4. Normalizar el factor Alpha para la mezcla matemática (0 a 255)
-        fg_factor = fg_alpha[:, :, np.newaxis]
-        bg_factor = (255 - fg_alpha)[:, :, np.newaxis]
-        
-        # 5. Fórmula matemática de mezcla (Alpha Blending puro)
-        # Resultado = (Imagen_Frontal * Alpha + Imagen_Fondo * (255 - Alpha)) / 255
-        out_rgb = (fg_rgb * fg_factor + bg_rgb * bg_factor) // 255
-        out_rgb = np.clip(out_rgb, 0, 255).astype(np.uint8)
-        
-        # 6. SOLUCIÓN AL ERROR NEGRO: 
-        # Forzamos el canal Alpha final a 0 (u opaco). MiniLibX ya no intentará
-        # procesar transparencias por su cuenta, ya que OpenCV hizo el trabajo duro.
-        # Nota: Si tu sistema usa 255 para opaco en lugar de 0, cambia np.zeros por np.full(..., 255)
-        out_alpha_mlx = np.zeros((height, width), dtype=np.uint8)
-        
-        # 7. Combinar canales B, G, R y el Alpha limpio
-        merged_img = cv2.merge([out_rgb[:, :, 0], out_rgb[:, :, 1], out_rgb[:, :, 2], out_alpha_mlx])
-        
-        return merged_img
+        if bg_data.shape != fg_data.shape:
+        # Resize foreground to match background if needed
+            fg_data = cv2.resize(fg_data, (bg_data.shape[1], bg_data.shape[0]))
+
+        # Split channels
+        bg_bgr = bg_data[:, :, :3].astype(np.float32)
+        bg_a = bg_data[:, :, 3].astype(np.float32) / 255.0
+
+        fg_bgr = fg_data[:, :, :3].astype(np.float32)
+        fg_a = fg_data[:, :, 3].astype(np.float32) / 255.0
+
+        # "Over" compositing formula (Porter-Duff)
+        out_a = fg_a + bg_a * (1 - fg_a)
+
+        # Avoid division by zero where out_a == 0
+        safe_out_a = np.where(out_a == 0, 1, out_a)
+
+        out_bgr = (
+            fg_bgr * fg_a[..., None] +
+            bg_bgr * bg_a[..., None] * (1 - fg_a[..., None])
+        ) / safe_out_a[..., None]
+
+        out_bgr = np.clip(out_bgr, 0, 255).astype(np.uint8)
+        out_a = np.clip(out_a * 255, 0, 255).astype(np.uint8)
+
+        result = cv2.merge((out_bgr[:, :, 0], out_bgr[:, :, 1], out_bgr[:, :, 2], out_a))
+        return result
 
 
         ## Conver buffers into Numpy matrix (uint8) and reshape it
@@ -289,7 +285,7 @@ class MazeRenderer(Renderer):
 
     def draw_pointers(self, maze) -> None:
         start = self.merge_images(self.path, self.start, 32, 32)
-        exit = self.merge_images(self.exit, self.start, 32, 32)
+        exit = self.merge_images(self.path, self.exit, 32, 32)
         #self.canvas.syncro()
         self.draw_cell(
             maze.entry[0] * 2,

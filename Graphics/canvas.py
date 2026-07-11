@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from mlx import Mlx
 from Graphics.image import ImgData
 import numpy as np
+import ctypes
 
 # Use to create default images and edit it.
 #from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageMode
@@ -85,6 +86,7 @@ class MLXCanvas(Canvas):
     def draw_image(self, image_data, x, y) -> None:
         #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
         #image = self.create_image(self.base_width, self.base_height)
+        # ! Should not create images each time.
         image_height, image_width = image_data.shape[:2]
         image = self.create_image(image_width, image_height)
         #mem_img[x:x+self.tile_size, y:y+self.tile_size] = image_data
@@ -133,6 +135,7 @@ class MLXCanvas(Canvas):
 
         buffer = np.frombuffer(image.data, dtype=np.uint8).reshape(array.shape)
         buffer[:, :, :] = array[:, :, :]
+        # --------
 
         # # Obtener el puntero de memoria de tu imagen de MLX
         #img_ptr, bpp, line_length, endian = self.ve.mlx_get_data_addr(mlx_image_obj.id)
@@ -143,6 +146,8 @@ class MLXCanvas(Canvas):
         ## Copiar los bytes al buffer de MiniLibX
         #img_ptr[0:len(raw_bytes)] = raw_bytes
 
+
+    # ! Change code to call one time per image only (draw_image);
     def create_image(self, width: int, height: int) -> ImgData:
         """ Generate IMG objets to print in MLX """
         image = ImgData()
