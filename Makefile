@@ -1,4 +1,4 @@
-PYTHON      := python3.11.14
+PYTHON      := python3.11
 POETRY      := poetry
 MAIN        := config_test.py
 # MAIN        := a_maze_ing.py
