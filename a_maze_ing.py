@@ -21,10 +21,10 @@ class MazeApplication:
 
         # self.settings = settings
 
-        # instance components
+        # instance components  #! NOT HERE, Properties of Maze and renderer class.
         # self.something = Something()
-        self.width = 800
-        self.height = 600
+        self.width = 640
+        self.height = 900
         self.grid = None
         self.generator = None
         self.solver = None
@@ -53,7 +53,6 @@ class MazeApplication:
         self.window.close()
         self.window.end()
 
-
     def initialize(self) -> None:
         """ Initialize the different classes to generate data """
         A = 10
@@ -62,25 +61,42 @@ class MazeApplication:
         D = 13
         E = 14
         F = 15
+        #data = (
+        #    (9, 3, 9, 5, 5, 1, 5, 5, 3),
+        #    (A, C, 6, 9, 3, A, 9, 3, E),
+        #    (E, 9, 3, A, E, 8, 6, C, 3),
+        #    (9, 6, 8, 6, 9, 4, 5, 7, A),
+        #    (A, F, A, F, A, F, F, F, A),
+        #    (A, F, E, F, 8, 5, 7, F, A),
+        #    (A, F, F, F, A, F, F, F, A),
+        #    (A, 9, 3, F, A, F, D, 5, 2),
+        #    (C, 6, A, F, E, F, F, F, A),
+        #    (B, 9, 6, 9, 3, D, 1, 5, 2),
+        #    (8, 6, 9, 6, C, 5, 6, B, A),
+        #    (A, 9, 6, 9, 1, 7, 9, 4, 6),
+        #    (C, 6, D, 6, C, 5, 4, 5, 7),
+        #)
+
         data = (
-            (9, 3, 9, 5, 5, 1, 5, 5, 3),
-            (A, C, 6, 9, 3, A, 9, 3, E),
-            (E, 9, 3, A, E, 8, 6, C, 3),
-            (9, 6, 8, 6, 9, 4, 5, 7, A),
-            (A, F, A, F, A, F, F, F, A),
-            (A, F, E, F, 8, 5, 7, F, A),
-            (A, F, F, F, A, F, F, F, A),
-            (A, 9, 3, F, A, F, D, 5, 2),
-            (C, 6, A, F, E, F, F, F, A),
-            (B, 9, 6, 9, 3, D, 1, 5, 2),
-            (8, 6, 9, 6, C, 5, 6, B, A),
-            (A, 9, 6, 9, 1, 7, 9, 4, 6),
-            (C, 6, D, 6, C, 5, 4, 5, 7),
+            (9, 5, 3, B),
+            (C, 3, C, 2),
+            (B, E, B, A),
+            (C, 5, 4, 6),
         )
 
         maze = Maze(data, (4, 2), (6, 2), 0000)
 
-        self.renderer.draw_grid(maze)
+
+        # * CREATING MAZE STEP BY STEP
+        # 1. Background.\
+        # 2. Fill area.\
+        self.renderer.draw(maze)
+        # 3. Put external Wall
+        # 4. Print inner maze
+        # 5. put markets
+        # 6. Put enter/exit
+
+
 
         # Create the grid to work
         #self.create_grid()

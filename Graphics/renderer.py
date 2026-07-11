@@ -15,7 +15,7 @@ class Renderer(ABC):
     """
 
     @abstractmethod
-    def draw(self) -> None:
+    def draw(self, obj) -> None:
         """ Call others Draw() Methods in orden """
         pass
 
@@ -25,7 +25,7 @@ class Renderer(ABC):
         pass
 
     @abstractmethod
-    def draw_cell(self, x, y, cell) -> None:
+    def draw_cell(self, x, y, img_tile) -> None:
         """ Print each cell """
         pass
 
@@ -74,15 +74,54 @@ class MazeRenderer(Renderer):
             return np.asarray(resize_img, dtype=np.uint8)
         return np.asarray(image_argb, dtype=np.uint8)
 
-    def draw(self) -> None:
+    def draw(self, maze) -> None:
         """ Call others Draw() Methods in orden """
+        # 1. Background.\
+        # 2. Fill area.\
+        # 3. Put external Wall
+        self.draw_grid(maze)
+        # 4. Print inner maze
+        self.draw_maze(maze)
+        # 5. put markets
+        # 6. Put enter/exit
         print("Renderer: Drawing maze ")
 
     def draw_grid(self, maze) -> None:
+        """ Draw the grid surrounded by a wall """
+        #? Can separate walls from bg for animation.
+        max_height = maze.height * 2
+        max_width = maze.width * 2
+
+        # Maze not located in 00. require -1 to full frame filling
+        for y in range(-1, max_height):
+            for x in range(-1, max_width):
+                if (y == -1 or y == (max_height - 1)):
+                    print(x, y)
+                    self.draw_cell(
+                        x,
+                        y,
+                        self.wall    # hexadecimal n
+                    )
+                elif (x == -1 or x == (max_width - 1)):
+                    self.draw_cell(
+                        x,
+                        y,
+                        self.wall     # hexadecimal n
+                    )
+                else:
+                    self.draw_cell(
+                        x,
+                        y,
+                        self.path     # hexadecimal n
+                    )
+        #   self.canvas.clear()
+        #   self.canvas.draw_pixel()
+
+    def draw_maze(self, maze) -> None:
         """ Draw the grid with the maze cells """
         for y in range(maze.height):
             for x in range(maze.width):
-                self.draw_cell(
+                self.draw_walls(
                     x,
                     y,
                     maze.cell(x, y)     # hexadecimal n
@@ -90,52 +129,95 @@ class MazeRenderer(Renderer):
         #   self.canvas.clear()
         #   self.canvas.draw_pixel()
 
-    def draw_cell(self, x, y, cell) -> None:
+    def draw_walls(self, x, y, cell) -> None:
+        """ Logic to draw the different walls in the maze"""
         NORTH = 0x1
         EAST = 0x2
         SOUTH = 0x4
         WEST = 0x8
+        tile = self.tile_size
+        x *= 2
+        y *= 2
+        # Printing in the center
+        #screen_x = (x * tile)
+        #screen_y = (y * tile)
 
+        if (cell & NORTH):
+            self.draw_cell(
+                x,
+                y-1,
+                self.mark     # hexadecimal n
+            )
+            self.draw_cell(
+                x-1,
+                y-1,
+                self.mark     # hexadecimal n
+            )
+            self.draw_cell(
+                x+1,
+                y-1,
+                self.mark     # hexadecimal n
+            )
+
+        if cell & EAST:
+            self.draw_cell(
+                x+1,
+                y-1,
+                self.mark
+            )
+            self.draw_cell(
+                x+1,
+                y,
+                self.mark
+            )
+            self.draw_cell(
+                x+1,
+                y+1,
+                self.mark
+            )
+        if cell & SOUTH:
+            self.draw_cell(
+                x-1,
+                y+1,
+                self.mark
+            )
+            self.draw_cell(
+                x,
+                y+1,
+                self.mark
+            )
+            self.draw_cell(
+                x+1,
+                y+1,
+                self.mark
+            )
+        if cell & WEST:
+            self.draw_cell(
+                x-1,
+                y-1,
+                self.mark
+            )
+            self.draw_cell(
+                x-1,
+                y,
+                self.mark
+            )
+            self.draw_cell(
+                x-1,
+                y+1,
+                self.mark
+            )
+
+    def draw_cell(self, x, y, img_tile) -> None:
+        """ Printing a till with """
         screen_x = x * self.tile_size + self.tile_size
         screen_y = y * self.tile_size + self.tile_size
 
         self.canvas.draw_image(
-            self.path,
+            img_tile,
             screen_x,
             screen_y
         )
-
-        if cell & NORTH:
-            self.canvas.draw_image(
-                #   self.wall_north,
-                self.wall,
-                screen_x,
-                (screen_y + self.tile_size)
-            )
-
-        if cell & EAST:
-            self.canvas.draw_image(
-                #   self.wall_east,
-                self.wall,
-                (screen_x + self.tile_size),
-                screen_y
-            )
-
-        if cell & SOUTH:
-            self.canvas.draw_image(
-                #   self.wall_south,
-                self.wall,
-                screen_x,
-                (screen_y - self.tile_size)
-            )
-
-        if cell & WEST:
-            self.canvas.draw_image(
-                #   self.wall_west,
-                self.wall,
-                (screen_x - self.tile_size),
-                screen_y
-            )
 
     def draw_solution(self, path) -> None:
         """ Draw the solution (PATH)"""
@@ -145,9 +227,22 @@ class MazeRenderer(Renderer):
         """ Draw Background for the Maze """
         pass
 
-    def generate_walls(self) -> None:
-        """ Draw the walls: Originally full all with walls """
-        pass
+    #def generate_walls(self, maze) -> None:
+    #    """ Draw the walls: Tu surround the area"""
+    #    for y in range(0, maze.height):
+    #        for x in range(0, maze.width):
+    #            if (y == 0 or y == maze.height):
+
+
+    #    screen_x = x * self.tile_size + self.tile_size
+    #    screen_y = y * self.tile_size + self.tile_size
+
+    #    self.canvas.draw_image(
+    #        self.path,
+    #        screen_x,
+    #        screen_y
+    #    )
+
 
     def generate_floow(self) -> None:
         """ Draw the floor """
@@ -155,3 +250,10 @@ class MazeRenderer(Renderer):
 
     def generate_points(self) -> None:
         """ Draw start and End point in the maze """
+
+    def decoding_data(self):
+
+
+        # 4hex = 9 positions (h * 2 = 1)
+
+        n
