@@ -84,7 +84,7 @@ class MazeApplication:
             (C, 5, 4, 6),
         )
 
-        maze = Maze(data, (4, 2), (6, 2), 0000)
+        maze = Maze(data, (1, 2), (2, 2), 0000)
 
 
         # * CREATING MAZE STEP BY STEP
