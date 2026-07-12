@@ -4,13 +4,13 @@ import secrets
 
 
 class MazeGenerator(ABC):
-    
+
     @abstractmethod
     def __init__(self, width: int, height: int, seed=None) -> None:
         super().__init__()
         self.width = width
         self.height = height
-        self.maze = None
+        self.maze = [[1 for _ in range(width)] for _ in range(height)]
         self.seed = seed
         if self.maze == None:
             self.generate_seed()

@@ -12,7 +12,7 @@ from Algorithms.generation.maze_generator import MazeGenerator
 class Backtracker(MazeGenerator):
     def __init__(self, width: int, height: int, seed: int = None):
         super().__init__(width, height, seed)
-        self.maze
+        #self.maze
 
     def generate(self, width: int, height: int):
         """ Generate a maze with the given width and height """
@@ -20,11 +20,13 @@ class Backtracker(MazeGenerator):
         self.height = height
         # Fill the maze with 1
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
-        self.maze[0][0] = 0
+        #self.maze[0][0] = 0
         # Initiate the path generating
-        self._carve_passages_from(0, 0)
+        start_x, start_y = 1, 1
+        self.maze[start_x][start_y] = 0
+        self._carve_passages_from(start_x, start_y)
 
-    @cached_property
+    # @cached_property
     def _carve_passages_from(self, cx: int, cy: int):
         """ Create Passages and fill the mase using recursive backtracking """
         # Create possible movements.
@@ -39,10 +41,12 @@ class Backtracker(MazeGenerator):
             # Check viability of next movement.
             if (0 <= nx < self.width and 0 <= ny < self.height
                and self.maze[ny][nx] == 1):
-                # Open next cell
-                self.open_path(ny, nx)
                 # Connect both cells
-                self.open_path(cy + dy // 2, cx + dx // 2)
+                #self.open_path(cy + dy // 2, cx + dx // 2)
+                self.maze[cy + dy // 2][ cx + dx // 2] = 0
+                ## Open next cell
+                self.maze[ny][nx] = 0
+                #self.open_path(ny, nx) # ! Check the values are opposite to open/clsoe (0, 1)
                 # Predict next position by recursive
                 self._carve_passages_from(nx, ny)
 
