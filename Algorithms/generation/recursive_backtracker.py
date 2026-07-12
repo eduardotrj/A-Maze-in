@@ -52,4 +52,6 @@ class Backtracker(MazeGenerator):
 
     def get_maze(self):
         """ Return the generated maze """
+        for x in self.maze:
+            print(x)
         return super().get_maze()
