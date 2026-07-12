@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import random
+import secrets
 
 
 class MazeGenerator(ABC):
@@ -10,14 +12,23 @@ class MazeGenerator(ABC):
         self.height = height
         self.maze = None
         self.seed = seed
+        if self.maze == None:
+            self.generate_seed()
+        self.random = random.Random(seed)
+
 
     @abstractmethod
     def generate(self, width: int, height: int) -> None:
         """ Generate a maze with the given width and height """
         pass
 
+    def generate_seed(self) -> None:
+        """ Generate a new seed by using secrets (low ratio for repeat) """
+        self.seed = secrets.randbits(64)
+
     def get_maze(self):
         """ Return the generated Maze """
+        return self.maze
 
     def get_dimensions(self):
         """ Return the dimensions fo the maze """

@@ -1,6 +1,5 @@
 from functools import cached_property
 import numpy as nu
-import random
 from Algorithms.generation.maze_generator import MazeGenerator
 
 # ** RECURSIVE BACKTRACKER **
@@ -29,7 +28,7 @@ class Backtracker(MazeGenerator):
         """ Create Passages and fill the mase using recursive backtracking """
         # Create possible movements.
         directions = [(2, 0), (-2, 0), (0, 2), (0, -2)]
-        random.shuffle(directions)
+        self.random.shuffle(directions)
 
         # ? Add here a recorder to printing animation????
         for dx, dy in directions:
