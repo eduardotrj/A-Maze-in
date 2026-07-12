@@ -16,7 +16,6 @@ class MazeGenerator(ABC):
             self.generate_seed()
         self._random = random.Random(seed)
 
-
     @abstractmethod
     def generate(self, width: int, height: int) -> None:
         """ Generate a maze with the given width and height """
@@ -66,8 +65,9 @@ class MazeGenerator(ABC):
                     return False
         return True
 
-    def add_pattern(self, pattern: list[str] | None = None,
-                    x: int, y: int) -> set[tuple[int, int]]:
+    def add_pattern(self, x: int, y: int,
+                    pattern: list[str] | None = None
+                    ): # -> set[tuple[int, int]]:
         """ Add pattern at the center of the Maze """
         for dy, row in enumerate(pattern):
             for dx, value in enumerate(row):
