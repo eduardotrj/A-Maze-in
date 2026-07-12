@@ -8,7 +8,7 @@ class Maze:
     def __init__(
             self,
             rows: tuple[Any],
-            entry: tuple[int, int],
+            entry: tuple[int, int], 
             exit: tuple[int, int],
             seed: int,
             perfect: bool = True,
