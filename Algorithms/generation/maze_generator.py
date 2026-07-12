@@ -37,18 +37,28 @@ class MazeGenerator(ABC):
         else:
             raise IndexError("Cell coordinates out of bounds")
 
-    def open_path(self, current: tuple) -> None:
+    def open_path(self, x: int, y: int) -> None:
         """ Open a path to a given coordenates (set cell to 0) """
-        pass
+        self.set_cell(x, y, 1)
 
-    def close_path(self, current: tuple) -> None:
+    def close_path(self, x: int, y: int) -> None:
         """ Close a path to a given coordenates (set cell to 1) """
-        pass
+        self.set_cell(x, y, 1)
 
-    def add_pattern(self, pattern: list[str] | None = None
-                    ) -> set[tuple[int, int]]:
+    def space_for_pattern(self, pattern, x: int, y: int) -> bool:
+        """ Check if is space enough for the pattern in the maze """
+        for dy, row in enumerate(pattern):
+            for dx, values in enumerate(row):
+                if not (0 <= x + dx < self.width and 0 <= y + dy < self.height):
+                    return False
+                if self.get_cell(x + dx, y + dy) != 1:
+                    return False
+        return True
+
+    def add_pattern(self, pattern: list[str] | None = None,
+                    x: int, y: int) -> set[tuple[int, int]]:
         """ Add pattern at the center of the Maze """
         for dy, row in enumerate(pattern):
             for dx, value in enumerate(row):
-                self.set_cell(dx, dy, value)
+                self.set_cell(x + dx, y + dy, value)
 
