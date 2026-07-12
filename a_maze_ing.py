@@ -1,7 +1,7 @@
 from Graphics.window import MLXWindow
 from Graphics.canvas import MLXCanvas
 from Graphics.renderer import MazeRenderer
-
+from Maze.generator import Generator
 from Maze.model import Maze
 from mlx import Mlx
 # Example import:
@@ -38,7 +38,7 @@ class MazeApplication:
                                 self.width, self.height, self.tile_size)
         self.renderer = MazeRenderer(self.window, self.canvas, self.tile_size)
 
-    # ! TEMPORALLY UBICATED HERE
+    # ! TEMPORALLY UBICATED HERE --> To EvenManager
     def hook_setup(self) -> None:
         #self.ve.mlx_mouse_hook(self.window, on_mouse, None)
         self.ve.mlx_key_hook(self.window.win, self.on_key, None)
@@ -53,48 +53,33 @@ class MazeApplication:
         self.window.close()
         self.window.end()
 
+        # ! ----------------------------------------
+
+    #def initialize(self) -> None:
+    #    """ Initialize the different classes to generate data """
+    #    A = 10
+    #    B = 11
+    #    C = 12
+    #    D = 13
+    #    E = 14
+    #    F = 15
+
+    #    data = (
+    #        (9, 5, 3, B),
+    #        (C, 3, C, 2),
+    #        (B, E, B, A),
+    #        (C, 5, 4, 6),
+    #    )
+
+    #    maze = Maze(data, (1, 2), (2, 2), 0000)
+    #    self.renderer.draw(maze)
+
     def initialize(self) -> None:
         """ Initialize the different classes to generate data """
-        A = 10
-        B = 11
-        C = 12
-        D = 13
-        E = 14
-        F = 15
-        #data = (
-        #    (9, 3, 9, 5, 5, 1, 5, 5, 3),
-        #    (A, C, 6, 9, 3, A, 9, 3, E),
-        #    (E, 9, 3, A, E, 8, 6, C, 3),
-        #    (9, 6, 8, 6, 9, 4, 5, 7, A),
-        #    (A, F, A, F, A, F, F, F, A),
-        #    (A, F, E, F, 8, 5, 7, F, A),
-        #    (A, F, F, F, A, F, F, F, A),
-        #    (A, 9, 3, F, A, F, D, 5, 2),
-        #    (C, 6, A, F, E, F, F, F, A),
-        #    (B, 9, 6, 9, 3, D, 1, 5, 2),
-        #    (8, 6, 9, 6, C, 5, 6, B, A),
-        #    (A, 9, 6, 9, 1, 7, 9, 4, 6),
-        #    (C, 6, D, 6, C, 5, 4, 5, 7),
-        #)
 
-        data = (
-            (9, 5, 3, B),
-            (C, 3, C, 2),
-            (B, E, B, A),
-            (C, 5, 4, 6),
-        )
+        new_maze: Maze = Generator.generate_maze(20, 20, "recursive_backtraker")
+        self.renderer.draw(new_maze)
 
-        maze = Maze(data, (1, 2), (2, 2), 0000)
-
-
-        # * CREATING MAZE STEP BY STEP
-        # 1. Background.\
-        # 2. Fill area.\
-        self.renderer.draw(maze)
-        # 3. Put external Wall
-        # 4. Print inner maze
-        # 5. put markets
-        # 6. Put enter/exit
 
 
 
