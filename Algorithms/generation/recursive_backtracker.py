@@ -20,6 +20,7 @@ class Backtracker(MazeGenerator):
         self.height = height
         # Fill the maze with 1
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
+        self.maze[0][0] = 0
         # Initiate the path generating
         self._carve_passages_from(0, 0)
 
@@ -28,7 +29,7 @@ class Backtracker(MazeGenerator):
         """ Create Passages and fill the mase using recursive backtracking """
         # Create possible movements.
         directions = [(2, 0), (-2, 0), (0, 2), (0, -2)]
-        self.random.shuffle(directions)
+        self._random.shuffle(directions)
 
         # ? Add here a recorder to printing animation????
         for dx, dy in directions:

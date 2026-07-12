@@ -14,7 +14,7 @@ class MazeGenerator(ABC):
         self.seed = seed
         if self.maze == None:
             self.generate_seed()
-        self.random = random.Random(seed)
+        self._random = random.Random(seed)
 
 
     @abstractmethod
