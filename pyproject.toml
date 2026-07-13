@@ -3,11 +3,12 @@ name = "a-maze-ing"
 version = "0.1.0"
 description = "Visual Maze Generator in Python"
 authors = [
-    {name = "Etrujill",email = "etrujill@student.42heilbronn.de"},
-    {name = "Ecakiray", email = "ecakiray@student.42heilbronn.de"}
+    { name = "Etrujill", email = "etrujill@student.42heilbronn.de" },
+    { name = "Ecakiray", email = "ecakiray@student.42heilbronn.de" }
 ]
 readme = "README.md"
 requires-python = "3.11.14"
+
 dependencies = [
     "flake8 (>=7.3.0,<8.0.0)",
     "mypy (>=2.1.0,<3.0.0)",
@@ -16,6 +17,8 @@ dependencies = [
     "opencv-python (>=4.13.0)"
 ]
 
+[tool.poetry]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
