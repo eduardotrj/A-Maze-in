@@ -7,10 +7,10 @@ class Maze:
 
     def __init__(
             self,
-            rows: tuple[tuple[int]],
+            rows: tuple[tuple[int, ...], ...],
             entry: tuple[int, int],
             exit: tuple[int, int],
-            seed: int,
+            seed: int | None,
             perfect: bool = True,
             pattern: list[str] | None = None
             ):
@@ -23,7 +23,7 @@ class Maze:
         self.perfect = perfect
         self.pattern = pattern
 
-    def cell(self, x, y) -> int:
+    def cell(self, x: int, y: int) -> int:
         """ Return the information in that cell """
         return self.rows[y][x]
 
