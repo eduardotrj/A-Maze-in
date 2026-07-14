@@ -137,6 +137,7 @@ class MazeRenderer(Renderer):
 
         # Maze not located in 00. require -1 to full frame filling
         for y in range(-1, max_height):
+            self.canvas.syncro()
             for x in range(-1, max_width):
                 if (y == -1 or y == (max_height - 1)):
                     self.draw_cell(
@@ -324,15 +325,15 @@ class MazeRenderer(Renderer):
         # return merged_img  # .tobytes()
 
     def draw_pointers(self, maze) -> None:
-        #self.canvas.syncro()
+        self.canvas.syncro()
         self.draw_cell(
-            maze.entry[0] * 2,
-            maze.entry[1] * 2,
+            maze.entry[0] * 2 - 2,
+            maze.entry[1] * 2 - 2,
             self.theme.get_image(Tile.START)
         )
         self.draw_cell(
-            maze.exit[0] * 2,
-            maze.exit[1] * 2,
+            (maze.exit[0] * 2 - 2),
+            (maze.exit[1] * 2 - 2),
             self.theme.get_image(Tile.EXIT)
         )
 
