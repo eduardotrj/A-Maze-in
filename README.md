@@ -126,3 +126,7 @@ Then, we decided that by our skills we working mainly in one part of the project
 - [README Struture](https://www.freecodecamp.org/news/how-to-structure-your-readme-file/)
 - [PIL Library](https://pillow.readthedocs.io/en/stable/reference/Image.html)    - Docs of PIL: to work with images with Python.
 - [OpenCV](https://opencv-opencv.mintlify.app/introduction)     - Docs of OpenCV: Image manage library with Python.
+- [Maze Algorithms](https://en.wikipedia.org/wiki/Maze_generation_algorithm)    - Explanation of different algorithms to generate a Maze.
+
+
+# source $(poetry env info --path)/bin/activate     
