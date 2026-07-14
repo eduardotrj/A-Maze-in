@@ -40,9 +40,6 @@ class MazeApplication:
 
         # Init Graphics
         self.ve = Mlx()     # VisualEngine
-        #self.window
-        #self.canvas
-        #self.renderer
 
     def read_confg(self) -> None:
 
@@ -64,43 +61,6 @@ class MazeApplication:
 
         self.get_themes()
 
-    # ! TEMPORALLY UBICATED HERE --> To EvenManager
-    #def hook_setup(self) -> None:
-    #    #self.ve.mlx_mouse_hook(self.window, on_mouse, None)
-    #    self.ve.mlx_key_hook(self.window.win, self.on_key, None)
-    #    self.ve.mlx_hook(self.window.win, 33, 0, self.on_close, None)
-
-    #def on_key(self, keynum: int, _param) -> None:
-    #    if keynum == 65307:
-    #        self.window.close()
-    #        self.window.end()
-    #    elif keynum == 114:
-
-    #def on_close(self, _param) -> None:
-    #    self.window.close()
-    #    self.window.end()
-
-        # ! ----------------------------------------
-
-    #def initialize(self) -> None:
-    #    """ Initialize the different classes to generate data """
-    #    A = 10
-    #    B = 11
-    #    C = 12
-    #    D = 13
-    #    E = 14
-    #    F = 15
-
-    #    data = (
-    #        (9, 5, 3, B),
-    #        (C, 3, C, 2),
-    #        (B, E, B, A),
-    #        (C, 5, 4, 6),
-    #    )
-
-    #    maze = Maze(data, (1, 2), (2, 2), 0000)
-    #    self.renderer.draw(maze)
-
     def initialize(self) -> None:
         """ Initialize the different classes to generate data """
 
@@ -117,7 +77,7 @@ class MazeApplication:
             self.entry,
             self.exit,
             "recursive_backtraker",
-            PATTERN[0]
+            PATTERN["P_42"]
             )
         new_maze.print_values()
         self.renderer.draw(new_maze)
@@ -130,14 +90,6 @@ class MazeApplication:
         self.initialize()
         self.ve.mlx_do_sync(self.window.mlx)
         self.window.loop()
-
-        #self.renderer.draw()
-        #self.canvas.present()
-
-        #   self.initialize()d
-
-        #   self.generate_maze()
-        #   self.graphic.run()
 
     def check_settings(self) -> None:
         """ Only for testing """
