@@ -19,6 +19,7 @@ class MazeGenerator(ABC):
         if self.seed == None:
             self.generate_seed()
         self._random = random.Random(seed)
+        self.record: list[list[int]]
 
     @abstractmethod
     def generate(self, width: int, height: int, entry: tuple[int, int],
@@ -45,6 +46,9 @@ class MazeGenerator(ABC):
     def get_dimensions(self) -> tuple[int, int]:
         """ Return the dimensions fo the maze """
         return self.width, self.height
+    
+    def get_record(self) -> list[list[int]]:
+        return self.record
 
     def get_cell(self, x: int, y: int) -> int:
         """ Return the cell in these coordenates """
@@ -62,7 +66,7 @@ class MazeGenerator(ABC):
 
     def open_path(self, x: int, y: int) -> None:
         """ Open a path to a given coordenates (set cell to 0) """
-        self.set_cell(x, y, 1)
+        self.set_cell(x, y, 0)
 
     def close_path(self, x: int, y: int) -> None:
         """ Close a path to a given coordenates (set cell to 1) """
@@ -91,11 +95,14 @@ class MazeGenerator(ABC):
                          pattern: tuple[tuple[Any]] | None = None
                          ) -> set[tuple[int, int]]:
         """ Validate pattern, if is valid, add it """
+
         if not pattern:
             raise ValueError("No Pattern data")
+
         binary = self.pattern_to_binary(pattern)
         if not self.space_for_pattern(binary, x, y):
             raise ValueError("No enought space for print the pattern")
+
         self.add_pattern(x, y, binary)
         return {
             (x + dx, y + dy)
@@ -108,4 +115,8 @@ class MazeGenerator(ABC):
         """ Add pattern at the coordenates """
         for dy, row in enumerate(pattern):
             for dx, value in enumerate(row):
-                self.set_cell(x + dx, y + dy, value)
+                #self.maze[dy][dx] = value
+                if value == 1:
+                    self.close_path(x + dx, y + dy)
+                else:
+                    self.open_path(x + dx, y + dy)

@@ -23,21 +23,22 @@ class Backtracker(MazeGenerator):
         self.seed = seed
         self.entry = entry
         self.exit = exit
-
+        self.record: list[list[int]] = []
         # Fill the maze with 1
-        self.maze = [[1 for _ in range(width)] for _ in range(height)]
+        #self.maze = [[1 for _ in range(width)] for _ in range(height)]
 
         # Lock Pattern
         self._locked = set()
         if pattern is not None:
             # add center position to generate Patterns
-            px, py = int(width / 2 - 1), int(height / 2 - 1)
+            px, py = int(width / 2 - 2), int(height / 2 - 1)
             self._locked = self.validate_pattern(px, py, pattern)
 
         # Initiate the path generating
-        self.maze[self.entry[0]][self.entry[1]] = 0
+        #self.maze[self.entry[0]][self.entry[1]] = 0
         self.maze[self.exit[0]][self.exit[1]] = 0
         self._carve_passages_from(self.entry[0], self.entry[1])
+        self._connect_pattern()
 
     @lru_cache(maxsize=None)
     def _carve_passages_from(self, cx: int, cy: int):
@@ -60,9 +61,13 @@ class Backtracker(MazeGenerator):
                and (wx, wy) not in self._locked):
                 # Connect both cells
                 #self.open_path(cy + dy // 2, cx + dx // 2)
-                self.maze[cy + dy // 2][ cx + dx // 2] = 0
+                posx = cx + dx // 2
+                posy = cy + dy // 2
+                self.maze[posy][posx] = 0
+                self.record.append([posy, posx])
                 ## Open next cell
                 self.maze[ny][nx] = 0
+                self.record.append([ny, nx])
                 #self.open_path(ny, nx) # ! Check the values are opposite to open/clsoe (0, 1)
                 # Predict next position by recursive
                 self._carve_passages_from(nx, ny)
@@ -77,6 +82,7 @@ class Backtracker(MazeGenerator):
                 if (0 <= nx < self.width and 0 <= ny < self.height
                    and (nx, ny) not in self._locked):
                     self.maze[ny][nx] = 0
+                    self.record.append([ny, nx])
                     break
 
     def get_maze(self):
@@ -84,4 +90,3 @@ class Backtracker(MazeGenerator):
         for x in self.maze:
             print(x)
         return super().get_maze()
-
