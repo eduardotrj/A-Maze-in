@@ -17,7 +17,8 @@ class MazeGenerator(ABC):
         self._random = random.Random(seed)
 
     @abstractmethod
-    def generate(self, width: int, height: int) -> None:
+    def generate(self, width: int, height: int, entry: tuple[int, int],
+                 exit: tuple[int, int], seed: int | None) -> None:
         """ Generate a maze with the given width and height """
         pass
 

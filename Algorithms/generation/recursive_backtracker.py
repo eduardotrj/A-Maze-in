@@ -1,4 +1,4 @@
-from functools import cached_property
+from functools import lru_cache
 import numpy as nu
 from Algorithms.generation.maze_generator import MazeGenerator
 
@@ -9,12 +9,13 @@ from Algorithms.generation.maze_generator import MazeGenerator
 # When return to start point -> No more free cells = Done
 
 
+
 class Backtracker(MazeGenerator):
     def __init__(self, width: int, height: int, seed: int = None):
         super().__init__(width, height, seed)
-        #self.maze
 
-    def generate(self, width: int, height: int):
+    def generate(self, width: int, height: int, entry: tuple[int, int],
+                 exit: tuple[int, int], seed: int | None) -> None:
         """ Generate a maze with the given width and height """
         self.width = width
         self.height = height
@@ -22,11 +23,11 @@ class Backtracker(MazeGenerator):
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
         #self.maze[0][0] = 0
         # Initiate the path generating
-        start_x, start_y = 1, 1
+        start_x, start_y = entry[0], entry[1]
         self.maze[start_x][start_y] = 0
         self._carve_passages_from(start_x, start_y)
 
-    # @cached_property
+    @lru_cache(maxsize=None)
     def _carve_passages_from(self, cx: int, cy: int):
         """ Create Passages and fill the mase using recursive backtracking """
         # Create possible movements.
