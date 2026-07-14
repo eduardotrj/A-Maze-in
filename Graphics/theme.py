@@ -4,6 +4,7 @@ import cv2
 import os
 
 # import cv2
+#import cv2
 
 
 #class Theme:
@@ -85,14 +86,13 @@ class ThemeManager:
                 #    )
                 #filename = Path("Assets") / theme / file
                 #filename = self.img_array(f"Assets/{theme}/{file}")
-                print(file)
                 img_array = self.img_array(theme, file)
                 img = self.canvas.load_image(img_array)
 
                 # Load images in the memory only onces from here
                 self.themes[theme][file] = img
 
-        self.current = self.themes["default"]
+        self.current = self.themes["pokemon"]
 
     def img_array(self, theme: str, filename: str, resizing: bool = False
                   ) -> np.ndarray:

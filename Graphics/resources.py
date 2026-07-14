@@ -27,22 +27,22 @@ class HexaWall(IntFlag):
 
 
 WALL_SEGMENTS = {
-    Wall.NORTH: [
+    HexaWall.NORTH: [
         (-1, -1),
         ( 0, -1),
         ( 1, -1),
     ],
-    Wall.EAST: [
+    HexaWall.EAST: [
         (1, -1),
         (1,  0),
         (1,  1),
     ],
-    Wall.SOUTH: [
+    HexaWall.SOUTH: [
         (-1, 1),
         ( 0, 1),
         ( 1, 1),
     ],
-    Wall.WEST: [
+    HexaWall.WEST: [
         (-1, -1),
         (-1,  0),
         (-1,  1),
