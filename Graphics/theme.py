@@ -3,31 +3,6 @@ import numpy as np
 import cv2
 import os
 
-# import cv2
-#import cv2
-
-
-#class Theme:
-#    """ Manage the different themes (styles) """
-#    def __init__(self, mlx, name):
-#        base = Path("Assets") / name
-
-#        self.wall = mlx.load_png(str(base / "wall.png"))
-#        self.path = mlx.load_png(str(base / "path.png"))
-#        self.mark = mlx.load_png(str(base / "mark.png"))
-#        self.exit = mlx.load_png(str(base / "exit.png"))
-#        self.start = mlx.load_png(str(base / "start.png"))
-#        self.solve_n = mlx.load_png(str(base / "solve_n.png"))
-#        self.solve_ne = mlx.load_png(str(base / "solve_ne.png"))
-#        self.solve_e = mlx.load_png(str(base / "solve_e.png"))
-#        self.solve_es = mlx.load_png(str(base / "solve_es.png"))
-#        self.solve_s = mlx.load_png(str(base / "solve_s.png"))
-#        self.solve_sw = mlx.load_png(str(base / "solve_sw.png"))
-#        self.solve_w = mlx.load_png(str(base / "solve_w.png"))
-#        self.solve_nw = mlx.load_png(str(base / "solve_nw.png"))
-#        self.solve_ew = mlx.load_png(str(base / "solve_ew.png"))
-#        self.solve_ns = mlx.load_png(str(base / "solve_ns.png"))
-
 
 class ThemeManager:
 
