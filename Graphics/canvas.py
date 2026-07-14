@@ -76,22 +76,21 @@ class MLXCanvas(Canvas):
         self.ve.mlx_do_sync(self.window.mlx)
 
     def clear(self, window) -> None:
-        #    self.ve.mlx_clear_window(self.mlx, self.window) -> int:
-        pass
+        self.ve.mlx_clear_window(self.mlx, self.window.win)
 
     def draw_pixel(self, x, y, color) -> None:
         # self.ve.mlx_pixel_put()
         pass
 
-    def draw_image(self, image_data, x, y) -> None:
+    #def draw_image(self, image_data, x, y) -> None:
+    def draw_image(self, image, x, y) -> None:
         #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
         #image = self.create_image(self.base_width, self.base_height)
-        # ! Should not create images each time.
-        image_height, image_width = image_data.shape[:2]
-        image = self.create_image(image_width, image_height)
+        #image_height, image_width = image_data.shape[:2]
+        #image = self.create_image(image_width, image_height)
         #mem_img[x:x+self.tile_size, y:y+self.tile_size] = image_data
-        self.image_to_memory(image_data, image)  # mem_img -> image_data
-        self
+        #self.image_to_memory(image_data, image)  # mem_img -> image_data
+        #self
         self.ve.mlx_put_image_to_window(
             self.mlx,
             self.window.win,
@@ -99,7 +98,6 @@ class MLXCanvas(Canvas):
             x,
             y
         )
-
     #def draw_double_image(self, image_base, image_top, x, y) -> None:
     #    #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
     #    #image = self.create_image(self.base_width, self.base_height)
@@ -117,7 +115,7 @@ class MLXCanvas(Canvas):
     #        x,
     #        y
     #    )
-    #    self.ve.mlx_put_image_to_window(
+    #    self.ve.mlx_put_image_to_window(uptate_assets
     #        self.mlx,
     #        self.window.win,
     #        imaget.id,
@@ -128,6 +126,18 @@ class MLXCanvas(Canvas):
     def present(self) -> None:
         # self.ve.mlx_put_image_to_window()
         pass
+
+    def detele_images(self, id_image):
+        self.ve.mlx_destroy_image(self.mlx, id_image)
+
+    #def load_image(self, filename):
+    #    image_array = self.img_array(filename)
+    def load_image(self, file):
+        h, w = file.shape[:2]
+        image = self.create_image(w, h)
+        self.image_to_memory(file, image)
+
+        return image
 
     def image_to_memory(self, array: np.ndarray, image: ImgData) -> None:
         """" Take and multidimensional array of data from a image and save in
@@ -146,13 +156,13 @@ class MLXCanvas(Canvas):
         ## Copiar los bytes al buffer de MiniLibX
         #img_ptr[0:len(raw_bytes)] = raw_bytes
 
-
     # ! Change code to call one time per image only (draw_image);
     def create_image(self, width: int, height: int) -> ImgData:
         """ Generate IMG objets to print in MLX """
         image = ImgData()
         image.id = self.ve.mlx_new_image(self.mlx, width, height)
         image.width, image.height = (width, height)
-        image.data, image.bytesPP, image.bytesPL, image.format = self.ve.mlx_get_data_addr(image.id)
+        image.data, image.bytesPP, image.bytesPL, image.format \
+            = self.ve.mlx_get_data_addr(image.id)
 
         return image
