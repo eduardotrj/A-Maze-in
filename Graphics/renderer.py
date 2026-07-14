@@ -139,82 +139,18 @@ class MazeRenderer(Renderer):
 
     def draw_walls(self, x, y, cell) -> None:
         """ Logic to draw the different walls in the maze"""
-        NORTH = 0x1
-        EAST = 0x2
-        SOUTH = 0x4
-        WEST = 0x8
-        #tile = self.tile_size
         x *= 2
         y *= 2
+        wall = self.theme.get_image(Tile.WALL)
+
         # Printing in the center
         #screen_x = (x * tile)
         #screen_y = (y * tile)
         self.canvas.syncro()
-        if (cell & NORTH):
-            self.draw_cell(
-                x,
-                y-1,
-                self.theme.get_image(Tile.WALL)     # hexadecimal n
-            )
-            self.draw_cell(
-                x-1,
-                y-1,
-                self.theme.get_image(Tile.WALL)     # hexadecimal n
-            )
-            self.draw_cell(
-                x+1,
-                y-1,
-                self.theme.get_image(Tile.WALL)     # hexadecimal n
-            )
-
-        if cell & EAST:
-            self.draw_cell(
-                x+1,
-                y-1,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x+1,
-                y,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x+1,
-                y+1,
-                self.theme.get_image(Tile.WALL)
-            )
-        if cell & SOUTH:
-            self.draw_cell(
-                x-1,
-                y+1,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x,
-                y+1,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x+1,
-                y+1,
-                self.theme.get_image(Tile.WALL)
-            )
-        if cell & WEST:
-            self.draw_cell(
-                x-1,
-                y-1,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x-1,
-                y,
-                self.theme.get_image(Tile.WALL)
-            )
-            self.draw_cell(
-                x-1,
-                y+1,
-                self.theme.get_image(Tile.WALL)
-            )
+        for direction, offsets in WALL_SEGMENTS.items():
+            if cell & direction:
+                for dx, dy in offsets:
+                    self.draw_cell(x + dx, y + dy, wall)
 
     def draw_pointers(self, maze) -> None:
         self.canvas.syncro()
