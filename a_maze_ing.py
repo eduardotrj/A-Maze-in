@@ -5,6 +5,7 @@ from Graphics.eventManager import EventManager
 from Maze.generator import Generator
 from Maze.model import Maze
 from mlx import Mlx
+from Maze.patterns import PATTERN
 import os
 # Example import:
 # from Folder.file import Class
@@ -50,7 +51,7 @@ class MazeApplication:
         height_size = 6
 
         self.entry = (1, 1)
-        self.exit = (3, 3)
+        self.exit = (4, 6)
 
         self.grid_width = width_size
         self.grid_height = height_size
@@ -114,8 +115,10 @@ class MazeApplication:
             (self.grid_width * 2 + 1),
             (self.grid_height * 2 + 1),
             self.entry,
-            self.exit,                                              
-            "recursive_backtraker")
+            self.exit,
+            "recursive_backtraker",
+            PATTERN[0]
+            )
         new_maze.print_values()
         self.renderer.draw(new_maze)
 

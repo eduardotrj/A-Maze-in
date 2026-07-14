@@ -83,20 +83,21 @@ class Generator:
                       entry: tuple[int, int],
                       exit: tuple[int, int],
                       name: str = "recursive_backtraker",
+                      pattern: tuple[tuple[int, int]] | None = None,
                       seed: int | None = None):
         """ Call Algorithm to generate a Maze """
         generator = Generator.create(name, width, height, seed)
-        generator.generate(width, height, entry, exit, seed)
+        generator.generate(width, height, entry, exit, pattern, seed)
         rows = generator.get_maze()
         end_seed: int = generator.get_seed()
-        maze_rows = tuple(tuple(row) for row in rows)
+        maze_rows = list(list(row) for row in rows)
 
-        open_cells = [
-            (x, y)
-            for y, row in enumerate(rows)
-            for x, value in enumerate(row)
-            if value == 0
-        ]
+        #open_cells = [
+        #    (x, y)
+        #    for y, row in enumerate(rows)
+        #    for x, value in enumerate(row)
+        #    if value == 0
+        #]
         #entry = open_cells[0] if open_cells else (0, 0)
         #exit = open_cells[-1] if open_cells else (width - 1, height - 1)
 
