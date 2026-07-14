@@ -27,6 +27,17 @@ class Maze:
         """ Return the information in that cell """
         return self.rows[y][x]
 
+    def print_values(self):
+        print("-----------------------")
+        for row in self.rows:
+            print(row)
+        print("-----------------------")
+        print(f"Entry: {self.entry}")
+        print(f"Exit: {self.exit}")
+        print(f"Size: {self.width}x{self.height}")
+        print(f"Seed: {self.seed}")
+
+
     #   def get_entry(self) -> tuple[int, int]:
     #       return self._entry
 

@@ -12,6 +12,7 @@ class Generator:
         # "dfs": RecursiveBacktracker,
         # "kruskal": KruskalGenerator
     }
+
     def __init__(self, width: int, height: int, seed=None):
         self.width = width
         self.height = height
@@ -38,11 +39,54 @@ class Generator:
         return generator_cls(width, height, seed)
 
     @staticmethod
-    def generate_maze(width: int, height: int,
-                      name: str = "recursive_backtraker", seed=None):
+    def binary_to_hexa(maze: list[list[int]]) -> list[str]:
+        """ Convert binary map in 4-bit wall bitmask """
+        NORTH, EAST, SOUTH, WEST = 1, 2, 4, 8
+
+        height = len(maze)
+        width = len(maze[0])
+
+        # Design logical cells
+        rows = range(1, height, 2)
+        cols = range(1, width, 2)
+
+        hex_rows = []
+        for row in rows:
+            line = []
+            for col in cols:
+                mask = 0
+                # Check neighbors
+                if col > 0 and col < width:
+                    if maze[row][col + 1] == 1:
+                        mask |= EAST
+                    if maze[row][col - 1] == 1:
+                        mask |= WEST
+
+                if row > 0 and row < height:
+                    if maze[row - 1][col] == 1:
+                        mask |= NORTH
+
+                    if maze[row + 1][col] == 1:
+                        mask |= SOUTH
+
+                line.append(mask)
+                #   line.append(format(mask, 'x'))
+            #   hex_rows.append(''.join(line))
+            hex_rows.append(line)
+        return hex_rows
+    
+    # ! DOesn't translate properly not square
+
+    @staticmethod
+    def generate_maze(width: int,
+                      height: int,
+                      entry: tuple[int, int],
+                      exit: tuple[int, int],
+                      name: str = "recursive_backtraker",
+                      seed: int | None = None):
         """ Call Algorithm to generate a Maze """
         generator = Generator.create(name, width, height, seed)
-        generator.generate(width, height)
+        generator.generate(width, height, entry, exit, seed)
         rows = generator.get_maze()
         maze_rows = tuple(tuple(row) for row in rows)
 
@@ -50,9 +94,14 @@ class Generator:
             (x, y)
             for y, row in enumerate(rows)
             for x, value in enumerate(row)
-            if value = 0
+            if value == 0
         ]
         entry = open_cells[0] if open_cells else (0, 0)
         exit = open_cells[-1] if open_cells else (width - 1, height - 1)
 
-        return Maze(maze_rows, entry, exit, seed)
+        output = Generator.binary_to_hexa(maze_rows)
+
+        return Maze(output, entry, exit, seed)
+
+
+# ! Check for of bound specially for odd size maze numbers.
