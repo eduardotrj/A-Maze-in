@@ -1,7 +1,7 @@
 import Algorithms.generation.recursive_backtracker as rb
 from Algorithms.generation.maze_generator import MazeGenerator
 from Maze.model import Maze
-from typing import Dict, Type
+from typing import Dict, Type, Any
 
 
 class Generator:
@@ -83,7 +83,7 @@ class Generator:
                       entry: tuple[int, int],
                       exit: tuple[int, int],
                       name: str = "recursive_backtraker",
-                      pattern: tuple[tuple[int, int]] | None = None,
+                      pattern: tuple[tuple[Any]] | None = None,
                       seed: int | None = None):
         """ Call Algorithm to generate a Maze """
         generator = Generator.create(name, width, height, seed)
