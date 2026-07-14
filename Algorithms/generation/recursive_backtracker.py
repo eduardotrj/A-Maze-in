@@ -21,11 +21,15 @@ class Backtracker(MazeGenerator):
         self.height = height
         # Fill the maze with 1
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
-        #self.maze[0][0] = 0
+        # self.maze[0][0] = 0
         # Initiate the path generating
-        start_x, start_y = entry[0], entry[1]
-        self.maze[start_x][start_y] = 0
-        self._carve_passages_from(start_x, start_y)
+        self.seed = seed
+        self.entry = entry
+        self.exit = exit
+
+        self.maze[self.entry[0]][self.entry[1]] = 0
+        self.maze[self.exit[0]][self.exit[1]] = 0
+        self._carve_passages_from(self.entry[0], self.entry[1])
 
     @lru_cache(maxsize=None)
     def _carve_passages_from(self, cx: int, cy: int):

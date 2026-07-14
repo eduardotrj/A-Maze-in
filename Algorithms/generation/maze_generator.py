@@ -6,13 +6,16 @@ import secrets
 class MazeGenerator(ABC):
 
     @abstractmethod
-    def __init__(self, width: int, height: int, seed=None) -> None:
+    def __init__(self, width: int, height: int,
+                 seed=None) -> None:
         super().__init__()
         self.width = width
         self.height = height
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
         self.seed = seed
-        if self.maze == None:
+        self.entry: tuple[int, int]
+        self.exit: tuple[int, int]
+        if self.seed == None:
             self.generate_seed()
         self._random = random.Random(seed)
 
@@ -29,6 +32,12 @@ class MazeGenerator(ABC):
     def get_maze(self):
         """ Return the generated Maze """
         return self.maze
+
+    def get_seed(self):
+        return self.seed
+    
+    def get_points(self):
+        return (self.entry, self.exit)
 
     def get_dimensions(self):
         """ Return the dimensions fo the maze """

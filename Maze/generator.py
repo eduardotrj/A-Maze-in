@@ -88,6 +88,7 @@ class Generator:
         generator = Generator.create(name, width, height, seed)
         generator.generate(width, height, entry, exit, seed)
         rows = generator.get_maze()
+        end_seed: int = generator.get_seed()
         maze_rows = tuple(tuple(row) for row in rows)
 
         open_cells = [
@@ -96,12 +97,14 @@ class Generator:
             for x, value in enumerate(row)
             if value == 0
         ]
-        entry = open_cells[0] if open_cells else (0, 0)
-        exit = open_cells[-1] if open_cells else (width - 1, height - 1)
+        #entry = open_cells[0] if open_cells else (0, 0)
+        #exit = open_cells[-1] if open_cells else (width - 1, height - 1)
 
         output = Generator.binary_to_hexa(maze_rows)
-
-        return Maze(output, entry, exit, seed)
+        print("SEED: ", end_seed)
+        print(entry)
+        print(exit)
+        return Maze(output, entry, exit, end_seed)
 
 
 # ! Check for of bound specially for odd size maze numbers.
