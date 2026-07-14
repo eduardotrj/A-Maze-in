@@ -83,13 +83,14 @@ class Generator:
                       entry: tuple[int, int],
                       exit: tuple[int, int],
                       name: str = "recursive_backtraker",
-                      pattern: tuple[tuple[Any]] | None = None,
+                      pattern: tuple[tuple[Any, ...]] | None = None,
                       seed: int | None = None):
         """ Call Algorithm to generate a Maze """
         generator = Generator.create(name, width, height, seed)
         generator.generate(width, height, entry, exit, pattern, seed)
         rows = generator.get_maze()
         end_seed: int = generator.get_seed()
+        record: list[list[int]] = generator.get_record()
         maze_rows = list(list(row) for row in rows)
 
         #open_cells = [
@@ -105,7 +106,7 @@ class Generator:
         print("SEED: ", end_seed)
         print(entry)
         print(exit)
-        return Maze(output, entry, exit, end_seed)
+        return Maze(output, entry, exit, record, end_seed)
 
 
 # ! Check for of bound specially for odd size maze numbers.

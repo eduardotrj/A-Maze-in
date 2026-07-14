@@ -10,6 +10,7 @@ class Maze:
             rows: tuple[Any],
             entry: tuple[int, int],
             exit: tuple[int, int],
+            record: list[list[int]],
             seed: int,
             perfect: bool = True,
             pattern: list[str] | None = None
@@ -22,6 +23,7 @@ class Maze:
         self.seed = seed
         self.perfect = perfect
         self.pattern = pattern
+        self.record = record
 
     def cell(self, x, y) -> int:
         """ Return the information in that cell """
