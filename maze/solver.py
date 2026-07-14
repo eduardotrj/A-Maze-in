@@ -1,9 +1,3 @@
-from algorithms.solving.astar import solve_astar
-from algorithms.solving.bfs import solve_bfs
-from algorithms.solving.dfs import solve_dfs
-from algorithms.solving.dijkstra import solve_dijkstra
-
-from maze.model import Maze
 
 
 def solve_maze(

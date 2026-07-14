@@ -1,5 +1,5 @@
 #   from typing import Any
-from utils.constants import DIRECTIONS
+from Utils.constants import DIRECTIONS
 
 
 class Maze:

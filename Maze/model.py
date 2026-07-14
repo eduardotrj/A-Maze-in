@@ -1,3 +1,4 @@
+from Utils.constants import DIRECTIONS
 from typing import Any
 
 
@@ -39,6 +40,32 @@ class Maze:
         print(f"Size: {self.width}x{self.height}")
         print(f"Seed: {self.seed}")
 
+    def get_open_neighbors(
+            self,
+            position: tuple[int, int],
+            ) -> list[tuple[tuple[int, int], str]]:
+        """Return all reachable neighboring cells."""
+        x, y = position
+        cell = self.cell(x, y)
+
+        neighbors: list[tuple[tuple[int, int], str]] = []
+
+        for direction, (dx, dy, wall_bit) in DIRECTIONS.items():
+            next_x = x + dx
+            next_y = y + dy
+
+            if next_x < 0 or next_x >= self.width:
+                continue
+
+            if next_y < 0 or next_y >= self.height:
+                continue
+
+            if cell & wall_bit:
+                continue
+
+            neighbors.append(((next_x, next_y), direction))
+
+        return neighbors
 
     #   def get_entry(self) -> tuple[int, int]:
     #       return self._entry

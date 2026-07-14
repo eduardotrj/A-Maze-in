@@ -3,7 +3,7 @@ import numpy as np
 #import cv2
 import time
 from Graphics.theme import ThemeManager
-from Graphics.resources import Tile, HexaWall, WALL_SEGMENTS
+from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
 
 
 # Working process:

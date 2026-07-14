@@ -71,7 +71,7 @@ maze_generator/
 │   ├── load_json.py
 │   └── logger.py
 │
-├── utils/  -> Specials to use if required.
+├── Utils/  -> Specials to use if required.
 │   ├── randomizer.py
 │   ├── timer.py   /  (Optional)
 │   ├── geometry.py  /  (Optional)
