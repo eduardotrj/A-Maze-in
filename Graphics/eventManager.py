@@ -25,7 +25,7 @@ class EventManager():
         elif keynum == 115 or keynum == 82:
             # D -> Change patterns
             self.owner.select_theme()
-            self.owner.create_maze()
+            self.owner.update_style()
             pass
         elif keynum == 100 or keynum == 68:                                               
             pass
