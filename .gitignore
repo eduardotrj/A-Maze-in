@@ -221,3 +221,7 @@ __marimo__/
 
 # Extrafiles for internal sharing
 github_Broh_guide
+
+config/__pycache__
+
+*.pyc
