@@ -44,8 +44,8 @@ class MazeApplication:
     def read_confg(self) -> None:
 
         # Data got it from reading file.
-        width_size = 6
-        height_size = 6
+        width_size = 10
+        height_size = 10
 
         self.entry = (1, 1)
         self.exit = (4, 6)
@@ -71,7 +71,7 @@ class MazeApplication:
         self.create_maze()
 
     def create_maze(self) -> None:
-        new_maze: Maze = Generator.generate_maze(
+        self.maze: Maze = Generator.generate_maze(
             (self.grid_width * 2 + 1),
             (self.grid_height * 2 + 1),
             self.entry,
@@ -79,8 +79,11 @@ class MazeApplication:
             "recursive_backtraker",
             PATTERN["P_42"]
             )
-        new_maze.print_values()
-        self.renderer.draw(new_maze)
+        self.maze.print_values()
+        self.renderer.draw(self.maze)
+
+    def update_style(self) -> None:
+        self.renderer.draw(self.maze)
 
     def run(self) -> None:
         """ Execute the functions """
