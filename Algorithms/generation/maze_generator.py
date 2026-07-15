@@ -91,13 +91,15 @@ class MazeGenerator(ABC):
         (1 = wall, 0 = path) """
         return [[1 if cell == 'X' else 0 for cell in row] for row in pattern]
 
-    def validate_pattern(self, x: int, y: int,
-                         pattern: tuple[tuple[Any]] | None = None
+    def validate_pattern(self, x, y, pattern: tuple[tuple[Any]] | None = None
                          ) -> set[tuple[int, int]]:
         """ Validate pattern, if is valid, add it """
 
         if not pattern:
             raise ValueError("No Pattern data")
+
+        #y: int = (self.width - len(pattern)) // 2
+        #x: int = (self.height - len(pattern[0])) // 2
 
         binary = self.pattern_to_binary(pattern)
         if not self.space_for_pattern(binary, x, y):
@@ -113,9 +115,12 @@ class MazeGenerator(ABC):
     def add_pattern(self, x: int, y: int,
                     pattern: list[list[int]]):  # -> set[tuple[int, int]]:
         """ Add pattern at the coordenates """
+
+
         for dy, row in enumerate(pattern):
             for dx, value in enumerate(row):
-                #self.maze[dy][dx] = value
+
+                # self.maze[dy][dx] = value
                 if value == 1:
                     self.close_path(x + dx, y + dy)
                 else:
