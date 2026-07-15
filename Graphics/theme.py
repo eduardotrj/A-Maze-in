@@ -26,6 +26,15 @@ class ThemeManager:
         "solve_ns.png"
     ]
 
+    COLORMAPS = [
+            cv2.COLORMAP_JET, cv2.COLORMAP_AUTUMN, cv2.COLORMAP_OCEAN,
+            cv2.COLORMAP_RAINBOW, cv2.COLORMAP_MAGMA, cv2.COLORMAP_INFERNO,
+            cv2.COLORMAP_VIRIDIS, cv2.COLORMAP_DEEPGREEN, cv2.COLORMAP_HOT,
+            cv2.COLORMAP_SPRING, cv2.COLORMAP_PLASMA, cv2.COLORMAP_SUMMER,
+            cv2.COLORMAP_WINTER, cv2.COLORMAP_TWILIGHT, cv2.COLORMAP_TURBO,
+            cv2.COLORMAP_PINK, cv2.COLORMAP_PARULA, cv2.COLORMAP_BONE
+        ]
+
     WIDTH = 32
     HEIGH = 32
 
@@ -78,7 +87,7 @@ class ThemeManager:
                 # Load images in the memory only onces from here
                 self.themes[theme][file] = img
 
-        self.current = self.themes["pokemon"]
+        self.current = self.themes["default"]
 
     def img_array(self, theme: str, filename: str, resizing: bool = False
                   ) -> np.ndarray:
@@ -121,30 +130,61 @@ class ThemeManager:
         image_argb = cv2.cvtColor(image, code=cv2.COLOR_BGR2BGRA)
         return np.asarray(image_argb, dtype=np.uint8)
 
-    def generate_cellular_texture(self, num_points=100):
-        image = np.zeros((self.HEIGH, self.WIDTH), dtype=np.uint8)
+    def generate_cellular_texture(self):
+        # 1. Create coordinates grid:
+        x = np.arange(self.WIDTH)
+        y = np.arange(self.HEIGH)
+        xv, yv = np.meshgrid(x, y)
+        pixel_coords = np.stack((xv, yv), axis=-1)  # Shape: (H, W, 2)
+
+        # Place random feacture points:
+        num_points = np.random.randint(40, 100)
         points = np.column_stack((
             np.random.randint(0, self.WIDTH, num_points),
             np.random.randint(0, self.HEIGH, num_points)
         ))
 
         # Calculate distance from every pixel to the nearest point
-        for y in range(self.HEIGH):
-            for x in range( self.WIDTH):
-                # Calculate Euclidean distances to all point
-                distances = np.linalg.norm(points - np.array([x, y]), axis=1)
-                # Distante from closest point
-                min_dist = np.min(distances)
+        diff = pixel_coords[:, :, np.newaxis, :] \
+            - points[np.newaxis, np.newaxis, :, :]
+        distances = np.linalg.norm(diff, axis=-1)
+        min_distances = np.min(distances, axis=-1)
 
-                # Map distance to a 0-2555 grayscale range
-                val = min(int(min_dist * 5), 255)
-                image[y, x] = val
+        # Normalize to 8 bits (255)
+        gray_img = np.clip(min_distances * 5, 0, 255).astype(np.uint8)
+
+        # Add random colors:
+        chosen_colormap = random.choice(self.COLORMAPS)
 
         # Apply a colormap to make it colored
-        color_texture = cv2.applyColorMap(image, cv2.COLORMAP_JET)
+        color_texture = cv2.applyColorMap(gray_img, chosen_colormap)
 
         image_argb = cv2.cvtColor(color_texture, code=cv2.COLOR_BGR2BGRA)
         return np.asarray(image_argb, dtype=np.uint8)
+
+#   image = np.zeros((self.HEIGH, self.WIDTH), dtype=np.uint8)
+#           points = np.column_stack((
+#               np.random.randint(0, self.WIDTH, num_points),
+#               np.random.randint(0, self.HEIGH, num_points)
+#           ))
+
+#           # Calculate distance from every pixel to the nearest point
+#           for y in range(self.HEIGH):
+#               for x in range( self.WIDTH):
+#                   # Calculate Euclidean distances to all point
+#                   distances = np.linalg.norm(points - np.array([x, y]), axis=1)
+#                   # Distante from closest point
+#                   min_dist = np.min(distances)
+
+#                   # Map distance to a 0-2555 grayscale range
+#                   val = min(int(min_dist * 5), 255)
+#                   image[y, x] = val
+
+#           # Apply a colormap to make it colored
+#           color_texture = cv2.applyColorMap(image, cv2.COLORMAP_JET)
+
+#           image_argb = cv2.cvtColor(color_texture, code=cv2.COLOR_BGR2BGRA)
+#           return np.asarray(image_argb, dtype=np.uint8)
 
     def generate_brushed_texture(self):
         # Generate fine white noise:
@@ -157,7 +197,10 @@ class ThemeManager:
         kernel /= kernel_size
 
         brushed = cv2.filter2D(noise, -1, kernel)
+        chosen_colormap = random.choice(self.COLORMAPS)
 
         brushed = cv2.normalize(brushed, None, 0, 255, cv2.NORM_MINMAX)
-        image_argb = cv2.cvtColor(brushed, code=cv2.COLOR_BGR2BGRA)
+
+        color_texture = cv2.applyColorMap(brushed, chosen_colormap)
+        image_argb = cv2.cvtColor(color_texture, code=cv2.COLOR_BGR2BGRA)
         return np.asarray(image_argb, dtype=np.uint8)
