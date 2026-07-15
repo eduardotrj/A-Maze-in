@@ -1,7 +1,7 @@
 # Breadth-first search algorithm
 # https://en.wikipedia.org/wiki/Breadth-first_search
 
-from maze.model import Maze
+from Maze.model import Maze
 
 
 def solve_bfs(maze: Maze) -> str | None:

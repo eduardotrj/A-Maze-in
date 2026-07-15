@@ -1,6 +1,6 @@
 import random
 
-from maze.grid import (
+from Maze.grid import (
     Position,
     create_full_walled_grid,
     freeze_grid,

@@ -1,4 +1,4 @@
-from maze_solver.constants import DIRECTIONS
+from Utils.constants import DIRECTIONS
 
 
 def get_open_neighbors(

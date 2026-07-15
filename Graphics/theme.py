@@ -60,12 +60,6 @@ class ThemeManager:
             self.themes[theme] = {}
 
             for file in self.FILES:
-                #self.themes[theme][file] = \
-                #    self.renderer.img_array(
-                #        f"assets/{theme}/{file}"
-                #    )
-                #filename = Path("Assets") / theme / file
-                #filename = self.img_array(f"Assets/{theme}/{file}")
 
                 try:
                     img_array = self.img_array(theme, file)

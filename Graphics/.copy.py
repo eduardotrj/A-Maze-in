@@ -76,21 +76,22 @@ class MLXCanvas(Canvas):
         self.ve.mlx_do_sync(self.window.mlx)
 
     def clear(self, window) -> None:
-        self.ve.mlx_clear_window(self.mlx, self.window.win)
+        #    self.ve.mlx_clear_window(self.mlx, self.window) -> int:
+        pass
 
     def draw_pixel(self, x, y, color) -> None:
         # self.ve.mlx_pixel_put()
         pass
 
-    #def draw_image(self, image_data, x, y) -> None:
-    def draw_image(self, image, x, y) -> None:
+    def draw_image(self, image_data, x, y) -> None:
         #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
         #image = self.create_image(self.base_width, self.base_height)
-        #image_height, image_width = image_data.shape[:2]
-        #image = self.create_image(image_width, image_height)
+        # ! Should not create images each time.
+        image_height, image_width = image_data.shape[:2]
+        image = self.create_image(image_width, image_height)
         #mem_img[x:x+self.tile_size, y:y+self.tile_size] = image_data
-        #self.image_to_memory(image_data, image)  # mem_img -> image_data
-        #self
+        self.image_to_memory(image_data, image)  # mem_img -> image_data
+        self
         self.ve.mlx_put_image_to_window(
             self.mlx,
             self.window.win,
@@ -98,6 +99,7 @@ class MLXCanvas(Canvas):
             x,
             y
         )
+
     #def draw_double_image(self, image_base, image_top, x, y) -> None:
     #    #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
     #    #image = self.create_image(self.base_width, self.base_height)
@@ -115,7 +117,7 @@ class MLXCanvas(Canvas):
     #        x,
     #        y
     #    )
-    #    self.ve.mlx_put_image_to_window(uptate_assets
+    #    self.ve.mlx_put_image_to_window(
     #        self.mlx,
     #        self.window.win,
     #        imaget.id,
@@ -127,32 +129,46 @@ class MLXCanvas(Canvas):
         # self.ve.mlx_put_image_to_window()
         pass
 
-    def detele_images(self, id_image):
-        self.ve.mlx_destroy_image(self.mlx, id_image)
-
-    # def load_image(self, filename):
-    #    image_array = self.img_array(filename)
-    def load_image(self, file):
-        # Ensure 'file' is actually a NumPy array
-        #if not isinstance(file, np.ndarray):
-        #    raise TypeError(f"Expected a numpy.ndarray, but got {type(file)}")
-
-        ## Ensure the array has at least 2 dimensions (Height, Width)
-        #if len(file.shape) < 2:
-        #    raise ValueError(f"Expected at least a 2D array, but got shape {file.shape}")
-
-        h, w = file.shape[:2]
-        image = self.create_image(w, h)
-        self.image_to_memory(file, image)
-
-        return image
-
     def image_to_memory(self, array: np.ndarray, image: ImgData) -> None:
         """" Take and multidimensional array of data from a image and save in
         data address of ImgData"""
-        # Input must be always 4 bytes pixel (BGRA/RGBA) -> cv2.COLOR_BGR2BGRA
-        buffer = np.frombuffer(image.data, dtype=np.uint8).reshape(array.shape)
-        buffer[:, :, :] = array[:, :, :]
+
+
+        # 1. Asegurar que los datos de la matriz OpenCV estén guardados de forma contigua en memoria
+        # y extraer sus bytes crudos
+        raw_bytes = np.ascontiguousarray(array, dtype=np.uint8).tobytes()
+        
+        # 2. Calcular el tamaño en bytes que requiere almacenar la imagen en MLX
+        # (Suele ser alto * bytes por linea de escaneo)
+        total_bytes = min(len(raw_bytes), image.height * image.bytesPL)
+        
+        # 3. Copiar la memoria de Python directamente al puntero de C de MiniLibX
+        # ctypes.memmove gestiona de forma automática si image.data es un entero, 
+        # un puntero o un buffer compatible, copiando los bytes instantáneamente.
+        ctypes.memmove(image.data, raw_bytes, total_bytes)
+
+
+
+        #_________________________
+        # Calculate total buffer size of image.
+        total_bytes = image.height * image.bytesPL
+
+        # Allow Numpy memory rewriting: image.data -> mutable array Python
+        data_ptr = ctypes.cast(image.data, ctypes.POINTER(ctypes.c_ubyte))
+        buffer_flat = np.ctypeslib.as_array(data_ptr, shape=(total_bytes,))
+        
+        # Reshape buffer with image size. Safe for memmory align width.
+        width_in_pixels = image.bytesPL // 4
+        buffer_3d = buffer_flat.reshape((image.height, width_in_pixels, 4))
+        
+        # Add data (array opencv) to the real MiniLibx buffer
+        h, w, c = array.shape
+        buffer_3d[:h, :w, :c] = array
+
+
+        # This option work correctly but doens't allow print transparencies.
+        #buffer = np.frombuffer(image.data, dtype=np.uint8).reshape(array.shape)
+        #buffer[:, :, :] = array[:, :, :]
         # --------
 
         # # Obtener el puntero de memoria de tu imagen de MLX
@@ -164,13 +180,13 @@ class MLXCanvas(Canvas):
         ## Copiar los bytes al buffer de MiniLibX
         #img_ptr[0:len(raw_bytes)] = raw_bytes
 
+
     # ! Change code to call one time per image only (draw_image);
     def create_image(self, width: int, height: int) -> ImgData:
         """ Generate IMG objets to print in MLX """
         image = ImgData()
         image.id = self.ve.mlx_new_image(self.mlx, width, height)
         image.width, image.height = (width, height)
-        image.data, image.bytesPP, image.bytesPL, image.format \
-            = self.ve.mlx_get_data_addr(image.id)
+        image.data, image.bytesPP, image.bytesPL, image.format = self.ve.mlx_get_data_addr(image.id)
 
         return image

@@ -31,7 +31,7 @@ class Backtracker(MazeGenerator):
         self._locked = set()
         if pattern is not None:
             # add center position to generate Patterns
-            px, py = int(width / 2 - 2), int(height / 2 - 1)
+            px, py = int(width / 2 - 2), int(height / 2 - 2)
             self._locked = self.validate_pattern(px, py, pattern)
 
         # Initiate the path generating

@@ -23,10 +23,10 @@ class EventManager():
             pass
             # S -> Change Style
         elif keynum == 115 or keynum == 82:
-            # D -> Change patterns
             self.owner.select_theme()
             self.owner.update_style()
             pass
+            # D -> Change patterns
         elif keynum == 100 or keynum == 68:                                               
             pass
             # F -> Change fixing algorithm

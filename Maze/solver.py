@@ -4,7 +4,7 @@ from Algorithms.solving.bfs import solve_bfs
 from Algorithms.solving.dfs import solve_dfs
 from Algorithms.solving.dijkstra import solve_dijkstra
 
-from maze.model import Maze
+from Maze.model import Maze
 
 
 # Edu
