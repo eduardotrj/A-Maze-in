@@ -15,9 +15,15 @@ class Prim(MazeGenerator):
         super().__init__(width, height, seed)
 
     def generate(self, width: int, height: int, entry: tuple[int, int],
-                 exit: tuple[int, int], seed: int | None) -> None:
-        self.width: int = width
-        self.height: int = height
+                 exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
+                 seed: int | None) -> None:
+        self.width = width
+        self.height = height
+        self.seed = seed
+        self.entry = entry
+        self.exit = exit
+        self.record: list[list[int]] = []
+        self.pattern = None
         # Fill the maze with 1
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
         # self.maze[0][0] = 0
@@ -41,6 +47,8 @@ class Prim(MazeGenerator):
                 wx, wy = (fx + nx) // 2, (fy + ny) // 2
                 self.maze[wy][wx] = 0   # knock down the wall between them
                 self.maze[fy][fx] = 0   # open the frontier cell itself
+                self.record.append([wy, wx])
+                self.record.append([fy, fx])
 
                 # Its unvisited neighbors become new frontier
                 self._add_frontier(fx, fy, frontier)
