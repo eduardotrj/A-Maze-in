@@ -1,5 +1,6 @@
 from functools import cached_property
 import numpy as nu
+from typing import Any
 from Algorithms.generation.maze_generator import MazeGenerator
 
 # Kruskal's Algorithm
@@ -13,16 +14,23 @@ class Kruskal(MazeGenerator):
     def __init__(self, width: int, height: int, seed: int = None):
         super().__init__(width, height, seed)
 
-    def generate(self, width: int, height: int):
+    def generate(self, width: int, height: int, entry: tuple[int, int],
+                 exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
+                 seed: int | None) -> None:
         """ Generate a maze with the given width and height using randomized Kruskal's algorithm """
         self.width = width
         self.height = height
-        self.maze = [[1 for _ in range(width)] for _ in range(height)]
+        self.seed = seed
+        self.entry = entry
+        self.exit = exit
+        #self.maze = [[1 for _ in range(width)] for _ in range(height)]
+        self.record: list[list[int]] = []
+        self.pattern = None
 
-        # Open every logical cell (odd coordinates)
+        ## Close every logical cell (odd coordinates)
         cells = [(x, y) for y in range(1, height, 2) for x in range(1, width, 2)]
         for x, y in cells:
-            self.maze[y][x] = 0
+            self.maze[y][x] = 1
 
         # Union-find setup
         parent = {cell: cell for cell in cells}
@@ -53,3 +61,4 @@ class Kruskal(MazeGenerator):
         for (wx, wy), a, b in edges:
             if union(a, b):
                 self.maze[wy][wx] = 0
+                self.record.append([wy, wx])
