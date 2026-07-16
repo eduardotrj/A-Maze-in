@@ -21,7 +21,7 @@ class EventManager():
 
             # A -> Choose algorithm for maze
         elif keynum == 97 or keynum == 65:
-            pass
+            self.owner.change_algorithm()
 
             # S -> Style Back
         elif keynum == 115 or keynum == 82:

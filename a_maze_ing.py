@@ -37,7 +37,7 @@ class MazeApplication:
         self.entry: tuple[int, int]
         self.exit: tuple[int, int]
         self.theme_index = 0
-        self.algorithm_index = 0
+        self.algorithm_name = "recursive_backtraker"
 
         # Init Graphics
         self.ve = Mlx()     # VisualEngine
@@ -77,7 +77,7 @@ class MazeApplication:
             (self.grid_height * 2 + 1),
             self.entry,
             self.exit,
-            "prim",
+            self.algorithm_name,
             PATTERN["C42"]
             )
         self.maze.print_values()
@@ -114,6 +114,14 @@ class MazeApplication:
         print(self.themes[self.theme_index])
         self.renderer.new_theme(self.themes[self.theme_index])
         #   self.renderer.theme = self.themes[self.theme_index]
+
+    # ! Manage to fix fake namings
+    def change_algorithm(self):
+        list = Generator.list_generators()
+        new_index = (list.index(self.algorithm_name) + 1) % len(list)
+        self.algorithm_name = list[new_index]
+        self.create_maze()
+
 
 
 def main() -> None:

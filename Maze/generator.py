@@ -1,4 +1,6 @@
 import Algorithms.generation.recursive_backtracker as rb
+import Algorithms.generation.kruskal as kr
+import Algorithms.generation.prim as pr
 from Algorithms.generation import generate_recursive_backtracker_dfs
 from Algorithms.generation.maze_generator import MazeGenerator
 from Maze.model import Maze
@@ -35,7 +37,8 @@ class Generator:
     """ Manage Maze generators """
     _generators: Dict[str, Type[MazeGenerator]] = {
         "recursive_backtraker": rb.Backtracker,
-        # "prim": PrimGenerator,
+        "krugal": kr.Kruskal,
+        "prim": pr.Prim
         # "dfs": RecursiveBacktracker,
         # "kruskal": KruskalGenerator
     }
@@ -109,7 +112,7 @@ class Generator:
                       height: int,
                       entry: tuple[int, int],
                       exit: tuple[int, int],
-                      name: str = "recursive_backtraker",
+                      name: str = "krugal",
                       pattern: tuple[tuple[Any, ...]] | None = None,
                       seed: int | None = None):
         """ Call Algorithm to generate a Maze """
@@ -119,6 +122,7 @@ class Generator:
         end_seed: int = generator.get_seed()
         record: list[list[int]] = generator.get_record()
         maze_rows = list(list(row) for row in rows)
+        this_pattern = generator.get_pattern()
 
         #open_cells = [
         #    (x, y)
@@ -133,7 +137,8 @@ class Generator:
         print("SEED: ", end_seed)
         print(entry)
         print(exit)
-        return Maze(output, entry, exit, record, end_seed)
+        return Maze(tuple(output), entry, exit, record, name,
+                    end_seed, True, this_pattern)
 
 
 # ! Check for of bound specially for odd size maze numbers.

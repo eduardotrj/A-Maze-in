@@ -8,13 +8,14 @@ class Maze:
 
     def __init__(
             self,
-            rows: tuple[Any],
+            rows: tuple[str, ...],
             entry: tuple[int, int],
             exit: tuple[int, int],
             record: list[list[int]],
+            algorithm: str,
             seed: int,
             perfect: bool = True,
-            pattern: list[str] | None = None
+            pattern: tuple[tuple[Any], ...] | None = None
             ):
         self.rows = rows
         self.height: int = len(rows)
@@ -22,6 +23,7 @@ class Maze:
         self.entry = entry
         self.exit = exit
         self.seed = seed
+        self.algorithm = algorithm
         self.perfect = perfect
         self.pattern = pattern
         self.record = record
@@ -38,6 +40,7 @@ class Maze:
         print(f"Entry: {self.entry}")
         print(f"Exit: {self.exit}")
         print(f"Size: {self.width}x{self.height}")
+        print(f"Algorithm: {self.algorithm}")
         print(f"Seed: {self.seed}")
 
     def get_open_neighbors(
