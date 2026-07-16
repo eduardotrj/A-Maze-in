@@ -68,6 +68,7 @@ class MazeApplication:
 
         self.canvas = MLXCanvas(self.window, self.ve, self.window.mlx,
                                 self.width, self.height, self.tile_size)
+        # ! Use full size window to print the screen with everything. Have in mind if add text
         self.renderer = MazeRenderer(self.window, self.canvas, self.tile_size)
 
         self.create_maze()

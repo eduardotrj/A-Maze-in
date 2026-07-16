@@ -127,10 +127,10 @@ graph TB;
 ## Duties:
 
 - [ ] () Load Settings
-- [ ] () Generate windows
-- [ ] () Algorithm Gener: Recursive Backtracker
-- [ ] () Algorithm Gener: Prim
-- [ ] () Algorithm Gener: Kruskal
+- [X] () Generate windows
+- [X] () Algorithm Gener: Recursive Backtracker
+- [X] () Algorithm Gener: Prim
+- [X] () Algorithm Gener: Kruskal
 - [ ] () Algorithm Gener: eller
 - [ ] () Algorithm Gener: wilson
 - [ ] () Algorithm Gener: hunt_and_kill
@@ -155,29 +155,29 @@ algorithms
 ## Specifications:
 
 ### Specifics
-- [ ] Maze generator in Python (1 single perfect path)
-- [ ] Work by reading a confg file: `config.txt`
+- [X] Maze generator in Python (1 single perfect path)
+- [X] Work by reading a confg file: `config.txt`
 - [ ] Write file using hexadecimal wall representation.
 - [ ] Imput: `python3 a_maze_ing.py config.txt`.
-- [ ] Main: `a_maze_ing.py`.
+- [X] Main: `a_maze_ing.py`.
 - [ ] Randomly by seeds.
 - [ ] By Cells (with 0 - 4 walls)
 - [ ] Entry and exit inside maze bounds.
-- [ ] Coherent data generated (Related walls between cells)
+- [X] Coherent data generated (Related walls between cells)
 - [ ] Not corridors > 2 cells.
 - [ ] Not larger empty areas than 3x3.
-- [] 42 representation (closed cells) if is space.
+- [ ] 42 representation (closed cells) if is space.
 - [ ] PERFECT flag for generate 1 possible path.
 - [ ] ASCII or MiniLibX library (Visual)
 - [ ] User interactions:
-    - [ ]  Re-generate new maze.
+    - [X]  Re-generate new maze.
     - [ ] Show/hide shortest path.
-    - [ ] Change walls colours.
-    - [ ] Set color for 42
+    - [X] Change walls colours.
+    - [X] Set color for 42
 
-- [ ] Bonus:
-    - [ ] Multiple maze generator algorithms.
-    - [ ] Animations during maze generation.
+- [X] Bonus:
+    - [X] Multiple maze generator algorithms.
+    - [X] Animations during maze generation.
 
 ### Output:
 

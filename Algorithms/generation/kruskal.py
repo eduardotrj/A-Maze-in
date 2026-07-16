@@ -31,6 +31,7 @@ class Kruskal(MazeGenerator):
         cells = [(x, y) for y in range(1, height, 2) for x in range(1, width, 2)]
         for x, y in cells:
             self.maze[y][x] = 1
+            self.record.append([x, y])
 
         # Union-find setup
         parent = {cell: cell for cell in cells}
@@ -61,4 +62,5 @@ class Kruskal(MazeGenerator):
         for (wx, wy), a, b in edges:
             if union(a, b):
                 self.maze[wy][wx] = 0
-                self.record.append([wy, wx])
+                self.record.append([wx, wy])
+                

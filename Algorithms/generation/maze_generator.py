@@ -90,12 +90,31 @@ class MazeGenerator(ABC):
 
         return True
 
+    def not_pointers(self, pattern, x: int, y: int,
+                     entry: tuple[int, int], exit: tuple[int, int]):
+        entry_x, entry_y = entry[0] * 2, entry[1] * 2
+        exit_x, exit_y = exit[0] * 2, exit[1] * 2
+
+        for dy, row in enumerate(pattern):
+            for dx, values in enumerate(row):
+
+                # Remove to avoid points in any empty space of the pattern
+                if values == 0:
+                    break
+
+                if (((entry_x == dx + x) and (entry_y == dy + y))
+                   or ((exit_x == dx + x) and (exit_y == dy + y))):
+                    return False
+
+        return True
+
     def pattern_to_binary(self, pattern: tuple[tuple[Any]]) -> list[list[int]]:
         """ Convert a designed 'X'/' ' pattern into maze binary
         (1 = wall, 0 = path) """
         return [[1 if cell == 'X' else 0 for cell in row] for row in pattern]
 
-    def validate_pattern(self, x, y, pattern: tuple[tuple[Any]] | None = None
+    def validate_pattern(self, x, y, entry: tuple[int, int], exit: tuple[int, int],
+                         pattern: tuple[tuple[Any]] | None = None
                          ) -> set[tuple[int, int]]:
         """ Validate pattern, if is valid, add it """
 
@@ -105,6 +124,11 @@ class MazeGenerator(ABC):
         binary = self.pattern_to_binary(pattern)
         if not self.space_for_pattern(binary, x, y):
             raise ValueError("No enought space for print the pattern")
+        
+        # Check if entry or exit are in the pattern:
+        
+        if not self.not_pointers(binary, x, y, entry, exit):
+            raise ValueError("Start or exit in the pattern area")
 
         self.add_pattern(x, y, binary)
         return {

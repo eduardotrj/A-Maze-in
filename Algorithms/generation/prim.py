@@ -33,6 +33,18 @@ class Prim(MazeGenerator):
         self.maze[start_x][start_y] = 0
 
         frontier: list[Any] = []
+
+        # ! Doesn't Work with entry even numbers.
+        #if not start_x % 2:
+        #    start_x += 1
+        #    if start_x == self.width:
+        #        start_x -= 2
+                
+        #if not start_y % 2:
+        #    start_y += 1
+        #    if start_y == self.height:
+        #        start_y -= 2
+
         self._add_frontier(start_x, start_y, frontier)
 
         while frontier:
@@ -47,8 +59,8 @@ class Prim(MazeGenerator):
                 wx, wy = (fx + nx) // 2, (fy + ny) // 2
                 self.maze[wy][wx] = 0   # knock down the wall between them
                 self.maze[fy][fx] = 0   # open the frontier cell itself
-                self.record.append([wy, wx])
-                self.record.append([fy, fx])
+                self.record.append([wx, wy])
+                self.record.append([fx, fy])
 
                 # Its unvisited neighbors become new frontier
                 self._add_frontier(fx, fy, frontier)
