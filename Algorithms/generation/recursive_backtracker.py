@@ -28,7 +28,7 @@ class Backtracker(MazeGenerator):
         self.record: list[list[int]] = []
         self.pattern = None
         # Fill the maze with 1
-        #self.maze = [[1 for _ in range(width)] for _ in range(height)]
+        self.maze = [[1 for _ in range(width)] for _ in range(height)]
 
         # Lock Pattern
         self._locked = set()
@@ -38,7 +38,8 @@ class Backtracker(MazeGenerator):
             # px: int = (height - len(pattern[0])) // 2
             try:
                 px, py = int(width / 2 - 6), int(height / 2 - 6)
-                self._locked = self.validate_pattern(px, py, pattern)
+                self._locked = self.validate_pattern(px, py, self.entry,
+                                                     self.exit, pattern)
                 # Forced only one pattern to avoid Graphic problems.
                 self.pattern = PATTERN["CORE"]
             except ValueError as e:
@@ -48,9 +49,15 @@ class Backtracker(MazeGenerator):
         # Initiate the path generating
         self.maze[self.exit[0]][self.exit[1]] = 0
         self._carve_passages_from(self.entry[0], self.entry[1])
+        for dy, row in enumerate(PATTERN["C42"]):
+            for dx, value in enumerate(row):
 
-        if self.pattern is not None:
-            self._connect_pattern()
+                # self.maze[dy][dx] = value
+                if value == ' ' or 0:
+                    self.record.append([dx + px, dy + py])
+
+        #if self.pattern is not None:
+        #    self._connect_pattern()
 
     @lru_cache(maxsize=None)
     def _carve_passages_from(self, cx: int, cy: int):
@@ -59,14 +66,24 @@ class Backtracker(MazeGenerator):
         directions = [(2, 0), (-2, 0), (0, 2), (0, -2)]
         self._random.shuffle(directions)
 
-        # ? Add here a recorder to printing animation????
+        # If entry pos is even, the data became corrupted then:
+        if not cx % 2:
+            cx += 1
+            if cx == self.width:
+                cx -= 2
+                
+        if not cy % 2:
+            cy += 1
+            if cy == self.height:
+                cy -= 2
+
         for dx, dy in directions:
             # Draw the next movement randomly
             nx, ny = cx + dx, cy + dy
             wx, wy, = cx + dx // 2, cy + dy // 2
 
             # Check viability of next movement.
-            if (0 <= nx < self.width
+            if (0 < nx < self.width
                and 0 <= ny < self.height
                and self.maze[ny][nx] == 1
                and (nx, ny) not in self._locked
@@ -76,10 +93,10 @@ class Backtracker(MazeGenerator):
                 posx = cx + dx // 2
                 posy = cy + dy // 2
                 self.maze[posy][posx] = 0
-                self.record.append([posy, posx])
+                self.record.append([posx, posy])
                 ## Open next cell
                 self.maze[ny][nx] = 0
-                self.record.append([ny, nx])
+                self.record.append([nx, ny])
                 #self.open_path(ny, nx) # ! Check the values are opposite to open/clsoe (0, 1)
                 # Predict next position by recursive
                 self._carve_passages_from(nx, ny)
@@ -94,7 +111,7 @@ class Backtracker(MazeGenerator):
                 if (0 <= nx < self.width and 0 <= ny < self.height
                    and (nx, ny) not in self._locked):
                     self.maze[ny][nx] = 0
-                    self.record.append([ny, nx])
+                    self.record.append([nx, ny])
                     break
 
     def get_maze(self):
