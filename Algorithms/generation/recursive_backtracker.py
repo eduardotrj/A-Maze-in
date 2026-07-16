@@ -1,7 +1,9 @@
 from functools import lru_cache
 from typing import Any
 import numpy as nu
+import sys
 from Algorithms.generation.maze_generator import MazeGenerator
+from Maze.patterns import PATTERN
 
 # ** RECURSIVE BACKTRACKER **
 # Selet a random cell as starting point.
@@ -24,21 +26,31 @@ class Backtracker(MazeGenerator):
         self.entry = entry
         self.exit = exit
         self.record: list[list[int]] = []
+        self.pattern = None
         # Fill the maze with 1
         #self.maze = [[1 for _ in range(width)] for _ in range(height)]
 
         # Lock Pattern
         self._locked = set()
         if pattern is not None:
-            # add center position to generate Patterns
-            px, py = int(width / 2 - 2), int(height / 2 - 2)
-            self._locked = self.validate_pattern(px, py, pattern)
+            # Doesn't work properly
+            # py: int = (width - len(pattern)) // 2
+            # px: int = (height - len(pattern[0])) // 2
+            try:
+                px, py = int(width / 2 - 6), int(height / 2 - 6)
+                self._locked = self.validate_pattern(px, py, pattern)
+                # Forced only one pattern to avoid Graphic problems.
+                self.pattern = PATTERN["CORE"]
+            except ValueError as e:
+                sys.stderr.write(f"Pattern Problem {e}")
+            self.pattern = None
 
         # Initiate the path generating
-        #self.maze[self.entry[0]][self.entry[1]] = 0
         self.maze[self.exit[0]][self.exit[1]] = 0
         self._carve_passages_from(self.entry[0], self.entry[1])
-        self._connect_pattern()
+
+        if self.pattern is not None:
+            self._connect_pattern()
 
     @lru_cache(maxsize=None)
     def _carve_passages_from(self, cx: int, cy: int):
