@@ -40,6 +40,7 @@ class ThemeManager:
     def __init__(self, canvas, tile_size):
         self.canvas = canvas
         self.themes = {}
+        self.raw_themes = {}
         self.current: str = None
         self.tile_size = tile_size
         self.load_all()
@@ -57,6 +58,7 @@ class ThemeManager:
 
         for theme in list_themes:
             self.themes[theme] = {}
+            self.raw_themes[theme] = {}
 
             for file in self.FILES:
 
@@ -74,6 +76,9 @@ class ThemeManager:
                         img_array = self.generate_cellular_texture()
                     else:
                         img_array = self.generate_plane_color()
+
+                # Load arrays to build full screen.
+                self.raw_themes[theme][file] = img_array
 
                 img = self.canvas.load_image(img_array)
 
@@ -104,6 +109,12 @@ class ThemeManager:
 
     def get_image(self, name):
         return self.current[name]
+    
+    def get_img_raw(self, name):
+        """ Return image in ndarray """
+        theme = next((name for name, value in self.themes.items() if value == self.current), None)
+        
+        return self.raw_themes[theme][name]
 
     def generate_plane_color(self):
         """

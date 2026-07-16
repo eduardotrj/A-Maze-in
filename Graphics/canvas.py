@@ -71,6 +71,23 @@ class MLXCanvas(Canvas):
         self.base_width = (self.maze_width * 2 + 1) * self.tile_size
         self.base_height = (self.maze_height * 2 + 1) * self.tile_size
 
+        # 1. Create a single full-screen MLX image container
+        self.screen_img = self.ve.mlx_new_image(self.mlx, self.maze_width, self.maze_height)
+        
+        # 2. Get the memory address data from MLX
+        # mlx_get_data_addr returns: (memoryview, bits_per_pixel, size_line, endian)
+        mem_view, bpp, size_line, _ = self.ve.mlx_get_data_addr(self.screen_img)
+        
+        # 3. Wrap the MLX memoryview into a persistent full-screen NumPy array.
+        # This writes directly to MLX memory without making slow copies.
+        bytes_per_pixel = bpp // 8
+        self.screen_array = np.frombuffer(mem_view, dtype=np.uint8).reshape(
+            (height, size_line // bytes_per_pixel, bytes_per_pixel)
+        )
+        
+        # Trim padding if size_line is wider than screen width
+        self.screen_array = self.screen_array[:, :self.maze_width, :]
+
     def syncro(self) -> None:
         """ Improve speed and avoid losing data on the window """
         self.ve.mlx_do_sync(self.window.mlx)
@@ -98,30 +115,17 @@ class MLXCanvas(Canvas):
             x,
             y
         )
-    #def draw_double_image(self, image_base, image_top, x, y) -> None:
-    #    #mem_img = np.zeros((self.base_height, self.base_width, 4), dtype=np.uint8)
-    #    #image = self.create_image(self.base_width, self.base_height)
-    #    image_height, image_width = image_base.shape[:2]
-    #    imageb = self.create_image(image_width, image_height)
-    #    image_height, image_width = image_top.shape[:2]
-    #    imaget = self.create_image(image_width, image_height)
-    #    #mem_img[x:x+self.tile_size, y:y+self.tile_size] = image_data
-    #    self.image_to_memory(image_base, imageb)  # mem_img -> image_data
-    #    self.image_to_memory(image_top, imaget)
-    #    self.ve.mlx_put_image_to_window(
-    #        self.mlx,
-    #        self.window.win,
-    #        imageb.id,
-    #        x,
-    #        y
-    #    )
-    #    self.ve.mlx_put_image_to_window(uptate_assets
-    #        self.mlx,
-    #        self.window.win,
-    #        imaget.id,
-    #        x,
-    #        y
-    #    )
+
+    def clean_buffer(self) -> None:
+        self.screen_array.fill(0)
+
+    def copy_to_buffer(self, y_start, y_end, x_start, x_end, image) -> None:
+        self.screen_array[y_start:y_end, x_start:x_end] = image
+
+    def print_screen(self, x, y) -> None:
+        self.ve.mlx_put_image_to_window(
+            self.mlx, self.window.win, self.screen_img, x, y
+        )
 
     def present(self) -> None:
         # self.ve.mlx_put_image_to_window()

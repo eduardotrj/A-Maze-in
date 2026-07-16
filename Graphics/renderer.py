@@ -109,28 +109,54 @@ class MazeRenderer(Renderer):
         #   self.canvas.clear()
         #   self.canvas.draw_pixel()
 
-    def full_with_walls(self, maze) -> None:
-        for y in range(maze.height * 2 + 1):
-            for x in range(maze.width * 2 + 1):
-                self.canvas.syncro()
-                self.draw_cell(
-                        x,
-                        y,
-                        self.theme.get_image(Tile.WALL)     # hexadecimal n
-                    )
+    #def full_with_walls(self, maze) -> None:
+    #    for y in range(maze.height * 2 + 1):
+    #        for x in range(maze.width * 2 + 1):
+    #            self.canvas.syncro()
+    #            self.draw_cell(
+    #                    x,
+    #                    y,
+    #                    self.theme.get_image(Tile.WALL)     # hexadecimal n
+    #                )
                 
+    def full_with_walls(self, maze) -> None:
+        """ Full the screen with walls """
+        #img = self.theme.get_image(Tile.WALL)
+
+        self.canvas.clean_buffer()
+
+        for y in range(1, maze.height * 2 + 1):
+            for x in range(1, maze.width * 2 + 1):
+                img_arr = self.theme.get_img_raw(Tile.WALL)
+
+                y_start = y * self.tile_size
+                y_end = y_start + self.tile_size
+                x_start = x * self.tile_size
+                x_end = x_start + self.tile_size
+
+                # Copy the tile + position into MLX window memory
+                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+
+        self.canvas.print_screen(0, 0)
+
     def draw_animation(self, maze) -> None:
         """ Draw the grid with the maze cells """
         # FULL with walls
         # Draw paths by order
+        entry_x = maze.entry[0] * 2 - 1
+        entry_y = maze.entry[1] * 2 - 1
+        exit_x = maze.exit[0] * 2 - 1
+        exit_y = maze.exit[1] * 2 - 1
         for step in maze.record:
             self.canvas.syncro()
-            self.draw_cell(
-                        step[0] - 1,
-                        step[1] - 1,
-                        self.theme.get_image(Tile.PATH)     # hexadecimal n
-                    )
-
+            # Avoid step over start and exit points
+            if not (((entry_x == step[0]) and (entry_y == step[1]))
+                    or ((exit_x == step[0]) and (exit_y == step[1]))):
+                self.draw_cell(
+                            step[0] - 1,
+                            step[1] - 1,
+                            self.theme.get_image(Tile.PATH)     # hexadecimal n
+                        )
     def draw_maze(self, maze) -> None:
         """ Draw the grid with the maze cells """
         for y in range(maze.height):
