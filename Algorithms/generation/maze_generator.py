@@ -20,6 +20,7 @@ class MazeGenerator(ABC):
             self.generate_seed()
         self._random = random.Random(seed)
         self.record: list[list[int]]
+        self.pattern: tuple[tuple[Any], ...] | None = None
 
     @abstractmethod
     def generate(self, width: int, height: int, entry: tuple[int, int],
@@ -38,6 +39,9 @@ class MazeGenerator(ABC):
 
     def get_seed(self) -> int:
         return self.seed
+    
+    def get_pattern(self) -> tuple[tuple[Any], ...] | None:
+        return self.pattern
 
     def get_points(self) -> tuple[tuple[int, int], ...]:
         """ Return Entry and Exit points"""
@@ -97,9 +101,6 @@ class MazeGenerator(ABC):
 
         if not pattern:
             raise ValueError("No Pattern data")
-
-        #y: int = (self.width - len(pattern)) // 2
-        #x: int = (self.height - len(pattern[0])) // 2
 
         binary = self.pattern_to_binary(pattern)
         if not self.space_for_pattern(binary, x, y):
