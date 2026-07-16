@@ -51,6 +51,73 @@ Overview ...
 
 ### Diagram
 
+load settings -> Generator -> Algorithm -> Maze
+Windows -> MLX
+Event
+Renderer -> Canvas
+
+
+```mermaid
+---
+title ft_printf Processing Flow
+---
+graph TB;
+    id1([A_maze_ing.py
+    Main])--Load-->Config
+    Config-->Generator
+    Generator-->Krugal
+    Generator-->Prim
+    Generator-->Backtracker
+    Generator-->Solver
+    Generator--Maze-->id1([A_maze_ing.py
+    Main])
+
+    id1(A_maze_ing.py)-->Window
+    Window-->MiniLibX
+    id1(A_maze_ing.py)-->EventManager
+    id1(A_maze_ing.py)--Maze-->Renderer
+    Renderer-->Theme
+    Renderer-->Canvas
+    Canvas-->MiniLibX
+```
+### Functions:
+
+**A_maze_ing:**
+
+Coordinates all the application from here.
+
+**Config:**
+
+Load the configuration from the file
+
+// Create the maze file
+
+**Generator:**
+
+Control all the algorithms to generate Maze and solve them
+
+**Window:**
+
+Generate and control window obj
+
+**EvenManager:**
+
+Manage the keyboard control
+
+**Renderer:**
+
+Send orders to generate Graphics
+
+**Canvas:**
+
+Comunicate the orders directly with MlxLib
+
+
+
+
+
+
+
 ### Environment Variables
 
 ### External Tools
