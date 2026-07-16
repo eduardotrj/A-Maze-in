@@ -37,6 +37,7 @@ class MazeApplication:
         self.entry: tuple[int, int]
         self.exit: tuple[int, int]
         self.theme_index = 0
+        self.algorithm_index = 0
 
         # Init Graphics
         self.ve = Mlx()     # VisualEngine
@@ -44,11 +45,11 @@ class MazeApplication:
     def read_confg(self) -> None:
 
         # Data got it from reading file.
-        width_size = 20
-        height_size = 20
+        width_size = 10
+        height_size = 10
 
         self.entry = (1, 1)
-        self.exit = (4, 6)
+        self.exit = (9, 9)
 
         self.grid_width = width_size
         self.grid_height = height_size
@@ -76,7 +77,7 @@ class MazeApplication:
             (self.grid_height * 2 + 1),
             self.entry,
             self.exit,
-            "recursive_backtraker",
+            "prim",
             PATTERN["C42"]
             )
         self.maze.print_values()
@@ -106,8 +107,10 @@ class MazeApplication:
         self.themes = [f for f in os.listdir(dir_path) if os.path.isdir(
             os.path.join(dir_path, f))]
 
-    def select_theme(self):
-        self.theme_index = (self.theme_index + 1) % len(self.themes)
+    def select_theme(self, next: int):
+        self.theme_index = (self.theme_index + next) % len(self.themes)
+        if self.theme_index < 0:
+            self.theme_index = len(self.themes)
         print(self.themes[self.theme_index])
         self.renderer.new_theme(self.themes[self.theme_index])
         #   self.renderer.theme = self.themes[self.theme_index]

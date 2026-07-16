@@ -18,20 +18,25 @@ class EventManager():
         # R -> Remake
         elif keynum == 114 or keynum == 82:
             self.owner.create_maze()
+
             # A -> Choose algorithm for maze
         elif keynum == 97 or keynum == 65:
             pass
-            # S -> Change Style
+
+            # S -> Style Back
         elif keynum == 115 or keynum == 82:
-            self.owner.select_theme()
+            self.owner.select_theme(-1)
             self.owner.update_style()
-            pass
-            # D -> Change patterns
+
+            # D -> Style Next
         elif keynum == 100 or keynum == 68:                                               
-            pass
+            self.owner.select_theme(1)
+            self.owner.update_style()
+
             # F -> Change fixing algorithm
         elif keynum == 102 or keynum == 70:
             pass
+
             # W -> Show solution Way/ off
         elif keynum == 119 or keynum == 87:
             pass
@@ -49,8 +54,7 @@ class EventManager():
         elif keynum == 65364 or keynum == 82:
             pass
 
-
-            
+        # Change patterns -> No : (
 
     def on_close(self, _param) -> None:
         self.window.close()
