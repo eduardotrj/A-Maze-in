@@ -38,6 +38,7 @@ class MazeApplication:
         self.exit: tuple[int, int]
         self.theme_index = 0
         self.algorithm_name = "recursive_backtraker"
+        self.animation = True
 
         # Init Graphics
         self.ve = Mlx()     # VisualEngine
@@ -81,10 +82,10 @@ class MazeApplication:
             PATTERN["C42"]
             )
         self.maze.print_values()
-        self.renderer.draw(self.maze)
+        self.renderer.draw(self.maze, self.animation)
 
     def update_style(self) -> None:
-        self.renderer.draw(self.maze)
+        self.renderer.draw(self.maze, self.animation)
 
     def run(self) -> None:
         """ Execute the functions """

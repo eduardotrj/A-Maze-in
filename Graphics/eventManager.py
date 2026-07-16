@@ -43,7 +43,8 @@ class EventManager():
 # SPEED/ANIMATION ---------------------------
         # ↑ -> REmove Animation
         elif keynum == 65362:
-            pass
+            self.owner.animation = False if self.owner.animation else True
+            self.owner.update_style()
         # → -> Increase Speed
         elif keynum == 65363:
             pass

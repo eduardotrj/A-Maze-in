@@ -4,6 +4,7 @@ import numpy as np
 import time
 from Graphics.theme import ThemeManager
 from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
+from Maze.patterns import PATTERN
 
 
 # Working process:
@@ -18,7 +19,7 @@ class Renderer(ABC):
     """
 
     @abstractmethod
-    def draw(self, obj) -> None:
+    def draw(self, obj, any) -> None:
         """ Call others Draw() Methods in orden """
         pass
 
@@ -53,7 +54,7 @@ class MazeRenderer(Renderer):
     def new_theme(self, theme) -> None:
         self.theme.set_theme(theme)
 
-    def draw(self, maze) -> None:
+    def draw(self, maze, animation: bool) -> None:
         """ Call others Draw() Methods in orden """
         # 1. Background.\
         # 2. Fill area.\
@@ -63,12 +64,16 @@ class MazeRenderer(Renderer):
         # 5. put enter/exit
 
         # If Animation
-        #self.full_with_walls(maze)
-        self.draw_pointers(maze)
-        #self.draw_animation(maze)
-
+        if animation:
+            self.full_with_walls(maze)
+            self.draw_pointers(maze)
+            self.draw_animation(maze)
+        else:
+            self.draw_pointers(maze)
+            self.draw_maze(maze)
         # 4. Print inner maze
-        self.draw_maze(maze)
+
+        self.draw_marks(maze)
         
         # 6. Put markets
         print("Renderer: Drawing maze ")
@@ -176,6 +181,21 @@ class MazeRenderer(Renderer):
             screen_y
         )
 
+    def draw_marks(self, maze) -> None:
+        """ Fill the core of the Pattern """
+        px, py = int((maze.width + 2) / 2), int((maze.height + 2) / 2)
+        # py: int = (maze.height - len(PATTERN["CORE"])) // 2 + 4
+        # px: int = (maze.width - len(PATTERN["CORE"][0])) // 2 + 4
+
+        for dy, row in enumerate(PATTERN["CORE"]):
+            for dx, value in enumerate(row):
+                if value == 'X':
+                    self.draw_cell(
+                        43 + dx,
+                        3 + dy,
+                        self.theme.get_image(Tile.MARK)
+                    )
+
     def draw_solution(self, path) -> None:
         """ Draw the solution (PATH)"""
         pass
@@ -195,3 +215,30 @@ class MazeRenderer(Renderer):
     def decoding_data(self):
         pass
         # 4hex = 9 positions (h * 2 = 1)
+
+
+"""
+50 -> 43
+40 -> 33
+36 -> 29
+30 -> 23
+28 -> 22
+25 -> 17
+23 -> 15
+22 -> 15
+20 -> 13
+19 -> 11
+18 -> 11
+17 -> 9
+16 -> 9
+15 -> 7
+14 -> 7
+12 -> 5
+10 -> 3
+9 -> 1
+8 -> 1
+
+remove 8, add 1
+
+width - 8
+"""

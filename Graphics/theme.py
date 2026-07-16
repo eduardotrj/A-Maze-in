@@ -1,4 +1,3 @@
-from pathlib import Path
 import sys
 import numpy as np
 import random
@@ -119,8 +118,8 @@ class ThemeManager:
         image[:, :, 1] = g
         image[:, :, 2] = r
 
-        #cv2.imshow(name, image)
-        #cv2.imwrite(name, image)
+        # cv2.imshow(name, image)
+        # cv2.imwrite(name, image)
         image_argb = cv2.cvtColor(image, code=cv2.COLOR_BGR2BGRA)
         return np.asarray(image_argb, dtype=np.uint8)
 
