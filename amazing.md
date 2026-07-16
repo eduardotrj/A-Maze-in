@@ -166,7 +166,7 @@ algorithms
 - [ ] Coherent data generated (Related walls between cells)
 - [ ] Not corridors > 2 cells.
 - [ ] Not larger empty areas than 3x3.
-- [ ] 42 representation (closed cells) if is space.
+- [] 42 representation (closed cells) if is space.
 - [ ] PERFECT flag for generate 1 possible path.
 - [ ] ASCII or MiniLibX library (Visual)
 - [ ] User interactions:
@@ -416,3 +416,14 @@ self.generator = GeneratorFactory.create(
 https://github.com/dde-fite/42_MiniLibX_Python_Manual
 https://mermaid.ai/open-source/syntax/flowchart.html
 https://python-tcod.readthedocs.io/en/latest/tcod/charmap-reference.html
+
+
+
+# List of shit to fix?
+
+- [ ] Pattern go to shit -> Maybe widht - 7 & Height - 5??
+- [ ] Maze size odd go fucked
+- [ ] Seed not taken
+- [ ] Animation not getting correcty.
+- [ ] If Start/Exit in pattern -> No Pattern
+- [ ] Faster like maybe make a huge image and print all zuzamen>>>
