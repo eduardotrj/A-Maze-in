@@ -1,9 +1,9 @@
-from maze.generator import generate_maze
-from maze.solver import solve_maze
+from Maze.generator import generate_maze
+from Maze.solver import solve_maze
 
 
 # To test from the project root:
-# poetry run python -m tests.maze_generator_test
+# poetry run python -m Tests.maze_generator_test
 
 
 def rows_as_hex(rows: tuple[tuple[int, ...], ...]) -> str:

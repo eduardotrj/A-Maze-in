@@ -29,7 +29,7 @@ class EventManager():
             self.owner.update_style()
 
             # D -> Style Next
-        elif keynum == 100 or keynum == 68:                                               
+        elif keynum == 100 or keynum == 68:
             self.owner.select_theme(1)
             self.owner.update_style()
 
@@ -62,7 +62,7 @@ class EventManager():
         self.window.end()
 
     # * Adapt to use mouse on screen.
-    #def on_mouse(self, button: int, x: int, y: int, params: Any) -> None:
+    # def on_mouse(self, button: int, x: int, y: int, params: Any) -> None:
     #    nonlocal path, scale, win, color_i, path_visible
     #    if x < scale * maze.width:  # Check if inside sidebar.
     #        return
@@ -96,4 +96,3 @@ class EventManager():
 
     #    elif 384 < y < 512:  # Exit button.
     #        m.mlx_loop_exit(p)
-

@@ -1,9 +1,9 @@
 from Algorithms import solve_bfs, solve_dfs, solve_astar, solve_dijkstra
-from maze.model import Maze
+from Maze.model import Maze
 
 # to test:
 # go to root folder and run:
-# poetry run python -m tests.maze_solver_test
+# poetry run python -m Tests.maze_solver_test
 
 raw_maze = [
     "939551553",

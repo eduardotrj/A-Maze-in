@@ -50,7 +50,7 @@ class MazeGenerator(ABC):
     def get_dimensions(self) -> tuple[int, int]:
         """ Return the dimensions fo the maze """
         return self.width, self.height
-    
+
     def get_record(self) -> list[list[int]]:
         return self.record
 
@@ -124,9 +124,9 @@ class MazeGenerator(ABC):
         binary = self.pattern_to_binary(pattern)
         if not self.space_for_pattern(binary, x, y):
             raise ValueError("No enought space for print the pattern")
-        
+
         # Check if entry or exit are in the pattern:
-        
+
         if not self.not_pointers(binary, x, y, entry, exit):
             raise ValueError("Start or exit in the pattern area")
 
@@ -140,7 +140,6 @@ class MazeGenerator(ABC):
     def add_pattern(self, x: int, y: int,
                     pattern: list[list[int]]):  # -> set[tuple[int, int]]:
         """ Add pattern at the coordenates """
-
 
         for dy, row in enumerate(pattern):
             for dx, value in enumerate(row):
