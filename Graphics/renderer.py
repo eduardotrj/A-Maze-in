@@ -46,7 +46,7 @@ class MazeRenderer(Renderer):
         self.window = window
         self.tile_size = size   # Pixel size
         self.canvas = canvas    # To print into MiniLibx
-        #self.theme = 'default'
+        # self.theme = 'default'
         self.animated = False
         self.theme = ThemeManager(self.canvas, self.tile_size)
 #        # Load Graphics:\
@@ -68,7 +68,7 @@ class MazeRenderer(Renderer):
             self.full_with_walls(maze)
             self.draw_pointers(maze)
             self.draw_animation(maze)
-            #if maze.pattern:
+            # if maze.pattern:
             self.draw_marks(maze)
 
         else:
@@ -76,7 +76,7 @@ class MazeRenderer(Renderer):
             self.draw_pointers(maze)
             self.draw_maze(maze)
         # 4. Print inner maze
-            #if maze.pattern:
+            # if maze.pattern:
             #    self.draw_marks(maze)
 
         # 6. Put markets
@@ -84,7 +84,7 @@ class MazeRenderer(Renderer):
 
     def draw_grid(self, maze) -> None:
         """ Draw the grid surrounded by a wall """
-        #? Can separate walls from bg for animation.
+        # ? Can separate walls from bg for animation.
         max_height = maze.height * 2
         max_width = maze.width * 2
 
@@ -113,7 +113,7 @@ class MazeRenderer(Renderer):
                 
     def full_with_walls(self, maze) -> None:
         """ Full the screen with walls """
-        #img = self.theme.get_image(Tile.WALL)
+        # img = self.theme.get_image(Tile.WALL)
 
         self.canvas.clean_buffer()
 
@@ -127,7 +127,8 @@ class MazeRenderer(Renderer):
                 x_end = x_start + self.tile_size
 
                 # Copy the tile + position into MLX window memory
-                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end,
+                                           img_arr)
 
         self.canvas.print_screen(0, 0)
 
@@ -135,10 +136,10 @@ class MazeRenderer(Renderer):
         """ Draw the grid with the maze cells """
         # FULL with walls
         # Draw paths by order
-        entry_x = maze.entry[0] * 2 - 1
-        entry_y = maze.entry[1] * 2 - 1
-        exit_x = maze.exit[0] * 2 - 1
-        exit_y = maze.exit[1] * 2 - 1
+        entry_x = maze.entry[0] * 2 + 1
+        entry_y = maze.entry[1] * 2 + 1
+        exit_x = maze.exit[0] * 2 + 1
+        exit_y = maze.exit[1] * 2 + 1
         for step in maze.record:
             self.canvas.syncro()
             # Avoid step over start and exit points
@@ -154,7 +155,7 @@ class MazeRenderer(Renderer):
         """ Draw the grid with the maze cells """
         for y in range(maze.height):
             for x in range(maze.width):
-                #time.sleep(0.1)
+                # time.sleep(0.1)
                 self.draw_walls(
                     x,
                     y,
@@ -168,8 +169,8 @@ class MazeRenderer(Renderer):
         wall = self.theme.get_image(Tile.WALL)
 
         # Printing in the center
-        #screen_x = (x * tile)
-        #screen_y = (y * tile)
+        # screen_x = (x * tile)
+        # screen_y = (y * tile)
         self.canvas.syncro()
         for direction, offsets in WALL_SEGMENTS.items():
             if cell & direction:
@@ -179,13 +180,13 @@ class MazeRenderer(Renderer):
     def draw_pointers(self, maze) -> None:
         self.canvas.syncro()
         self.draw_cell(
-            maze.entry[0] * 2 - 2,
-            maze.entry[1] * 2 - 2,
+            maze.entry[0] * 2,
+            maze.entry[1] * 2,
             self.theme.get_image(Tile.START)
         )
         self.draw_cell(
-            (maze.exit[0] * 2 - 2),
-            (maze.exit[1] * 2 - 2),
+            (maze.exit[0] * 2),
+            (maze.exit[1] * 2),
             self.theme.get_image(Tile.EXIT)
         )
 

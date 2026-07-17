@@ -1,12 +1,13 @@
+from typing import Dict, Type, Any
+
 import Algorithms.generation.recursive_backtracker as rb
 import Algorithms.generation.kruskal as kr
 import Algorithms.generation.prim as pr
-from Algorithms.generation import generate_recursive_backtracker_dfs
+# from algorithms.generation import generate_recursive_backtracker_dfs
 from Algorithms.generation.maze_generator import MazeGenerator
 from Maze.model import Maze
-from typing import Dict, Type, Any
 
-#def generate_maze(
+# def generate_maze(
 #    width: int,
 #    height: int,
 #    entry: tuple[int, int],
@@ -14,7 +15,7 @@ from typing import Dict, Type, Any
 #    seed: int | None = None,
 #    perfect: bool = True,
 #    algorithm: str = "recursive_backtracker_dfs",
-#) -> Maze:
+# ) -> Maze:
 #    """Generate and return a Maze object with the selected algorithm."""
 #    if algorithm == "recursive_backtracker_dfs":
 #        rows = generate_recursive_backtracker_dfs(
@@ -32,6 +33,7 @@ from typing import Dict, Type, Any
 #        seed=seed,
 #        perfect=perfect,
 #    )
+
 
 class Generator:
     """ Manage Maze generators """
@@ -104,39 +106,51 @@ class Generator:
             #   hex_rows.append(''.join(line))
             hex_rows.append(line)
         return hex_rows
-    
-    # ! DOesn't translate properly not square
+
+    # ! Doesn't translate properly not square
 
     @staticmethod
-    def generate_maze(width: int,
-                      height: int,
-                      entry: tuple[int, int],
-                      exit: tuple[int, int],
-                      name: str = "krugal",
-                      pattern: tuple[tuple[Any, ...]] | None = None,
-                      seed: int | None = None):
-        """ Call Algorithm to generate a Maze """
+    def generate_maze(
+        width: int,
+        height: int,
+        entry: tuple[int, int],
+        exit: tuple[int, int],
+        name: str = "prim",
+        pattern: tuple[tuple[Any, ...], ...] | None = None,
+        seed: int | None = None,
+    ) -> Maze:
+        """Generate and return a Maze object."""
+        internal_entry = (
+            entry[0] * 2 + 1,
+            entry[1] * 2 + 1,
+        )
+
+        internal_exit = (
+            exit[0] * 2 + 1,
+            exit[1] * 2 + 1,
+        )
         generator = Generator.create(name, width, height, seed)
-        generator.generate(width, height, entry, exit, pattern, seed)
+        generator.generate(width, height, internal_entry, internal_exit,
+                           pattern, seed)
         rows = generator.get_maze()
         end_seed: int = generator.get_seed()
         record: list[list[int]] = generator.get_record()
         maze_rows = list(list(row) for row in rows)
         this_pattern = generator.get_pattern()
 
-        #open_cells = [
+        # open_cells = [
         #    (x, y)
         #    for y, row in enumerate(rows)
         #    for x, value in enumerate(row)
         #    if value == 0
-        #]
-        #entry = open_cells[0] if open_cells else (0, 0)
-        #exit = open_cells[-1] if open_cells else (width - 1, height - 1)
+        # ]
+        # entry = open_cells[0] if open_cells else (0, 0)
+        # exit = open_cells[-1] if open_cells else (width - 1, height - 1)
 
         output = Generator.binary_to_hexa(maze_rows)
-        print("SEED: ", end_seed)
-        print(entry)
-        print(exit)
+        # print("SEED: ", end_seed)
+        # print(entry)
+        # print(exit)
         return Maze(tuple(output), entry, exit, record, name,
                     end_seed, True, this_pattern)
 

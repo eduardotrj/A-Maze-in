@@ -30,17 +30,17 @@ class Prim(MazeGenerator):
         # Initiate the path generating
         start_x: int = entry[0]
         start_y: int = entry[1]
-        self.maze[start_x][start_y] = 0
+        self.maze[start_y][start_x] = 0
 
         frontier: list[Any] = []
 
         # ! Doesn't Work with entry even numbers.
-        #if not start_x % 2:
+        # if not start_x % 2:
         #    start_x += 1
         #    if start_x == self.width:
         #        start_x -= 2
-                
-        #if not start_y % 2:
+
+        # if not start_y % 2:
         #    start_y += 1
         #    if start_y == self.height:
         #        start_y -= 2

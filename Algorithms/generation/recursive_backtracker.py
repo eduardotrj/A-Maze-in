@@ -47,7 +47,7 @@ class Backtracker(MazeGenerator):
             self.pattern = None
 
         # Initiate the path generating
-        self.maze[self.exit[0]][self.exit[1]] = 0
+        # self.maze[self.exit[0]][self.exit[1]] = 0
         self._carve_passages_from(self.entry[0], self.entry[1])
         for dy, row in enumerate(PATTERN["C42"]):
             for dx, value in enumerate(row):
@@ -56,7 +56,7 @@ class Backtracker(MazeGenerator):
                 if value == ' ' or 0:
                     self.record.append([dx + px, dy + py])
 
-        #if self.pattern is not None:
+        # if self.pattern is not None:
         #    self._connect_pattern()
 
     @lru_cache(maxsize=None)
@@ -71,7 +71,7 @@ class Backtracker(MazeGenerator):
             cx += 1
             if cx == self.width:
                 cx -= 2
-                
+
         if not cy % 2:
             cy += 1
             if cy == self.height:
@@ -89,15 +89,15 @@ class Backtracker(MazeGenerator):
                and (nx, ny) not in self._locked
                and (wx, wy) not in self._locked):
                 # Connect both cells
-                #self.open_path(cy + dy // 2, cx + dx // 2)
+                # self.open_path(cy + dy // 2, cx + dx // 2)
                 posx = cx + dx // 2
                 posy = cy + dy // 2
                 self.maze[posy][posx] = 0
                 self.record.append([posx, posy])
-                ## Open next cell
+                # Open next cell
                 self.maze[ny][nx] = 0
                 self.record.append([nx, ny])
-                #self.open_path(ny, nx) # ! Check the values are opposite to open/clsoe (0, 1)
+                # self.open_path(ny, nx) # ! Check the values are opposite to open/clsoe (0, 1)
                 # Predict next position by recursive
                 self._carve_passages_from(nx, ny)
 
