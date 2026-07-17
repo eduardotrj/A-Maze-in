@@ -1,7 +1,6 @@
 PYTHON      := python3.11
 POETRY      := poetry
-MAIN        := config_test.py
-# MAIN        := a_maze_ing.py
+MAIN        := a_maze_ing.py
 VENV        := .venv
 CONFIG		:= config.txt
 
@@ -33,12 +32,15 @@ clean:
 
 clean-all: clean
 	rm -rf $(VENV)
-	rm -f poetry.lock
 	rm -f poetry.toml
 
 lint:
 	$(POETRY) run flake8 .
-	$(POETRY) run mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	$(POETRY) run mypy . --warn-return-any \
+		--warn-unused-ignores \
+		--ignore-missing-imports \
+		--disallow-untyped-defs \
+		--check-untyped-defs
 
 lint-strict:
 	$(POETRY) run flake8 .
