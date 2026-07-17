@@ -1,11 +1,10 @@
 from typing import Any
 
-import Algorithms.generation.recursive_backtracker as rb
-import Algorithms.generation.kruskal as kr
-import Algorithms.generation.prim as pr
-# from algorithms.generation import generate_recursive_backtracker_dfs
-from Algorithms.generation.maze_generator import MazeGenerator
-from Maze.model import Maze
+from .algorithms.generation.prim import Prim as pr
+from .algorithms.generation.kruskal import Kruskal as kr
+from .algorithms.generation.recursive_backtracker import Backtracker as rb
+from .algorithms.generation.maze_generator import MazeGenerator
+from .model import Maze
 
 # def generate_maze(
 #    width: int,

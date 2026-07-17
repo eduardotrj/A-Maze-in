@@ -1,0 +1,94 @@
+from enum import Enum, IntFlag
+
+
+class Tile(str, Enum):
+    WALL = "wall.png"
+    PATH = "path.png"
+    MARK = "mark.png"
+    EXIT = "exit.png"
+    START = "start.png"
+    S_N = "solve_n.png"
+    S_NE = "solve_ne.png"
+    S_E = "solve_e.png"
+    S_ES = "solve_es.png"
+    S_S = "solve_s.png"
+    S_SW = "solve_sw.png"
+    S_W = "solve_w.png"
+    S_NW = "solve_nw.png"
+    S_EW = "solve_ew.png"
+    S_NS = "solve_ns.png"
+
+
+class HexaWall(IntFlag):
+    NORTH = 0x1
+    EAST = 0x2
+    SOUTH = 0x4
+    WEST = 0x8
+
+
+WALL_SEGMENTS = {
+    HexaWall.NORTH: [
+        (-1, -1),
+        (0, -1),
+        (1, -1),
+    ],
+    HexaWall.EAST: [
+        (1, -1),
+        (1,  0),
+        (1,  1),
+    ],
+    HexaWall.SOUTH: [
+        (-1, 1),
+        (0, 1),
+        (1, 1),
+    ],
+    HexaWall.WEST: [
+        (-1, -1),
+        (-1,  0),
+        (-1,  1),
+    ],
+}
+
+NORTH = 1
+EAST = 2
+SOUTH = 4
+WEST = 8
+
+ALL_WALLS = NORTH | EAST | SOUTH | WEST
+
+DIRECTIONS = {
+    "N": (0, -1, NORTH),
+    "E": (1, 0, EAST),
+    "S": (0, 1, SOUTH),
+    "W": (-1, 0, WEST),
+}
+
+OPPOSITE_WALL = {
+    NORTH: SOUTH,
+    EAST: WEST,
+    SOUTH: NORTH,
+    WEST: EAST,
+}
+
+OPPOSITE_DIRECTION = {
+    "N": "S",
+    "E": "W",
+    "S": "N",
+    "W": "E",
+}
+
+
+SOLUTION_TILES: dict[frozenset[str], Tile] = {
+    frozenset({"N"}): Tile.S_N,
+    frozenset({"E"}): Tile.S_E,
+    frozenset({"S"}): Tile.S_S,
+    frozenset({"W"}): Tile.S_W,
+
+    frozenset({"N", "E"}): Tile.S_NE,
+    frozenset({"E", "S"}): Tile.S_ES,
+    frozenset({"S", "W"}): Tile.S_SW,
+    frozenset({"N", "W"}): Tile.S_NW,
+
+    frozenset({"E", "W"}): Tile.S_EW,
+    frozenset({"N", "S"}): Tile.S_NS,
+}
