@@ -1,12 +1,18 @@
+import os
+import sys
+from pydantic import ValidationError
+from mlx import Mlx
+
 from Graphics.window import MLXWindow
 from Graphics.canvas import MLXCanvas
 from Graphics.renderer import MazeRenderer
 from Graphics.eventManager import EventManager
 from Maze.generator import Generator
 from Maze.model import Maze
-from mlx import Mlx
 from Maze.patterns import PATTERN
-import os
+from Config import ConfigParser, MazeConfig
+
+
 # Example import:
 # from Folder.file import Class
 
@@ -18,30 +24,48 @@ import os
 
 
 class MazeApplication:
-    """ Class coordinate all objs (controller) """
+    """Coordinate all application components."""
 
-    def __init__(self) -> None:
+    def __init__(self, settings: MazeConfig) -> None:
+        self.settings = settings
 
-        # self.settings = settings
+        self.tile_size = 32
+        self.theme_index = 0
 
-        # instance components  #! NOT HERE, Properties of Maze and renderer class.
-        # self.something = Something()
-        self.width = 3
-        self.height = 3
         self.grid = None
-        self.grid_width = 0
-        self.grid_height = 0
         self.generator = None
         self.solver = None
-        self.tile_size = 32
-        self.entry: tuple[int, int]
-        self.exit: tuple[int, int]
-        self.theme_index = 0
-        self.algorithm_name = "recursive_backtraker"
-        self.animation = True
 
-        # Init Graphics
-        self.ve = Mlx()     # VisualEngine
+        # Configuration values
+        self.grid_width = settings.width
+        self.grid_height = settings.height
+
+        self.entry = settings.entry
+        self.exit = settings.exit_
+
+        self.output_file = settings.output_file
+        self.perfect = settings.perfect
+        self.seed = settings.seed
+
+        self.algorithm_name = settings.generator or "prim"
+
+        self.animation = (
+            settings.animation
+            if settings.animation is not None
+            else True
+        )
+
+        self.speed = settings.speed or 300
+
+        # Window size in pixels
+        self.width = self.tile_size * (self.grid_width * 2 + 1)
+        self.height = self.tile_size * (self.grid_height * 2 + 1)
+
+        # Visual engine
+        self.ve = Mlx()
+
+        # verify the settings
+        print(self.settings.model_dump(by_alias=True))
 
     def read_confg(self) -> None:
 
@@ -55,11 +79,28 @@ class MazeApplication:
         self.grid_width = width_size
         self.grid_height = height_size
 
-        self.width = 32 * (width_size * 2 + 1)
-        self.height = 32 * (height_size * 2 + 1)
+        self.width = self.tile_size * (width_size * 2 + 1)
+        self.height = self.tile_size * (height_size * 2 + 1)
 
         self.window = MLXWindow(self.width, self.height, "A-Maze-Ing", self.ve)
         self.control = EventManager(self.ve, self.window, self)
+
+        self.get_themes()
+
+    def initialize_window(self) -> None:
+        """Create the graphical window and event manager."""
+        self.window = MLXWindow(
+            self.width,
+            self.height,
+            "A-Maze-Ing",
+            self.ve,
+        )
+
+        self.control = EventManager(
+            self.ve,
+            self.window,
+            self,
+        )
 
         self.get_themes()
 
@@ -74,14 +115,17 @@ class MazeApplication:
         self.create_maze()
 
     def create_maze(self) -> None:
-        self.maze: Maze = Generator.generate_maze(
-            (self.grid_width * 2 + 1),
-            (self.grid_height * 2 + 1),
-            self.entry,
-            self.exit,
-            self.algorithm_name,
-            PATTERN["C42"]
-            )
+        """Generate and render a maze."""
+        self.maze = Generator.generate_maze(
+            width=self.grid_width * 2 + 1,
+            height=self.grid_height * 2 + 1,
+            entry=self.entry,
+            exit=self.exit,
+            name=self.algorithm_name,
+            pattern=PATTERN["C42"],
+            seed=self.seed,
+        )
+
         self.maze.print_values()
         self.renderer.draw(self.maze, self.animation)
 
@@ -89,9 +133,9 @@ class MazeApplication:
         self.renderer.draw(self.maze, self.animation)
 
     def run(self) -> None:
-        """ Execute the functions """
-
-        self.read_confg()
+        """Run the application."""
+        # self.read_confg()
+        self.initialize_window()
         self.control.hook_setup()
         self.initialize()
         self.ve.mlx_do_sync(self.window.mlx)
@@ -125,12 +169,31 @@ class MazeApplication:
         self.create_maze()
 
 
-
 def main() -> None:
     #   Eray Input
     #   settings = load_settings("settings.json")
-    app = MazeApplication()
+    """Load configuration and run the application."""
+    if len(sys.argv) != 2:
+        print("Usage: python3 a_maze_ing.py config.txt")
+        return
 
+    try:
+        raw_settings = ConfigParser(sys.argv[1]).parse()
+        settings = MazeConfig.model_validate(raw_settings)
+
+    except OSError as err:
+        print(f"File error: {err}")
+        return
+
+    except ValidationError as err:
+        print(f"Config validation error:\n{err}")
+        return
+
+    except ValueError as err:
+        print(f"Config parser error: {err}")
+        return
+
+    app = MazeApplication(settings)
     app.run()
 
 

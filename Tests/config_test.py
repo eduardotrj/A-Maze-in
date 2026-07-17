@@ -1,7 +1,7 @@
 import sys
 
 from pydantic import ValidationError
-from config import ConfigParser, MazeConfig
+from Config import ConfigParser, MazeConfig
 
 
 # to test:
@@ -12,7 +12,7 @@ def main() -> None:
     """Test configuration parsing and validation."""
     if len(sys.argv) != 2:
         print(
-            "Usage: poetry run python -m tests.config_test config.txt"
+            "Usage: poetry run python -m Tests.config_test config.txt"
         )
         return
 
@@ -24,12 +24,12 @@ def main() -> None:
         print(f"File error: {err}")
         return
 
-    except ValueError as err:
-        print(f"Config parser error: {err}")
-        return
-
     except ValidationError as err:
         print(f"Config validation error:\n{err}")
+        return
+
+    except ValueError as err:
+        print(f"Config parser error: {err}")
         return
 
     print("Config is valid.")
