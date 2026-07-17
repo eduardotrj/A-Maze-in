@@ -137,6 +137,7 @@ class Generator:
         record: list[list[int]] = generator.get_record()
         maze_rows = list(list(row) for row in rows)
         this_pattern = generator.get_pattern()
+        pattern_cells = generator.get_pattern_cells()
 
         # open_cells = [
         #    (x, y)
@@ -147,12 +148,13 @@ class Generator:
         # entry = open_cells[0] if open_cells else (0, 0)
         # exit = open_cells[-1] if open_cells else (width - 1, height - 1)
 
+        maze_rows = [list(row) for row in rows]
         output = Generator.binary_to_hexa(maze_rows)
         # print("SEED: ", end_seed)
         # print(entry)
         # print(exit)
         return Maze(tuple(output), entry, exit, record, name,
-                    end_seed, True, this_pattern)
+                    end_seed, True, this_pattern, pattern_cells)
 
 
 # ! Check for of bound specially for odd size maze numbers.

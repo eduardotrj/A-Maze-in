@@ -15,7 +15,8 @@ class Maze:
             algorithm: str,
             seed: int,
             perfect: bool = True,
-            pattern: tuple[tuple[Any], ...] | None = None
+            pattern: tuple[tuple[Any], ...] | None = None,
+            pattern_cells: set[tuple[int, int]] | None = None,
             ):
         self.rows = rows
         self.height: int = len(rows)
@@ -27,6 +28,7 @@ class Maze:
         self.perfect = perfect
         self.pattern = pattern
         self.record = record
+        self.pattern_cells = pattern_cells or set()
 
     def cell(self, x, y) -> int:
         """ Return the information in that cell """

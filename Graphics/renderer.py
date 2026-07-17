@@ -4,7 +4,7 @@ import numpy as np
 import time
 from Graphics.theme import ThemeManager
 from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
-from Maze.patterns import PATTERN
+# from Maze.patterns import PATTERN
 
 
 # Working process:
@@ -69,15 +69,17 @@ class MazeRenderer(Renderer):
             self.draw_pointers(maze)
             self.draw_animation(maze)
             # if maze.pattern:
-            self.draw_marks(maze)
+            # self.draw_marks(maze)
 
         else:
             # Load in a screen:
             self.draw_pointers(maze)
             self.draw_maze(maze)
+
+        self.draw_marks(maze)
         # 4. Print inner maze
-            # if maze.pattern:
-            #    self.draw_marks(maze)
+        # if maze.pattern:
+        #     self.draw_marks(maze)
 
         # 6. Put markets
         print("Renderer: Drawing maze ")
@@ -110,7 +112,7 @@ class MazeRenderer(Renderer):
                         y,
                         self.theme.get_image(Tile.PATH)     # hexadecimal n
                     )
-                
+
     def full_with_walls(self, maze) -> None:
         """ Full the screen with walls """
         # img = self.theme.get_image(Tile.WALL)
@@ -202,29 +204,38 @@ class MazeRenderer(Renderer):
         )
 
     def draw_marks(self, maze) -> None:
-        """ Fill the core of the Pattern """
-        # px, py = int((maze.width + 2) / 2), int((maze.height + 2) / 2)
-        # py: int = (maze.height - len(PATTERN["CORE"])) // 2 + 4
-        # px: int = (maze.width - len(PATTERN["CORE"][0])) // 2 + 4
+        """Draw the visual marker of actual closed pattern cells."""
+        mark = self.theme.get_image(Tile.MARK)
 
-        def position(side: int, p_size: int):
-            print(f"Side: {side}, Pattern: {p_size}")
-            pos = side - int(p_size / 2)
-            if pos % 2:
-                pos -= 1
-            return max(pos, 1)
+        for x, y in maze.pattern_cells:
+            self.draw_cell(
+                x * 2,
+                y * 2,
+                mark,
+            )
+        # """ Fill the core of the Pattern """
+        # # px, py = int((maze.width + 2) / 2), int((maze.height + 2) / 2)
+        # # py: int = (maze.height - len(PATTERN["CORE"])) // 2 + 4
+        # # px: int = (maze.width - len(PATTERN["CORE"][0])) // 2 + 4
 
-        pos_x = position(maze.width, len(PATTERN["CORE"][0]))
-        pos_y = position(maze.height, len(PATTERN["CORE"]))
+        # def position(side: int, p_size: int):
+        #     print(f"Side: {side}, Pattern: {p_size}")
+        #     pos = side - int(p_size / 2)
+        #     if pos % 2:
+        #         pos -= 1
+        #     return max(pos, 1)
 
-        for dy, row in enumerate(PATTERN["CORE"]):
-            for dx, value in enumerate(row):
-                if value == 'X':
-                    self.draw_cell(
-                        pos_x + dx + 1,
-                        pos_y + dy - 1,
-                        self.theme.get_image(Tile.MARK)
-                    )
+        # pos_x = position(maze.width, len(PATTERN["CORE"][0]))
+        # pos_y = position(maze.height, len(PATTERN["CORE"]))
+
+        # for dy, row in enumerate(PATTERN["CORE"]):
+        #     for dx, value in enumerate(row):
+        #         if value == 'X':
+        #             self.draw_cell(
+        #                 pos_x + dx + 1,
+        #                 pos_y + dy - 1,
+        #                 self.theme.get_image(Tile.MARK)
+        #             )
 
     def draw_solution(self, path) -> None:
         """ Draw the solution (PATH)"""

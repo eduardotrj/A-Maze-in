@@ -16,11 +16,13 @@ class MazeGenerator(ABC):
         self.seed = seed
         self.entry: tuple[int, int]
         self.exit: tuple[int, int]
-        if self.seed == None:
+        if self.seed is None:
             self.generate_seed()
-        self._random = random.Random(seed)
+        self._random = random.Random(self.seed)
         self.record: list[list[int]]
         self.pattern: tuple[tuple[Any], ...] | None = None
+        self._locked: set[tuple[int, int]] = set()
+        self.pattern_cells: set[tuple[int, int]] = set()
 
     @abstractmethod
     def generate(self, width: int, height: int, entry: tuple[int, int],
@@ -39,7 +41,7 @@ class MazeGenerator(ABC):
 
     def get_seed(self) -> int:
         return self.seed
-    
+
     def get_pattern(self) -> tuple[tuple[Any], ...] | None:
         return self.pattern
 
@@ -149,3 +151,59 @@ class MazeGenerator(ABC):
                     self.close_path(x + dx, y + dy)
                 else:
                     self.open_path(x + dx, y + dy)
+
+    def lock_pattern(
+        self,
+        pattern: tuple[tuple[str, ...], ...] | None,
+        entry: tuple[int, int],
+        exit_: tuple[int, int],
+    ) -> None:
+        """Reserve the closed cells used to draw the pattern."""
+        self._locked.clear()
+        self.pattern_cells.clear()
+
+        if pattern is None:
+            return
+
+        logical_width = (self.width - 1) // 2
+        logical_height = (self.height - 1) // 2
+
+        pattern_height = len(pattern)
+        pattern_width = len(pattern[0])
+
+        if (
+            pattern_width > logical_width
+            or pattern_height > logical_height
+        ):
+            print("Warning: maze is too small for the 42 pattern")
+            return
+
+        start_x = (logical_width - pattern_width) // 2
+        start_y = (logical_height - pattern_height) // 2
+
+        for dy, row in enumerate(pattern):
+            for dx, value in enumerate(row):
+                if value != "X":
+                    continue
+
+                logical_x = start_x + dx
+                logical_y = start_y + dy
+
+                internal_x = logical_x * 2 + 1
+                internal_y = logical_y * 2 + 1
+
+                internal_position = (internal_x, internal_y)
+
+                if internal_position in (entry, exit_):
+                    raise ValueError(
+                        "Entry or exit overlaps the 42 pattern"
+                    )
+
+                self.pattern_cells.add((logical_x, logical_y))
+                self._locked.add(internal_position)
+
+        self.pattern = pattern
+
+    def get_pattern_cells(self) -> set[tuple[int, int]]:
+        """Return logical cells occupied by the pattern."""
+        return self.pattern_cells.copy()
