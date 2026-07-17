@@ -225,3 +225,6 @@ github_Broh_guide
 config/__pycache__
 
 *.pyc
+
+# output file
+maze.txt
