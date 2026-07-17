@@ -36,78 +36,77 @@ from Maze.model import Maze
 
 
 class Generator:
-    """ Manage Maze generators """
-    _generators: Dict[str, Type[MazeGenerator]] = {
-        "recursive_backtraker": rb.Backtracker,
-        "krugal": kr.Kruskal,
-        "prim": pr.Prim
-        # "dfs": RecursiveBacktracker,
-        # "kruskal": KruskalGenerator
-    }
+    """Select and run maze generation algorithms."""
 
-    def __init__(self, width: int, height: int, seed=None):
-        self.width = width
-        self.height = height
-        self.seed = seed
-        # For default value
-        # self.generator = rb.Backtracker(width, height, seed)
+    _generators: dict[str, type[MazeGenerator]] = {
+        "recursive_backtracker": rb.Backtracker,
+        "kruskal": kr.Kruskal,
+        "prim": pr.Prim,
+    }
 
     @classmethod
     def list_generators(cls) -> list[str]:
-        """ Return the list of available Algorithms """
-        return sorted(cls._generators.keys())
+        """Return the available generator names."""
+        return sorted(cls._generators)
+
+    @classmethod
+    def create(
+        cls,
+        name: str,
+        width: int,
+        height: int,
+        seed: int | None = None,
+    ) -> MazeGenerator:
+        """Create the selected maze generator."""
+        normalized_name = name.strip().lower()
+        generator_class = cls._generators.get(normalized_name)
+
+        if generator_class is None:
+            available = ", ".join(cls.list_generators())
+            raise ValueError(
+                f"Unknown generator: {name}. "
+                f"Available generators: {available}"
+            )
+
+        return generator_class(width, height, seed)
 
     @staticmethod
-    def create(name: str, width: int, height: int, seed=None) -> MazeGenerator:
-        """ Select the algorithm to generate a maze """
-        generator_cls = Generator._generators.get(name)
-        if generator_cls is None:
-            available = ", ".join(Generator.list_generators())
-
-            raise ValueError(f"Uknown GEnerator Name {name}."
-                             f" Available: {available}")
-
-        #   return generators[name]()
-        return generator_cls(width, height, seed)
-
-    @staticmethod
-    def binary_to_hexa(maze: list[list[int]]) -> list[list[int]]:
-        """ Convert binary map in 4-bit wall bitmask """
-        NORTH, EAST, SOUTH, WEST = 1, 2, 4, 8
+    def binary_to_hexa(
+        maze: list[list[int]],
+    ) -> list[list[int]]:
+        """Convert the internal map to four-bit wall masks."""
+        north = 1
+        east = 2
+        south = 4
+        west = 8
 
         height = len(maze)
         width = len(maze[0])
+        output: list[list[int]] = []
 
-        # Design logical cells
-        rows = range(1, height, 2)
-        cols = range(1, width, 2)
+        for row in range(1, height, 2):
+            output_row: list[int] = []
 
-        hex_rows = []
-        for row in rows:
-            line = []
-            for col in cols:
+            for column in range(1, width, 2):
                 mask = 0
-                # Check neighbors
-                if col > 0 and col < width:
-                    if maze[row][col + 1] == 1:
-                        mask |= EAST
-                    if maze[row][col - 1] == 1:
-                        mask |= WEST
 
-                if row > 0 and row < height:
-                    if maze[row - 1][col] == 1:
-                        mask |= NORTH
+                if maze[row - 1][column] == 1:
+                    mask |= north
 
-                    if maze[row + 1][col] == 1:
-                        mask |= SOUTH
+                if maze[row][column + 1] == 1:
+                    mask |= east
 
-                line.append(mask)
-                #   line.append(format(mask, 'x'))
-            #   hex_rows.append(''.join(line))
-            hex_rows.append(line)
-        return hex_rows
+                if maze[row + 1][column] == 1:
+                    mask |= south
 
-    # ! Doesn't translate properly not square
+                if maze[row][column - 1] == 1:
+                    mask |= west
+
+                output_row.append(mask)
+
+            output.append(output_row)
+
+        return output
 
     @staticmethod
     def generate_maze(
@@ -124,42 +123,42 @@ class Generator:
             entry[0] * 2 + 1,
             entry[1] * 2 + 1,
         )
-
         internal_exit = (
             exit[0] * 2 + 1,
             exit[1] * 2 + 1,
         )
-        generator = Generator.create(name, width, height, seed)
-        generator.generate(width, height, internal_entry, internal_exit,
-                           pattern, seed)
-        rows = generator.get_maze()
-        end_seed: int = generator.get_seed()
-        record: list[list[int]] = generator.get_record()
-        maze_rows = list(list(row) for row in rows)
-        this_pattern = generator.get_pattern()
-        pattern_cells = generator.get_pattern_cells()
 
-        # open_cells = [
-        #    (x, y)
-        #    for y, row in enumerate(rows)
-        #    for x, value in enumerate(row)
-        #    if value == 0
-        # ]
-        # entry = open_cells[0] if open_cells else (0, 0)
-        # exit = open_cells[-1] if open_cells else (width - 1, height - 1)
+        generator = Generator.create(
+            name,
+            width,
+            height,
+            seed,
+        )
+        generator.generate(
+            width,
+            height,
+            internal_entry,
+            internal_exit,
+            pattern,
+            seed,
+        )
 
-        maze_rows = [list(row) for row in rows]
-        output = Generator.binary_to_hexa(maze_rows)
-
+        output = Generator.binary_to_hexa(
+            generator.get_maze()
+        )
         final_rows = tuple(
             tuple(row)
             for row in output
         )
-        # print("SEED: ", end_seed)
-        # print(entry)
-        # print(exit)
-        return Maze(final_rows, entry, exit, record, name,
-                    end_seed, True, this_pattern, pattern_cells)
 
-
-# ! Check for of bound specially for odd size maze numbers.
+        return Maze(
+            rows=final_rows,
+            entry=entry,
+            exit=exit,
+            record=generator.get_record(),
+            algorithm=name.strip().lower(),
+            seed=generator.get_seed(),
+            perfect=True,
+            pattern=generator.get_pattern(),
+            pattern_cells=generator.get_pattern_cells(),
+        )

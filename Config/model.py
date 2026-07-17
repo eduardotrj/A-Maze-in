@@ -23,7 +23,11 @@ class MazeConfig(BaseModel):
     perfect: bool = Field(alias="PERFECT")
 
     seed: int | None = Field(default=None, alias="SEED", ge=0)
-    generator: Literal["recursive_backtracker", "prim"] | None = Field(
+    generator: Literal[
+        "recursive_backtracker",
+        "kruskal",
+        "prim",
+    ] | None = Field(
         default=None,
         alias="GENERATOR",
     )
