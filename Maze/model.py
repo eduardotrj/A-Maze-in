@@ -8,7 +8,7 @@ class Maze:
 
     def __init__(
             self,
-            rows: tuple[str, ...],
+            rows: tuple[tuple[int, ...], ...],
             entry: tuple[int, int],
             exit: tuple[int, int],
             record: list[list[int]],
@@ -30,7 +30,7 @@ class Maze:
         self.record = record
         self.pattern_cells = pattern_cells or set()
 
-    def cell(self, x, y) -> int:
+    def cell(self, x: int, y: int) -> int:
         """ Return the information in that cell """
         return self.rows[y][x]
 

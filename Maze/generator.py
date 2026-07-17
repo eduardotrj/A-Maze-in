@@ -71,7 +71,7 @@ class Generator:
         return generator_cls(width, height, seed)
 
     @staticmethod
-    def binary_to_hexa(maze: list[list[int]]) -> list[str]:
+    def binary_to_hexa(maze: list[list[int]]) -> list[list[int]]:
         """ Convert binary map in 4-bit wall bitmask """
         NORTH, EAST, SOUTH, WEST = 1, 2, 4, 8
 
@@ -150,10 +150,15 @@ class Generator:
 
         maze_rows = [list(row) for row in rows]
         output = Generator.binary_to_hexa(maze_rows)
+
+        final_rows = tuple(
+            tuple(row)
+            for row in output
+        )
         # print("SEED: ", end_seed)
         # print(entry)
         # print(exit)
-        return Maze(tuple(output), entry, exit, record, name,
+        return Maze(final_rows, entry, exit, record, name,
                     end_seed, True, this_pattern, pattern_cells)
 
 

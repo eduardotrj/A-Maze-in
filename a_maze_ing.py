@@ -8,10 +8,11 @@ from Graphics.canvas import MLXCanvas
 from Graphics.renderer import MazeRenderer
 from Graphics.eventManager import EventManager
 from Maze.generator import Generator
-from Maze.model import Maze
+# from Maze.model import Maze
 from Maze.patterns import PATTERN
 from Config import ConfigParser, MazeConfig
 from Maze.solver import MazeSolver
+from Maze.exporter import MazeExporter
 
 
 # Example import:
@@ -137,6 +138,20 @@ class MazeApplication:
             self.maze,
             self.solver_name,
         )
+
+        if self.solution is None:
+            print("Error: no valid path was found")
+            return
+
+        try:
+            MazeExporter.export(
+                maze=self.maze,
+                solution=self.solution,
+                output_file=self.output_file,
+            )
+        except OSError as error:
+            print(f"Output file error: {error}")
+            return
 
         self.renderer.draw(
             self.maze,
