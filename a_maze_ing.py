@@ -11,6 +11,7 @@ from Maze.generator import Generator
 from Maze.model import Maze
 from Maze.patterns import PATTERN
 from Config import ConfigParser, MazeConfig
+from Maze.solver import MazeSolver
 
 
 # Example import:
@@ -67,6 +68,11 @@ class MazeApplication:
         # verify the settings
         print(self.settings.model_dump(by_alias=True))
 
+        # maze solver
+        self.solver_name = "bfs"
+        self.solution: str | None = None
+        self.solution_visible = False
+
     def read_confg(self) -> None:
 
         # Data got it from reading file.
@@ -116,23 +122,40 @@ class MazeApplication:
         self.create_maze()
 
     def create_maze(self) -> None:
-        """Generate and render a maze."""
+        """Generate, solve and display a new maze."""
         self.maze = Generator.generate_maze(
             width=self.grid_width * 2 + 1,
             height=self.grid_height * 2 + 1,
             entry=self.entry,
             exit=self.exit,
             name=self.algorithm_name,
-            # pattern=PATTERN["C42"],
             pattern=PATTERN["P_42"],
             seed=self.seed,
         )
 
-        self.maze.print_values()
-        self.renderer.draw(self.maze, self.animation)
+        self.solution = MazeSolver.solve(
+            self.maze,
+            self.solver_name,
+        )
+
+        self.renderer.draw(
+            self.maze,
+            animation=self.animation,
+        )
+
+        if (
+            self.solution_visible
+            and self.solution is not None
+        ):
+            self.renderer.draw_solution(
+                self.maze,
+                self.solution,
+            )
 
     def update_style(self) -> None:
-        self.renderer.draw(self.maze, self.animation)
+        """Redraw the maze after a visual update."""
+        self.redraw()
+        # self.renderer.draw(self.maze, self.animation)
 
     def run(self) -> None:
         """Run the application."""
@@ -169,6 +192,55 @@ class MazeApplication:
         new_index = (list.index(self.algorithm_name) + 1) % len(list)
         self.algorithm_name = list[new_index]
         self.create_maze()
+
+    def redraw(self) -> None:
+        """Redraw the current maze without replaying generation."""
+        self.renderer.draw(
+            self.maze,
+            animation=False,
+        )
+
+        if (
+            self.solution_visible
+            and self.solution is not None
+        ):
+            self.renderer.draw_solution(
+                self.maze,
+                self.solution,
+            )
+
+    def toggle_solution(self) -> None:
+        """Show or hide the existing solution."""
+        self.solution_visible = not self.solution_visible
+        self.redraw()
+
+    def change_solver(self) -> None:
+        """Select the next solving algorithm."""
+        solvers = MazeSolver.list_solvers()
+
+        current_index = solvers.index(
+            self.solver_name
+        )
+
+        next_index = (
+            current_index + 1
+        ) % len(solvers)
+
+        self.solver_name = solvers[next_index]
+
+        self.solution = MazeSolver.solve(
+            self.maze,
+            self.solver_name,
+        )
+
+        print(
+            f"Solver changed to: {self.solver_name}"
+        )
+        print(
+            f"Solution: {self.solution}"
+        )
+
+        self.redraw()
 
 
 def main() -> None:

@@ -1,10 +1,19 @@
 from abc import ABC, abstractmethod
 import numpy as np
-#import cv2
+# import cv2
 import time
 from Graphics.theme import ThemeManager
 from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
 # from Maze.patterns import PATTERN
+from Maze.model import Maze
+from Utils.constants import (
+    DIRECTIONS,
+    OPPOSITE_DIRECTION,
+    SOLUTION_TILES,
+    HexaWall,
+    Tile,
+    WALL_SEGMENTS,
+)
 
 
 # Working process:
@@ -34,7 +43,12 @@ class Renderer(ABC):
         pass
 
     @abstractmethod
-    def draw_solution(self, path) -> None:
+    def draw_solution(
+        self,
+        maze: Maze,
+        path: str,
+    ) -> None:
+        """Draw the solution path."""
         pass
 
 
@@ -237,9 +251,92 @@ class MazeRenderer(Renderer):
         #                 self.theme.get_image(Tile.MARK)
         #             )
 
-    def draw_solution(self, path) -> None:
-        """ Draw the solution (PATH)"""
-        pass
+    def draw_solution(
+        self,
+        maze: Maze,
+        path: str,
+    ) -> None:
+        """Draw a solution path over the maze."""
+        connections: dict[
+            tuple[int, int],
+            set[str],
+        ] = {}
+
+        steps: list[
+            tuple[tuple[int, int], str]
+        ] = []
+
+        current = maze.entry
+
+        for direction in path:
+            if direction not in DIRECTIONS:
+                raise ValueError(
+                    f"Invalid solution direction: {direction}"
+                )
+
+            dx, dy, _ = DIRECTIONS[direction]
+
+            next_position = (
+                current[0] + dx,
+                current[1] + dy,
+            )
+
+            connections.setdefault(
+                current,
+                set(),
+            ).add(direction)
+
+            connections.setdefault(
+                next_position,
+                set(),
+            ).add(OPPOSITE_DIRECTION[direction])
+
+            steps.append((current, direction))
+            current = next_position
+
+        if current != maze.exit:
+            raise ValueError(
+                "Solution path does not reach the maze exit"
+            )
+
+        self.canvas.syncro()
+
+        # Draw the corridors between logical cells.
+        for (x, y), direction in steps:
+            dx, dy, _ = DIRECTIONS[direction]
+
+            if dx != 0:
+                tile = Tile.S_EW
+            else:
+                tile = Tile.S_NS
+
+            self.draw_cell(
+                x * 2 + dx,
+                y * 2 + dy,
+                self.theme.get_image(tile),
+            )
+
+        # Draw the turns and straight segments
+        # at logical cell centers.
+        for (x, y), directions in connections.items():
+            tile = SOLUTION_TILES.get(
+                frozenset(directions)
+            )
+
+            if tile is None:
+                raise ValueError(
+                    "Invalid solution path connection "
+                    f"at {(x, y)}: {directions}"
+                )
+
+            self.draw_cell(
+                x * 2,
+                y * 2,
+                self.theme.get_image(tile),
+            )
+
+        # Keep entry and exit graphics above the solution.
+        self.draw_pointers(maze)
 
     def generate_background(self) -> None:
         """ Draw Background for the Maze """

@@ -1,5 +1,5 @@
-from Algorithms import solve_bfs, solve_dfs, solve_astar, solve_dijkstra
 from Maze.model import Maze
+from Maze.solver import MazeSolver
 
 # to test:
 # go to root folder and run:
@@ -36,40 +36,18 @@ def main() -> None:
         rows=convert_rows(raw_maze),
         entry=(4, 2),
         exit=(6, 2),
+        record=[],
+        algorithm="test",
         seed=0,
     )
 
-    solution = solve_bfs(maze)
+    for algorithm in MazeSolver.list_solvers():
+        solution = MazeSolver.solve(
+            maze,
+            algorithm,
+        )
 
-    print(solution)
-    if raw_solutuon == solution:
-        print("BFS algorithm works!!")
-    else:
-        print("Please try again :(")
-
-    solution = solve_dfs(maze)
-
-    print(solution)
-    if raw_solutuon == solution:
-        print("DFS algorithm works!!")
-    else:
-        print("Please try again :(")
-
-    solution = solve_astar(maze)
-
-    print(solution)
-    if raw_solutuon == solution:
-        print("A* algorithm works!!")
-    else:
-        print("Please try again :(")
-
-    solution = solve_dijkstra(maze)
-
-    print(solution)
-    if raw_solutuon == solution:
-        print("Dijkstra algorithm works!!")
-    else:
-        print("Please try again :(")
+        print(f"{algorithm}: {solution}")
 
 
 if __name__ == "__main__":

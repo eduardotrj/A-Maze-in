@@ -35,13 +35,13 @@ class EventManager():
 
             # F -> Change fixing algorithm
         elif keynum == 102 or keynum == 70:
-            pass
+            self.owner.change_solver()
 
             # W -> Show solution Way/ off
         elif keynum == 119 or keynum == 87:
-            pass
+            self.owner.toggle_solution()
 # SPEED/ANIMATION ---------------------------
-        # ↑ -> REmove Animation
+        # ↑ -> Remove Animation
         elif keynum == 65362:
             self.owner.animation = False if self.owner.animation else True
             self.owner.update_style()

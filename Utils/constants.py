@@ -21,16 +21,16 @@ class Tile(str, Enum):
 
 class HexaWall(IntFlag):
     NORTH = 0x1
-    EAST  = 0x2
+    EAST = 0x2
     SOUTH = 0x4
-    WEST  = 0x8
+    WEST = 0x8
 
 
 WALL_SEGMENTS = {
     HexaWall.NORTH: [
         (-1, -1),
-        ( 0, -1),
-        ( 1, -1),
+        (0, -1),
+        (1, -1),
     ],
     HexaWall.EAST: [
         (1, -1),
@@ -39,8 +39,8 @@ WALL_SEGMENTS = {
     ],
     HexaWall.SOUTH: [
         (-1, 1),
-        ( 0, 1),
-        ( 1, 1),
+        (0, 1),
+        (1, 1),
     ],
     HexaWall.WEST: [
         (-1, -1),
@@ -68,4 +68,27 @@ OPPOSITE_WALL = {
     EAST: WEST,
     SOUTH: NORTH,
     WEST: EAST,
+}
+
+OPPOSITE_DIRECTION = {
+    "N": "S",
+    "E": "W",
+    "S": "N",
+    "W": "E",
+}
+
+
+SOLUTION_TILES: dict[frozenset[str], Tile] = {
+    frozenset({"N"}): Tile.S_N,
+    frozenset({"E"}): Tile.S_E,
+    frozenset({"S"}): Tile.S_S,
+    frozenset({"W"}): Tile.S_W,
+
+    frozenset({"N", "E"}): Tile.S_NE,
+    frozenset({"E", "S"}): Tile.S_ES,
+    frozenset({"S", "W"}): Tile.S_SW,
+    frozenset({"N", "W"}): Tile.S_NW,
+
+    frozenset({"E", "W"}): Tile.S_EW,
+    frozenset({"N", "S"}): Tile.S_NS,
 }
