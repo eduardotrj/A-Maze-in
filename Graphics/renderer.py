@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 # import cv2
 import time
+from typing import Literal
 from Graphics.theme import ThemeManager
 from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
 # from Maze.patterns import PATTERN
@@ -74,11 +75,10 @@ class MazeRenderer(Renderer):
         # 2. Fill area.\
         # 3. Put external Wall
         self.canvas.clear(self.window)
-        self.draw_grid(maze)
-        # 5. put enter/exit
 
         # If Animation
         if animation:
+            self.draw_grid(maze)
             self.full_with_walls(maze)
             self.draw_pointers(maze)
             self.draw_animation(maze)
@@ -86,9 +86,7 @@ class MazeRenderer(Renderer):
             # self.draw_marks(maze)
 
         else:
-            # Load in a screen:
-            self.draw_pointers(maze)
-            self.draw_maze(maze)
+            self.load_full_screen(maze)
 
         self.draw_marks(maze)
         # 4. Print inner maze
@@ -126,6 +124,66 @@ class MazeRenderer(Renderer):
                         y,
                         self.theme.get_image(Tile.PATH)     # hexadecimal n
                     )
+
+#_______________________________________________________
+########################################################
+
+    def load_full_screen(self, maze) -> None:
+        self.canvas.clean_buffer()
+
+        # 1. Draw Paths, Start, and Exit tiles
+        for y in range(1, maze.height * 2):
+            for x in range(1, maze.width * 2):
+
+                if (x == maze.entry[0] * 2 and y == maze.entry[1] * 2):
+                    img_arr = self.theme.get_img_raw(Tile.START)
+                elif (x == maze.exit[0] * 2 and y == maze.exit[1] * 2):
+                    img_arr = self.theme.get_img_raw(Tile.EXIT)
+                else:
+                    img_arr = self.theme.get_img_raw(Tile.PATH)
+
+                y_start = y * self.tile_size
+                y_end = y_start + self.tile_size
+                x_start = x * self.tile_size
+                x_end = x_start + self.tile_size
+
+                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+
+        # 2. Draw Walls safely
+        for y in range(0, maze.height):
+            for x in range(0, maze.width):
+                
+                # FIXED: Loop through segments first, then apply the conditional check
+                for direction, offsets in WALL_SEGMENTS.items():
+                    if maze.cell(x, y) & direction:
+                        for dx, dy in offsets:
+                            img_arr = self.theme.get_img_raw(Tile.WALL)
+
+                            # Shift base coordinate to the expanded center (x*2 + 1) 
+                            # before applying the relative offset
+                            grid_x = (x * 2 + 1) + dx
+                            grid_y = (y * 2 + 1) + dy
+
+                            # Safety boundary check: Skip drawing if coordinates fall off-screen
+                            if grid_x < 0 or grid_y < 0:
+                                continue
+
+                            y_start = grid_y * self.tile_size
+                            y_end = y_start + self.tile_size
+                            x_start = grid_x * self.tile_size
+                            x_end = x_start + self.tile_size
+
+                            # Final safety check before attempting array slice injection
+                            if y_start >= 0 and x_start >= 0:
+                                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+
+        # 3. Blit the unified image frame to the screen layout once
+        self.canvas.print_screen(0, 0)
+
+
+
+#_______________________________________________________
+########################################################
 
     def full_with_walls(self, maze) -> None:
         """ Full the screen with walls """
