@@ -43,6 +43,10 @@ class EventManager():
             # W -> Show solution Way/ off
         elif keynum == 119 or keynum == 87:
             self.owner.toggle_solution()
+
+        # E -> Change solver algorithm solution
+        elif keynum == 101 or keynum == 69:
+            self.owner.change_solver()
 # SPEED/ANIMATION ---------------------------
         # ↑ -> Remove Animation
         elif keynum == 65362:

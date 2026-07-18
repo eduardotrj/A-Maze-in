@@ -209,6 +209,13 @@ class MazeApplication:
         self.algorithm_name = list[new_index]
         self.create_maze()
 
+    #def change_solving(self):
+    #    list = MazeSolver.list_solvers()
+    #    new_index = (list.index(self.algorithm_name) + 1) % len(list)
+    #    self.solver_name = list[new_index]
+
+    #    self.create_maze()
+
     def redraw(self) -> None:
         """Redraw the current maze without replaying generation."""
 
