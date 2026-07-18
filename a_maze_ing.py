@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 from pydantic import ValidationError
 from mlx import Mlx  # type: ignore[import-untyped]
 from Graphics.window import MLXWindow
@@ -215,6 +216,12 @@ class MazeApplication:
         new_index = (list.index(self.algorithm_name) + 1) % len(list)
         self.algorithm_name = list[new_index]
         self.create_maze()
+
+    def random_exit(self) -> None:
+        self.exit = (
+            random.randint(0, self.grid_width - 1),
+            random.randint(0, self.grid_height - 1))
+
 
     def redraw(self) -> None:
         """Redraw the current maze without replaying generation."""

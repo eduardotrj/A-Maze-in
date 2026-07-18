@@ -41,7 +41,8 @@ class EventManager():
 
             # F -> Change fixing algorithm
         elif keynum == 102 or keynum == 70:
-            self.owner.change_solver()
+            self.owner.random_exit()
+            self.owner.create_maze()
 
             # W -> Show solution Way/ off
         elif keynum == 119 or keynum == 87:
@@ -55,6 +56,11 @@ class EventManager():
         elif keynum == 116 or keynum == 84:
             # self.owner.solution_visible = False
             self.owner.print_maze_data()
+
+        # G -> Active or Disable perfect Maze
+        elif keynum == 103 or keynum == 71:
+            self.owner.perfect = False if self.owner.perfect else True
+            self.owner.create_maze()
 
 # SPEED/ANIMATION ---------------------------
         # ↑ -> Remove Animation

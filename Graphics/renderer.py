@@ -84,8 +84,6 @@ class MazeRenderer(Renderer):
             self.full_with_walls(maze)
             self.draw_pointers(maze)
             self.draw_animation(maze)
-            # if maze.pattern:
-            # self.draw_marks(maze)
 
         else:
             self.load_full_screen(maze)

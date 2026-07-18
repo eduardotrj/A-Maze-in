@@ -29,6 +29,7 @@ class PrintTerminal():
     E -> Change solver              A -> Change generator
     R -> Remake                     T -> Print Maze Info
     S -> Style Before               D -> Next style
+    F -> Random Exit                G -> Active/Disable Perfect
     Esc -> exit
 """)
 
@@ -36,24 +37,25 @@ class PrintTerminal():
     def print_maze_data(cls, maze: Maze, theme: Any, solver: Any,
                         pattern: str | None) -> None:
         """ Print basic Maze Data """
-        print(f"{cls.BHWHT}MAZE INFORMATION:{cls.RS}")
+        print(f"{cls.INT_1}{cls.BHWHT}MAZE INFORMATION:{cls.RS}")
+        cls.print_separator()
 
         algorithm = (
             "Recursive Backtracker"
             if maze.algorithm == "recursive_backtracker"
             else maze.algorithm)
 
-        print(f" Size:{cls.INT_2}{maze.height}x{maze.width}"
-              f"{cls.INT_3}Seed:{cls.INT_2}{maze.seed}")
+        print(f"\n Size:{cls.INT_2}{maze.height}x{maze.width}"
+              f"{cls.INT_2}Seed:{cls.INT_2}{maze.seed}")
 
         print(f" Start:{cls.INT_2}{maze.entry[0]}x{maze.entry[1]}"
-              f"{cls.INT_3}Algorithm:{cls.INT_1}{algorithm}")
+              f"{cls.INT_2}Algorithm:{cls.INT_1}{algorithm}")
 
         print(f" Exit:{cls.INT_2}{maze.exit[0]}x{maze.exit[1]}"
-              f"{cls.INT_3}Theme:{cls.INT_2}{theme}")
+              f"{cls.INT_2}Theme:{cls.INT_2}{theme}")
 
         print(f" Perfect:{cls.INT_1}{maze.perfect}"
-              f"{cls.INT_3}Pattern:{cls.INT_1}{pattern}")
+              f"{cls.INT_2}Pattern:{cls.INT_1}{pattern}")
 
         print(f" Solver:{cls.INT_1}{solver}")
 
