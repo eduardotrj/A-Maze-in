@@ -34,8 +34,6 @@ class ThemeManager:
             cv2.COLORMAP_PINK, cv2.COLORMAP_PARULA, cv2.COLORMAP_BONE
         ]
 
-    WIDTH = 32
-    HEIGH = 32
 
     def __init__(self, canvas, tile_size):
         self.canvas = canvas
@@ -98,7 +96,7 @@ class ThemeManager:
             # return np.asanyarray(None)
         image_argb = cv2.cvtColor(image, code=cv2.COLOR_BGR2BGRA)
 
-        if resizing is True:
+        if resizing is True or self.tile_size != 32:
             size = self.tile_size
             resize_img = cv2.resize(image_argb, (size, size))
             return np.asarray(resize_img, dtype=np.uint8)
@@ -120,7 +118,7 @@ class ThemeManager:
         """
             Generate random color 32x32 images.
         """
-        image = np.zeros((self.HEIGH, self.WIDTH, 3), dtype=np.uint8)
+        image = np.zeros((self.tile_size, self.tile_size, 3), dtype=np.uint8)
         b = random.randint(0, 255)
         g = random.randint(0, 255)
         r = random.randint(0, 255)
@@ -136,16 +134,16 @@ class ThemeManager:
 
     def generate_cellular_texture(self):
         # 1. Create coordinates grid:
-        x = np.arange(self.WIDTH)
-        y = np.arange(self.HEIGH)
+        x = np.arange(self.tile_size)
+        y = np.arange(self.tile_size)
         xv, yv = np.meshgrid(x, y)
         pixel_coords = np.stack((xv, yv), axis=-1)  # Shape: (H, W, 2)
 
         # Place random feacture points:
         num_points = np.random.randint(40, 100)
         points = np.column_stack((
-            np.random.randint(0, self.WIDTH, num_points),
-            np.random.randint(0, self.HEIGH, num_points)
+            np.random.randint(0, self.tile_size, num_points),
+            np.random.randint(0, self.tile_size, num_points)
         ))
 
         # Calculate distance from every pixel to the nearest point
@@ -192,7 +190,7 @@ class ThemeManager:
 
     def generate_brushed_texture(self):
         # Generate fine white noise:
-        noise = np.random.randint(100, 180, (self.HEIGH, self.WIDTH), dtype=np.uint8)
+        noise = np.random.randint(100, 180, (self.tile_size, self.tile_size), dtype=np.uint8)
 
         # Apply horizontal motion blur kernel filter:
         kernel_size = 30

@@ -16,6 +16,8 @@ class MazeConfig(BaseModel):
     width: int = Field(alias="WIDTH", ge=1)
     height: int = Field(alias="HEIGHT", ge=1)
 
+    tile_size: int = Field(alias="TILE", ge=1)
+
     entry: tuple[int, int] = Field(alias="ENTRY")
     exit_: tuple[int, int] = Field(alias="EXIT")
 

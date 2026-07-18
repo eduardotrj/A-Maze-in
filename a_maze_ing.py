@@ -31,7 +31,7 @@ class MazeApplication:
     def __init__(self, settings: MazeConfig) -> None:
         self.settings = settings
 
-        self.tile_size = 32
+        self.tile_size = settings.tile_size
         self.theme_index = 0
 
         self.grid = None
