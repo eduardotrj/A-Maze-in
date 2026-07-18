@@ -2,9 +2,7 @@
 
 import os
 import random
-import sys
 from typing import Any
-
 import cv2
 import numpy as np
 import numpy.typing as npt
@@ -99,10 +97,10 @@ class ThemeManager:
                     )
 
                 except FileNotFoundError:
-                    sys.stderr.write(
-                        f"{filename} not found. "
-                        "Generating a random image instead.\n"
-                    )
+                    #   sys.stderr.write(
+                    #       f"{filename} not found. "
+                    #       "Generating a random image instead.\n"
+                    #   )
 
                     option = random.randint(0, 2)
 

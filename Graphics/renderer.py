@@ -91,12 +91,6 @@ class MazeRenderer(Renderer):
             self.load_full_screen(maze)
 
         self.draw_marks(maze)
-        # 4. Print inner maze
-        # if maze.pattern:
-        #     self.draw_marks(maze)
-
-        # 6. Put markets
-        print("Renderer: Drawing maze ")
 
     def draw_grid(self, maze: Maze) -> None:
         """ Draw the grid surrounded by a wall """
@@ -127,9 +121,6 @@ class MazeRenderer(Renderer):
                         self.theme.get_image(Tile.PATH)     # hexadecimal n
                     )
 
-# _______________________________________________________
-########################################################
-
     def load_full_screen(self, maze: Maze) -> None:
         """ Load of the map to print at once """
         self.canvas.clean_buffer()
@@ -138,8 +129,6 @@ class MazeRenderer(Renderer):
         for y in range(1, maze.height * 2):
             for x in range(1, maze.width * 2):
                 if (x == maze.entry[0] * 2 + 1 and y == maze.entry[1] * 2 + 1):
-                    print(f"entrx: {maze.entry[0] * 2}, "
-                          f"entry: {maze.entry[1] * 2}")
                     img_arr = self.theme.get_img_raw(Tile.START)
                 elif (x == maze.exit[0] * 2 + 1 and y == maze.exit[1] * 2 + 1):
                     img_arr = self.theme.get_img_raw(Tile.EXIT)
@@ -195,9 +184,6 @@ class MazeRenderer(Renderer):
 
         # 3. Blit the unified image frame to the screen layout once
         self.canvas.print_screen(0, 0)
-
-# _______________________________________________________
-########################################################
 
     def full_with_walls(self, maze: Maze) -> None:
         """ Full the screen with walls """

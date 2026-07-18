@@ -54,8 +54,8 @@ class EventManager():
         # T -> Print maze info
         elif keynum == 116 or keynum == 84:
             # self.owner.solution_visible = False
-            self.owner.select_theme(-1)
-            self.owner.update_style()
+            self.owner.print_maze_data()
+
 # SPEED/ANIMATION ---------------------------
         # ↑ -> Remove Animation
         elif keynum == 65362 or keynum == 113 or keynum == 81:
