@@ -83,7 +83,7 @@ class Prim(MazeGenerator):
                 frontier,
             )
             if not self.perfect:
-                self.braid(0.03, "dead_end")
+                self.braid(0.02, "random")
 
         # while frontier:
         #     # Pick a random frontier cell

@@ -177,6 +177,7 @@ class MazeGenerator(ABC):
         pattern_height = len(pattern)
         pattern_width = len(pattern[0])
 
+
         if (
             pattern_width > logical_width
             or pattern_height > logical_height
@@ -201,9 +202,11 @@ class MazeGenerator(ABC):
                 internal_position = (internal_x, internal_y)
 
                 if internal_position in (entry, exit_):
-                    raise ValueError(
-                        "Entry or exit overlaps the 42 pattern"
-                    )
+                    #raise ValueError(
+                    #    "Entry or exit overlaps the 42 pattern"
+                    #)
+                    print("Warning: Start or exit in the Pattern area.")
+                    return
 
                 self.pattern_cells.add((logical_x, logical_y))
                 self._locked.add(internal_position)

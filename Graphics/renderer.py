@@ -377,6 +377,7 @@ class MazeRenderer(Renderer):
 
         # Keep entry and exit graphics above the solution.
         self.draw_pointers(maze)
+        self.draw_marks(maze)
 
     def generate_background(self) -> None:
         """ Draw Background for the Maze """
