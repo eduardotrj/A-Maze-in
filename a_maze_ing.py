@@ -7,12 +7,14 @@ from Graphics.window import MLXWindow
 from Graphics.canvas import MLXCanvas
 from Graphics.renderer import MazeRenderer
 from Graphics.eventManager import EventManager
+from Graphics.console import PrintTerminal as prt
 from Maze.generator import Generator
 # from Maze.model import Maze
 from Maze.patterns import PATTERN
 from Config import ConfigParser, MazeConfig
 from Maze.solver import MazeSolver
 from Maze.exporter import MazeExporter
+from typing import Any
 
 
 # Example import:
@@ -48,6 +50,13 @@ class MazeApplication:
         self.output_file = settings.output_file
         self.perfect = settings.perfect
         self.seed = settings.seed
+        self.is_pattern: tuple[tuple[str, ...], ...] | None = (
+            PATTERN[settings.is_pattern]
+            if (settings.is_pattern is not None
+                and settings.is_pattern in PATTERN)
+            else None
+
+        )
 
         self.algorithm_name = settings.generator or "prim"
 
@@ -121,6 +130,8 @@ class MazeApplication:
         self.renderer = MazeRenderer(self.window, self.canvas, self.tile_size)
 
         self.create_maze()
+        prt.print_title()
+        prt.print_controls()
 
     def create_maze(self) -> None:
         """Generate, solve and display a new maze."""
@@ -130,7 +141,7 @@ class MazeApplication:
             entry=self.entry,
             exit=self.exit,
             name=self.algorithm_name,
-            pattern=PATTERN["P_42"],
+            pattern=self.is_pattern,
             seed=self.seed,
             perfect=self.perfect
         )
@@ -167,6 +178,12 @@ class MazeApplication:
                 self.maze,
                 self.solution,
             )
+
+    def print_maze_data(self) -> None:
+        prt.clean_terminal()
+        prt.print_controls()
+        prt.print_separator()
+        prt.print_maze_data(self.themes[self.theme_index], self.solver_name)
 
     def update_style(self) -> None:
         """Redraw the maze after a visual update."""

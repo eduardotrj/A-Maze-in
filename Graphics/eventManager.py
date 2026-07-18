@@ -50,9 +50,15 @@ class EventManager():
         # E -> Change solver algorithm solution
         elif keynum == 101 or keynum == 69:
             self.owner.change_solver()
+
+        # T -> Print maze info
+        elif keynum == 116 or keynum == 84:
+            # self.owner.solution_visible = False
+            self.owner.select_theme(-1)
+            self.owner.update_style()
 # SPEED/ANIMATION ---------------------------
         # ↑ -> Remove Animation
-        elif keynum == 65362:
+        elif keynum == 65362 or keynum == 113 or keynum == 81:
             self.owner.animation = False if self.owner.animation else True
             self.owner.update_style()
         # → -> Increase Speed
