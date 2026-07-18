@@ -23,6 +23,7 @@ class MazeConfig(BaseModel):
 
     output_file: str = Field(alias="OUTPUT_FILE", min_length=1)
     perfect: bool = Field(alias="PERFECT")
+    is_pattern: str | None = Field(default="P_42", alias="PATTERN")
 
     seed: int | None = Field(default=None, alias="SEED", ge=0)
     generator: Literal[

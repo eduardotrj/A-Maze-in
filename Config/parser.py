@@ -23,6 +23,11 @@ class ConfigParser:
 
                 key, value = self._parse_line(line, line_number)
 
+                if key == "CREDIT":
+                    raise ValueError(
+                        f"{value} not enough founds to run Maze."
+                    )
+
                 if key in config:
                     raise ValueError(
                         f"Duplicate key at line {line_number}: {key}"
