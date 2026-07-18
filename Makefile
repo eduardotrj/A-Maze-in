@@ -43,9 +43,9 @@ clean-all: clean
 	rm -f poetry.toml
 
 lint:
-	$(POETRY) run flake8 . --exclude=.venv,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
+	$(POETRY) run flake8 . --exclude=.venv,logo.py,Test,Tests,mlx\,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
 	$(POETRY) run mypy . \
-		--exclude '(^|/)(\.venv|__pycache__|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
+		--exclude '(^|/)(\.venv|__pycache__|\.mlx|\.Test|\.Tests|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
 		--warn-return-any \
 		--warn-unused-ignores \
 		--ignore-missing-imports \
@@ -53,9 +53,9 @@ lint:
 		--check-untyped-defs
 
 lint-strict:
-	$(POETRY) run flake8 . --exclude=.venv,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
+	$(POETRY) run flake8 . --exclude=logo.py,Test,Tests,mlx\,.venv,__pycache__,m.mypy_cache,.pytest_cache,.ruff_cache,build,dist
 	$(POETRY) run mypy . \
-		--exclude '(^|/)(\.venv|__pycache__|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
+		--exclude '(^|/)(\.venv|__pycache__|\.mlx|\.Test|\.Tests|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
 		--strict
 
 package:
