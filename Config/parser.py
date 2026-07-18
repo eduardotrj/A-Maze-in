@@ -11,29 +11,34 @@ class ConfigParser:
         """Read the config file and return raw string values."""
         config: dict[str, str] = {}
 
-        with Path(self.path).open("r", encoding="utf-8") as file:
-            for line_number, line in enumerate(file, start=1):
-                line = line.strip()
+        try:
+            with Path(self.path).open("r", encoding="utf-8") as file:
+                for line_number, line in enumerate(file, start=1):
+                    line = line.strip()
 
-                if not line:
-                    continue
+                    if not line:
+                        continue
 
-                if line.startswith("#"):
-                    continue
+                    if line.startswith("#"):
+                        continue
 
-                key, value = self._parse_line(line, line_number)
+                    key, value = self._parse_line(line, line_number)
 
-                if key == "CREDIT":
-                    raise ValueError(
-                        f"{value} not enough founds to run Maze."
-                    )
+                    if key == "CREDIT":
+                        raise ValueError(
+                            f"{value} not enough founds to run Maze."
+                        )
 
-                if key in config:
-                    raise ValueError(
-                        f"Duplicate key at line {line_number}: {key}"
-                    )
+                    if key in config:
+                        raise ValueError(
+                            f"Duplicate key at line {line_number}: {key}"
+                        )
 
-                config[key] = value
+                    config[key] = value
+        except:
+            raise FileNotFoundError(
+                f"File '{self.path}' not found"
+            )
 
         return config
 
