@@ -15,7 +15,7 @@ class Maze:
             algorithm: str,
             seed: int | None,
             perfect: bool = True,
-            pattern: tuple[tuple[Any, ...], ...] | None = None,
+            pattern: tuple[tuple[Any], ...] | None = None,
             pattern_cells: set[tuple[int, int]] | None = None,
             ):
         self.rows = rows

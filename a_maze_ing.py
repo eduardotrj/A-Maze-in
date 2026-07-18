@@ -2,29 +2,17 @@ import os
 import sys
 from pydantic import ValidationError
 from mlx import Mlx  # type: ignore[import-untyped]
-
 from Graphics.window import MLXWindow
 from Graphics.canvas import MLXCanvas
 from Graphics.renderer import MazeRenderer
 from Graphics.eventManager import EventManager
 from Graphics.console import PrintTerminal as prt
+from Graphics.logo import LOGO
 from Maze.generator import Generator
-# from Maze.model import Maze
 from Maze.patterns import PATTERN
 from Config import ConfigParser, MazeConfig
 from Maze.solver import MazeSolver
 from Maze.exporter import MazeExporter
-from typing import Any
-
-
-# Example import:
-# from Folder.file import Class
-
-#   from Graphic.window import Window
-#   from Config.loader import ...
-#   from Maze.model import
-#   from Maze.solver import
-#   from Algorithms.Generation.recursive_backtracker import
 
 
 class MazeApplication:
@@ -32,6 +20,7 @@ class MazeApplication:
 
     def __init__(self, settings: MazeConfig) -> None:
         self.settings = settings
+        self.logo = LOGO
 
         self.tile_size = settings.tile_size
         self.theme_index = 0
@@ -55,7 +44,6 @@ class MazeApplication:
             if (settings.is_pattern is not None
                 and settings.is_pattern in PATTERN)
             else None
-
         )
 
         self.algorithm_name = settings.generator or "prim"
@@ -125,13 +113,9 @@ class MazeApplication:
 
         self.canvas = MLXCanvas(self.window, self.ve, self.window.mlx,
                                 self.width, self.height, self.tile_size)
-        # ! Use full size window to print the screen with everything.
-        # Have in mind if add text
         self.renderer = MazeRenderer(self.window, self.canvas, self.tile_size)
 
         self.create_maze()
-        prt.print_title()
-        prt.print_controls()
 
     def create_maze(self) -> None:
         """Generate, solve and display a new maze."""
@@ -178,12 +162,18 @@ class MazeApplication:
                 self.maze,
                 self.solution,
             )
+        self.print_maze_data()
 
     def print_maze_data(self) -> None:
+
         prt.clean_terminal()
+        prt.print_title(self.logo)
         prt.print_controls()
         prt.print_separator()
-        prt.print_maze_data(self.themes[self.theme_index], self.solver_name)
+        prt.print_maze_data(self.maze,
+                            self.themes[self.theme_index],
+                            self.solver_name,
+                            self.settings.is_pattern)
 
     def update_style(self) -> None:
         """Redraw the maze after a visual update."""
@@ -216,9 +206,8 @@ class MazeApplication:
         self.theme_index = (self.theme_index + next) % len(self.themes)
         if self.theme_index < 0:
             self.theme_index = len(self.themes)
-        print(self.themes[self.theme_index])
         self.renderer.new_theme(self.themes[self.theme_index])
-        #   self.renderer.theme = self.themes[self.theme_index]
+        self.print_maze_data()
 
     # ! Manage to fix fake namings
     def change_algorithm(self) -> None:
@@ -226,13 +215,6 @@ class MazeApplication:
         new_index = (list.index(self.algorithm_name) + 1) % len(list)
         self.algorithm_name = list[new_index]
         self.create_maze()
-
-    # def change_solving(self):
-    #    list = MazeSolver.list_solvers()
-    #    new_index = (list.index(self.algorithm_name) + 1) % len(list)
-    #    self.solver_name = list[new_index]
-
-    #    self.create_maze()
 
     def redraw(self) -> None:
         """Redraw the current maze without replaying generation."""
@@ -257,6 +239,8 @@ class MazeApplication:
             self.renderer.load_full_screen(self.maze)
             self.renderer.draw_marks(self.maze)
 
+        self.print_maze_data()
+
     def toggle_solution(self) -> None:
         """Show or hide the existing solution."""
         self.solution_visible = not self.solution_visible
@@ -269,7 +253,6 @@ class MazeApplication:
         current_index = solvers.index(
             self.solver_name
         )
-
         next_index = (
             current_index + 1
         ) % len(solvers)
@@ -280,14 +263,6 @@ class MazeApplication:
             self.maze,
             self.solver_name,
         )
-
-        print(
-            f"Solver changed to: {self.solver_name}"
-        )
-        print(
-            f"Solution: {self.solution}"
-        )
-
         self.redraw()
 
 
