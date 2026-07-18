@@ -1,5 +1,7 @@
-from Maze.generator import generate_maze
-from Maze.solver import solve_maze
+"""Test maze generation and seed reproducibility."""
+
+from Maze.generator import Generator
+from Maze.solver import MazeSolver
 
 
 # To test from the project root:
@@ -16,18 +18,26 @@ def rows_as_hex(rows: tuple[tuple[int, ...], ...]) -> str:
 
 def main() -> None:
     """Generate the same seeded maze twice and solve it with BFS."""
-    first = generate_maze(
-        width=10,
-        height=8,
+    logical_width = 10
+    logical_height = 8
+
+    first = Generator.generate_maze(
+        width=logical_width * 2 + 1,
+        height=logical_height * 2 + 1,
         entry=(0, 0),
-        exit_=(9, 7),
+        exit=(9, 7),
+        name="prim",
+        pattern=None,
         seed=42,
     )
-    second = generate_maze(
-        width=10,
-        height=8,
+
+    second = Generator.generate_maze(
+        width=logical_width * 2 + 1,
+        height=logical_height * 2 + 1,
         entry=(0, 0),
-        exit_=(9, 7),
+        exit=(9, 7),
+        name="prim",
+        pattern=None,
         seed=42,
     )
 
@@ -35,11 +45,15 @@ def main() -> None:
     print()
 
     if first.rows == second.rows:
-        print("Seed reproducibility works!!")
+        print("Seed reproducibility works!")
     else:
-        print("Seed reproducibility failed :(")
+        print("Seed reproducibility failed.")
 
-    solution = solve_maze(first, algorithm="bfs")
+    solution = MazeSolver.solve(
+        first,
+        name="bfs",
+    )
+
     print(f"Shortest path: {solution}")
 
 

@@ -1,4 +1,4 @@
-from Utils.constants import DIRECTIONS
+from .utils.constants import DIRECTIONS
 from typing import Any
 
 
@@ -13,9 +13,9 @@ class Maze:
             exit: tuple[int, int],
             record: list[list[int]],
             algorithm: str,
-            seed: int,
+            seed: int | None,
             perfect: bool = True,
-            pattern: tuple[tuple[Any], ...] | None = None,
+            pattern: tuple[tuple[Any, ...], ...] | None = None,
             pattern_cells: set[tuple[int, int]] | None = None,
             ):
         self.rows = rows
@@ -34,7 +34,7 @@ class Maze:
         """ Return the information in that cell """
         return self.rows[y][x]
 
-    def print_values(self):
+    def print_values(self) -> None:
         print("-----------------------")
         for row in self.rows:
             print(row)

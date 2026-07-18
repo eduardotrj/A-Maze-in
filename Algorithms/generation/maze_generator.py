@@ -8,7 +8,7 @@ class MazeGenerator(ABC):
     """ Root Design for any Maze Generator Algorithm """
     @abstractmethod
     def __init__(self, width: int, height: int,
-                 seed=None) -> None:
+                 seed: int | None = None) -> None:
         super().__init__()
         self.width = width
         self.height = height
@@ -20,14 +20,15 @@ class MazeGenerator(ABC):
             self.generate_seed()
         self._random = random.Random(self.seed)
         self.record: list[list[int]]
-        self.pattern: tuple[tuple[Any], ...] | None = None
+        self.pattern: tuple[tuple[str, ...], ...] | None = None
         self._locked: set[tuple[int, int]] = set()
         self.pattern_cells: set[tuple[int, int]] = set()
         self.perfect: bool
 
     @abstractmethod
     def generate(self, width: int, height: int, entry: tuple[int, int],
-                 exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
+                 exit: tuple[int, int],
+                 pattern: tuple[tuple[Any, ...], ...] | None,
                  seed: int | None, perfect: bool = True) -> None:
         """ Generate a maze with the given width and height """
         pass
@@ -40,10 +41,10 @@ class MazeGenerator(ABC):
         """ Return the generated Maze """
         return self.maze
 
-    def get_seed(self) -> int:
+    def get_seed(self) -> int | None:
         return self.seed
 
-    def get_pattern(self) -> tuple[tuple[Any], ...] | None:
+    def get_pattern(self) -> tuple[tuple[str, ...], ...] | None:
         return self.pattern
 
     def get_points(self) -> tuple[tuple[int, int], ...]:
@@ -67,7 +68,7 @@ class MazeGenerator(ABC):
         else:
             raise IndexError("Cell coordinates out of bounds")
 
-    def set_cell(self, x: int, y: int, value) -> None:
+    def set_cell(self, x: int, y: int, value: Any) -> None:
         """ Set the cell at the given coordinates to value"""
         if 0 <= x < self.width and 0 <= y < self.height:
             self.maze[y][x] = value
@@ -82,7 +83,7 @@ class MazeGenerator(ABC):
         """ Close a path to a given coordenates (set cell to 1) """
         self.set_cell(x, y, 1)
 
-    def space_for_pattern(self, pattern, x: int, y: int) -> bool:
+    def space_for_pattern(self, pattern: Any, x: int, y: int) -> bool:
         """ Check if is space enough for the pattern in the maze """
         for dy, row in enumerate(pattern):
             for dx, values in enumerate(row):
@@ -96,8 +97,8 @@ class MazeGenerator(ABC):
 
         return True
 
-    def not_pointers(self, pattern, x: int, y: int,
-                     entry: tuple[int, int], exit: tuple[int, int]):
+    def not_pointers(self, pattern: Any, x: int, y: int,
+                     entry: tuple[int, int], exit: tuple[int, int]) -> bool:
         entry_x, entry_y = entry[0] * 2, entry[1] * 2
         exit_x, exit_y = exit[0] * 2, exit[1] * 2
 
@@ -119,7 +120,8 @@ class MazeGenerator(ABC):
         (1 = wall, 0 = path) """
         return [[1 if cell == 'X' else 0 for cell in row] for row in pattern]
 
-    def validate_pattern(self, x, y, entry: tuple[int, int], exit: tuple[int, int],
+    def validate_pattern(self, x: Any, y: Any, entry: tuple[int, int],
+                         exit: tuple[int, int],
                          pattern: tuple[tuple[Any]] | None = None
                          ) -> set[tuple[int, int]]:
         """ Validate pattern, if is valid, add it """
@@ -144,7 +146,7 @@ class MazeGenerator(ABC):
         }
 
     def add_pattern(self, x: int, y: int,
-                    pattern: list[list[int]]):  # -> set[tuple[int, int]]:
+                    pattern: list[list[int]]) -> None:
         """ Add pattern at the coordenates """
 
         for dy, row in enumerate(pattern):
@@ -211,7 +213,7 @@ class MazeGenerator(ABC):
     def get_pattern_cells(self) -> set[tuple[int, int]]:
         """Return logical cells occupied by the pattern."""
         return self.pattern_cells.copy()
-    
+
     def braid(self, factor: float = 0.1, method: str = "random") -> None:
         """
         Break extra walls to open new paths.
@@ -220,7 +222,7 @@ class MazeGenerator(ABC):
         method: "random"   -> factor chance to any random wall be opened
                 "dead_end" -> `factor` fraction of dead-end cells get opened
         """
-        locked = getattr(self, "_locked", set())
+        locked: set[tuple[int, int]] = getattr(self, "_locked", set())
         if not hasattr(self, "record"):
             self.record = []
 
@@ -229,8 +231,11 @@ class MazeGenerator(ABC):
         else:
             self._braid_random_walls(factor, locked)
 
-    def _braid_random_walls(self, factor: float, locked: set) -> None:
-        """ Remove some walls between already-open neighboring cells at random """
+    def _braid_random_walls(self, factor: float,
+                            locked: set[tuple[int, int]]) -> None:
+        """
+        Remove some walls between already-open neighboring cells randomly
+        """
         for wy in range(1, self.height - 1):
             for wx in range(1, self.width - 1):
                 if self.maze[wy][wx] != 1 or (wx, wy) in locked:
@@ -253,14 +258,14 @@ class MazeGenerator(ABC):
                 if not (0 <= c2[0] < self.width and 0 <= c2[1] < self.height):
                     continue
 
-                
                 if (self.maze[c1[1]][c1[0]] == 0
                         and self.maze[c2[1]][c2[0]] == 0
                         and self._random.random() < factor):
                     self.maze[wy][wx] = 0
                     self.record.append([wx, wy])
 
-    def _find_dead_ends(self, locked: set) -> list[tuple[int, int]]:
+    def _find_dead_ends(self,
+                        locked: set[tuple[int, int]]) -> list[tuple[int, int]]:
         """ Return all logical cells with exactly one open connection """
         dead_ends = []
         for y in range(1, self.height, 2):
@@ -268,8 +273,7 @@ class MazeGenerator(ABC):
                 if (x, y) in locked or self.maze[y][x] != 0:
                     continue
 
-
-                # COunt how many apertures have
+                # Count how many apertures have
                 open_count = 0
                 for dx, dy in [(2, 0), (-2, 0), (0, 2), (0, -2)]:
                     nx, ny = x + dx, y + dy
@@ -282,8 +286,11 @@ class MazeGenerator(ABC):
                     dead_ends.append((x, y))
         return dead_ends
 
-    def _braid_dead_ends(self, factor: float, locked: set) -> None:
-        """ Remove a fraction of dead ends by opening one extra wall from each """
+    def _braid_dead_ends(self, factor: float,
+                         locked: set[tuple[int, int]]) -> None:
+        """
+        Remove a fraction of dead ends by opening one extra wall from each
+        """
         dead_ends = self._find_dead_ends(locked)
         self._random.shuffle(dead_ends)
         n = int(len(dead_ends) * factor)

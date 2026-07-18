@@ -3,9 +3,10 @@ from typing import Any
 from Algorithms.generation.maze_generator import MazeGenerator
 
 # Kruskal's Algorithm
-# The idea: treat every logical cell as a node in a union-find (disjoint-set) structure,
-# and every wall between two adjacent cells as an edge. Shuffle the edges, then carve 
-# each wall whose two cells aren't already connected — that's the classic 
+# The idea: treat every logical cell as a node in a union-find (disjoint-set)
+# structure, and every wall between two adjacent cells as an edge.
+# Shuffle the edges, then carve each wall whose two cells aren't already
+# connected — that's the classic
 # "randomized minimum spanning tree" approach.
 
 Position = tuple[int, int]

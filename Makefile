@@ -43,16 +43,20 @@ clean-all: clean
 	rm -f poetry.toml
 
 lint:
-	$(POETRY) run flake8 .
-	$(POETRY) run mypy . --warn-return-any \
+	$(POETRY) run flake8 . --exclude=.venv,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
+	$(POETRY) run mypy . \
+		--exclude '(^|/)(\.venv|__pycache__|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
+		--warn-return-any \
 		--warn-unused-ignores \
 		--ignore-missing-imports \
 		--disallow-untyped-defs \
 		--check-untyped-defs
 
 lint-strict:
-	$(POETRY) run flake8 .
-	$(POETRY) run mypy . --strict
+	$(POETRY) run flake8 . --exclude=.venv,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
+	$(POETRY) run mypy . \
+		--exclude '(^|/)(\.venv|__pycache__|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist)/' \
+		--strict
 
 package:
 	rm -rf $(PACKAGE_BUILD_VENV)

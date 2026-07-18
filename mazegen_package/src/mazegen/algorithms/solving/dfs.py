@@ -1,7 +1,7 @@
 # Depth-first search algorithm
 # https://en.wikipedia.org/wiki/Depth-first_search
 
-from Maze.model import Maze
+from ...model import Maze
 
 
 def solve_dfs(maze: Maze) -> str | None:

@@ -1,5 +1,8 @@
+from typing import Any
+
+
 class EventManager():
-    def __init__(self, visual_engine, window, owner):
+    def __init__(self, visual_engine: Any, window: Any, owner: Any) -> None:
         self.ve = visual_engine
         self.window = window
         self.owner = owner
@@ -9,7 +12,7 @@ class EventManager():
         self.ve.mlx_key_hook(self.window.win, self.on_key, None)
         self.ve.mlx_hook(self.window.win, 33, 0, self.on_close, None)
 
-    def on_key(self, keynum: int, _param) -> None:
+    def on_key(self, keynum: int, _param: Any) -> None:
         # Esc -> Exit
         if keynum == 65307:
             self.window.close()
@@ -26,13 +29,13 @@ class EventManager():
 
             # S -> Style Back
         elif keynum == 115 or keynum == 82:
-            #self.owner.solution_visible = False
+            # self.owner.solution_visible = False
             self.owner.select_theme(-1)
             self.owner.update_style()
 
             # D -> Style Next
         elif keynum == 100 or keynum == 68:
-            #self.owner.solution_visible = False
+            # self.owner.solution_visible = False
             self.owner.select_theme(1)
             self.owner.update_style()
 
@@ -64,7 +67,7 @@ class EventManager():
 
         # Change patterns -> No : (
 
-    def on_close(self, _param) -> None:
+    def on_close(self, _param: Any) -> None:
         self.window.close()
         self.window.end()
 

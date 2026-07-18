@@ -1,7 +1,7 @@
-from functools import cached_property
+# from functools import cached_property
 from typing import Any
-import numpy as nu
-from Algorithms.generation.maze_generator import MazeGenerator
+# import numpy as nu
+from .maze_generator import MazeGenerator
 
 
 # ** Prim's Algorithm **
@@ -11,18 +11,21 @@ from Algorithms.generation.maze_generator import MazeGenerator
 # neighbor, then add its neighbors to the frontier.
 
 class Prim(MazeGenerator):
-    def __init__(self, width, height, seed=None):
+    def __init__(self, width: int, height: int,
+                 seed: int | None = None) -> None:
         super().__init__(width, height, seed)
 
     def generate(self, width: int, height: int, entry: tuple[int, int],
-                 exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
-                 seed: int | None) -> None:
+                 exit: tuple[int, int],
+                 pattern: tuple[tuple[Any, ...], ...] | None,
+                 seed: int | None, perfect: bool = True) -> None:
         """Generate a maze using randomized Prim's algorithm."""
         self.width = width
         self.height = height
         self.seed = seed
         self.entry = entry
         self.exit = exit
+        self.perfect = perfect
         self.record: list[list[int]] = []
         self.pattern = None
         # Fill the maze with 1
@@ -79,6 +82,8 @@ class Prim(MazeGenerator):
                 frontier_y,
                 frontier,
             )
+            if not self.perfect:
+                self.braid(0.1, "dead_end")
 
         # while frontier:
         #     # Pick a random frontier cell
@@ -100,7 +105,8 @@ class Prim(MazeGenerator):
 
         # return super().generate(width, height)
 
-    def _add_frontier(self, cx: int, cy: int, frontier: list) -> None:
+    def _add_frontier(self, cx: int, cy: int,
+                      frontier: list[tuple[int, int]]) -> None:
         """ Add unvisited neighbors of (cx, cy) to the frontier list """
         # Create next position.
         for dx, dy in [(2, 0), (-2, 0), (0, 2), (0, -2)]:
@@ -117,7 +123,7 @@ class Prim(MazeGenerator):
                 continue
             frontier.append((nx, ny))
 
-    def _in_maze_neighbors(self, x: int, y: int) -> list:
+    def _in_maze_neighbors(self, x: int, y: int) -> list[tuple[int, int]]:
         """ Return neighbors of (x, y) that are already part of the maze """
         result = []
         for dx, dy in [(2, 0), (-2, 0), (0, 2), (0, -2)]:

@@ -1,11 +1,12 @@
 from typing import Any
 
-from Algorithms.generation.maze_generator import MazeGenerator
+from .maze_generator import MazeGenerator
 
 # Kruskal's Algorithm
-# The idea: treat every logical cell as a node in a union-find (disjoint-set) structure,
-# and every wall between two adjacent cells as an edge. Shuffle the edges, then carve 
-# each wall whose two cells aren't already connected — that's the classic 
+# The idea: treat every logical cell as a node in a union-find (disjoint-set)
+# structure, and every wall between two adjacent cells as an edge.
+# Shuffle the edges, then carve each wall whose two cells aren't already
+# connected — that's the classic
 # "randomized minimum spanning tree" approach.
 
 Position = tuple[int, int]
@@ -31,12 +32,14 @@ class Kruskal(MazeGenerator):
         exit: tuple[int, int],
         pattern: tuple[tuple[Any], ...] | None,
         seed: int | None,
+        perfect: bool = True
     ) -> None:
         """Generate a maze with randomized Kruskal's algorithm."""
         self.width = width
         self.height = height
         self.entry = entry
         self.exit = exit
+        self.perfect = perfect
         self.record = []
         self.maze = [
             [1 for _ in range(width)]
@@ -104,3 +107,6 @@ class Kruskal(MazeGenerator):
             wall_x, wall_y = wall
             self.open_path(wall_x, wall_y)
             self.record.append([wall_x, wall_y])
+
+        if not self.perfect:
+            self.braid(0.5, "random")

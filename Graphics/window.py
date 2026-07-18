@@ -1,36 +1,37 @@
-#   from typing import Any
+from typing import Any
 from abc import ABC, abstractmethod
-from mlx import Mlx
+from mlx import Mlx  # type: ignore[import-untyped]
 #   from Graphics import eventManager
 
 
 class IWindow(ABC):
     """ Abstract class to generate Graphic window control classes """
 
-    #@abstractmethod
-    #def open(self):
+    # @abstractmethod
+    # def open(self):
     #    pass
 
     @abstractmethod
-    def close(self):
+    def close(self) -> None:
         pass
 
     @abstractmethod
-    def loop(self):
+    def loop(self) -> None:
         pass
 
     @abstractmethod
-    def end(self):
+    def end(self) -> None:
         pass
 
-    def register_callback(self, event, callback):
-        """ Read for Keyboard inputs """
-        pass
+    # def register_callback(self, event, callback):
+    #     """ Read for Keyboard inputs """
+    #     pass
 
 
 class MLXWindow(IWindow):
     """ Manage the window creation and inputs control -> Deals With Mlx """
-    def __init__(self, width: int, height: int, title: str, engine) -> None:
+    def __init__(self, width: int, height: int,
+                 title: str, engine: Any) -> None:
         self.width = width
         self.height = height
         self.title = title

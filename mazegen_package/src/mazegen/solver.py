@@ -1,10 +1,10 @@
 """Provide a common interface for maze solving algorithms."""
 
-from .algorithms.solving.astar import solve_astar
-from .algorithms.solving.bfs import solve_bfs
-from .algorithms.solving.dfs import solve_dfs
-from .algorithms.solving.dijkstra import solve_dijkstra
-from .model import Maze
+from Algorithms.solving.astar import solve_astar
+from Algorithms.solving.bfs import solve_bfs
+from Algorithms.solving.dfs import solve_dfs
+from Algorithms.solving.dijkstra import solve_dijkstra
+from Maze.model import Maze
 
 
 class MazeSolver:

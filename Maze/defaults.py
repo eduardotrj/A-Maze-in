@@ -2,7 +2,7 @@
 # List of default mazes to load
 
 
-#data = (
+# data = (
 #            (9, 5, 3, B),
 #            (C, 3, C, 2),
 #            (B, E, B, A),

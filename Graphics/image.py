@@ -3,7 +3,7 @@ import numpy as np
 
 class ImgData():
     """ Generate image objets to send into graphic library """
-    def __init__(self):
+    def __init__(self) -> None:
         self.id = None
         self.width: int | None = None
         self.height: int | None = None

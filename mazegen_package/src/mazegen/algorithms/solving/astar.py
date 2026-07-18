@@ -2,7 +2,7 @@
 # https://en.wikipedia.org/wiki/A*_search_algorithm
 
 
-from Maze.model import Maze
+from ...model import Maze
 
 
 def solve_astar(maze: Maze) -> str | None:

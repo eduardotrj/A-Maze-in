@@ -2,7 +2,7 @@
 # https://en.wikipedia.org/wiki/Dijkstra's_algorithm
 
 
-from Maze.model import Maze
+from ...model import Maze
 
 
 def solve_dijkstra(maze: Maze) -> str | None:

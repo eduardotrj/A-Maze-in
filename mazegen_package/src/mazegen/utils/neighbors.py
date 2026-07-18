@@ -1,4 +1,4 @@
-from Utils.constants import DIRECTIONS
+from .constants import DIRECTIONS
 
 
 def get_open_neighbors(

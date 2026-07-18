@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
-import numpy as np
+# import numpy as np
 # import cv2
-import time
-from typing import Literal
+# import time
+# from typing import Literal
+from typing import Any
 from Graphics.theme import ThemeManager
-from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
+# from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
 # from Maze.patterns import PATTERN
 from Maze.model import Maze
 from Utils.constants import (
     DIRECTIONS,
     OPPOSITE_DIRECTION,
     SOLUTION_TILES,
-    HexaWall,
+    # HexaWall,
     Tile,
     WALL_SEGMENTS,
 )
@@ -29,17 +30,17 @@ class Renderer(ABC):
     """
 
     @abstractmethod
-    def draw(self, obj, any) -> None:
+    def draw(self, obj: Any, any: Any) -> None:
         """ Call others Draw() Methods in orden """
         pass
 
     @abstractmethod
-    def draw_grid(self, maze) -> None:
+    def draw_grid(self, maze: Maze) -> None:
         """ Draw the grid with the elements """
         pass
 
     @abstractmethod
-    def draw_cell(self, x, y, img_tile) -> None:
+    def draw_cell(self, x: Any, y: Any, img_tile: Any) -> None:
         """ Print each cell """
         pass
 
@@ -57,7 +58,7 @@ class MazeRenderer(Renderer):
     """
     Render a Maze
     """
-    def __init__(self, window, canvas, size: int = 32) -> None:
+    def __init__(self, window: Any, canvas: Any, size: int = 32) -> None:
         self.window = window
         self.tile_size = size   # Pixel size
         self.canvas = canvas    # To print into MiniLibx
@@ -66,10 +67,10 @@ class MazeRenderer(Renderer):
         self.theme = ThemeManager(self.canvas, self.tile_size)
 #        # Load Graphics:\
 
-    def new_theme(self, theme) -> None:
+    def new_theme(self, theme: Any) -> None:
         self.theme.set_theme(theme)
 
-    def draw(self, maze, animation: bool) -> None:
+    def draw(self, maze: Maze, animation: bool) -> None:
         """ Call others Draw() Methods in orden """
         # 1. Background.\
         # 2. Fill area.\
@@ -97,7 +98,7 @@ class MazeRenderer(Renderer):
         # 6. Put markets
         print("Renderer: Drawing maze ")
 
-    def draw_grid(self, maze) -> None:
+    def draw_grid(self, maze: Maze) -> None:
         """ Draw the grid surrounded by a wall """
         # ? Can separate walls from bg for animation.
         max_height = maze.height * 2
@@ -126,10 +127,10 @@ class MazeRenderer(Renderer):
                         self.theme.get_image(Tile.PATH)     # hexadecimal n
                     )
 
-#_______________________________________________________
+# _______________________________________________________
 ########################################################
 
-    def load_full_screen(self, maze) -> None:
+    def load_full_screen(self, maze: Maze) -> None:
         """ Load of the map to print at once """
         self.canvas.clean_buffer()
 
@@ -137,7 +138,8 @@ class MazeRenderer(Renderer):
         for y in range(1, maze.height * 2):
             for x in range(1, maze.width * 2):
                 if (x == maze.entry[0] * 2 + 1 and y == maze.entry[1] * 2 + 1):
-                    print(f"entrx: {maze.entry[0] * 2}, entry: {maze.entry[1] * 2}")
+                    print(f"entrx: {maze.entry[0] * 2}, "
+                          f"entry: {maze.entry[1] * 2}")
                     img_arr = self.theme.get_img_raw(Tile.START)
                 elif (x == maze.exit[0] * 2 + 1 and y == maze.exit[1] * 2 + 1):
                     img_arr = self.theme.get_img_raw(Tile.EXIT)
@@ -149,24 +151,31 @@ class MazeRenderer(Renderer):
                 x_start = x * self.tile_size
                 x_end = x_start + self.tile_size
 
-                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+                self.canvas.copy_to_buffer(y_start,
+                                           y_end,
+                                           x_start,
+                                           x_end,
+                                           img_arr)
 
         # 2. Draw Walls safely
         for y in range(0, maze.height):
             for x in range(0, maze.width):
-                
-                # FIXED: Loop through segments first, then apply the conditional check
+
+                # FIXED: Loop through segments first,
+                # then apply the conditional check
                 for direction, offsets in WALL_SEGMENTS.items():
                     if maze.cell(x, y) & direction:
                         for dx, dy in offsets:
                             img_arr = self.theme.get_img_raw(Tile.WALL)
 
-                            # Shift base coordinate to the expanded center (x*2 + 1) 
+                            # Shift base coordinate to the expanded center
+                            # (x*2 + 1)
                             # before applying the relative offset
                             grid_x = (x * 2 + 1) + dx
                             grid_y = (y * 2 + 1) + dy
 
-                            # Safety boundary check: Skip drawing if coordinates fall off-screen
+                            # Safety boundary check: Skip drawing if
+                            # coordinates fall off-screen
                             if grid_x < 0 or grid_y < 0:
                                 continue
 
@@ -175,19 +184,22 @@ class MazeRenderer(Renderer):
                             x_start = grid_x * self.tile_size
                             x_end = x_start + self.tile_size
 
-                            # Final safety check before attempting array slice injection
+                            # Final safety check before attempting
+                            # array slice injection
                             if y_start >= 0 and x_start >= 0:
-                                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+                                self.canvas.copy_to_buffer(y_start,
+                                                           y_end,
+                                                           x_start,
+                                                           x_end,
+                                                           img_arr)
 
         # 3. Blit the unified image frame to the screen layout once
         self.canvas.print_screen(0, 0)
 
-
-
-#_______________________________________________________
+# _______________________________________________________
 ########################################################
 
-    def full_with_walls(self, maze) -> None:
+    def full_with_walls(self, maze: Maze) -> None:
         """ Full the screen with walls """
         # img = self.theme.get_image(Tile.WALL)
 
@@ -208,7 +220,7 @@ class MazeRenderer(Renderer):
 
         self.canvas.print_screen(0, 0)
 
-    def draw_animation(self, maze) -> None:
+    def draw_animation(self, maze: Maze) -> None:
         """ Draw the grid with the maze cells """
         # FULL with walls
         # Draw paths by order
@@ -227,7 +239,7 @@ class MazeRenderer(Renderer):
                             self.theme.get_image(Tile.PATH)     # hexadecimal n
                         )
 
-    def draw_maze(self, maze) -> None:
+    def draw_maze(self, maze: Maze) -> None:
         """ Draw the grid with the maze cells """
         for y in range(maze.height):
             for x in range(maze.width):
@@ -238,7 +250,7 @@ class MazeRenderer(Renderer):
                     maze.cell(x, y)     # hexadecimal n
                 )
 
-    def draw_walls(self, x, y, cell) -> None:
+    def draw_walls(self, x: Any, y: Any, cell: Any) -> None:
         """ Logic to draw the different walls in the maze"""
         x *= 2
         y *= 2
@@ -253,7 +265,7 @@ class MazeRenderer(Renderer):
                 for dx, dy in offsets:
                     self.draw_cell(x + dx, y + dy, wall)
 
-    def draw_pointers(self, maze) -> None:
+    def draw_pointers(self, maze: Maze) -> None:
         self.canvas.syncro()
         self.draw_cell(
             maze.entry[0] * 2,
@@ -266,7 +278,7 @@ class MazeRenderer(Renderer):
             self.theme.get_image(Tile.EXIT)
         )
 
-    def draw_cell(self, x, y, image) -> None:
+    def draw_cell(self, x: Any, y: Any, image: Any) -> None:
         """ Printing a till with """
         screen_x = x * self.tile_size + self.tile_size
         screen_y = y * self.tile_size + self.tile_size
@@ -277,7 +289,7 @@ class MazeRenderer(Renderer):
             screen_y
         )
 
-    def draw_marks(self, maze) -> None:
+    def draw_marks(self, maze: Maze) -> None:
         """Draw the visual marker of actual closed pattern cells."""
         mark = self.theme.get_image(Tile.MARK)
 
@@ -293,10 +305,10 @@ class MazeRenderer(Renderer):
         connections: dict[tuple[int, int], set[str]] = {}
         steps: list[tuple[tuple[int, int], str]] = []
 
-        #self.canvas.clean_buffer()
+        # self.canvas.clean_buffer()
         current = maze.entry
 
-        for direction in path:        
+        for direction in path:
             if direction not in DIRECTIONS:
                 raise ValueError(f"Invalid solution direction: {direction}")
 
@@ -304,7 +316,8 @@ class MazeRenderer(Renderer):
             next_position = (current[0] + dx, current[1] + dy)
 
             connections.setdefault(current, set()).add(direction)
-            connections.setdefault(next_position, set()).add(OPPOSITE_DIRECTION[direction])
+            connections.setdefault(next_position,
+                                   set()).add(OPPOSITE_DIRECTION[direction])
 
             steps.append((current, direction))
             current = next_position
@@ -319,13 +332,14 @@ class MazeRenderer(Renderer):
             dx, dy, _ = DIRECTIONS[direction]
 
             if dx != 0:
-                tile = Tile.S_EW
+                corridor_tile = Tile.S_EW
             else:
-                tile = Tile.S_NS
+                corridor_tile = Tile.S_NS
 
             if self.animated:
                 self.canvas.syncro()
-                self.draw_cell(x * 2 + dx, y * 2 + dy, self.theme.get_image(tile))
+                self.draw_cell(x * 2 + dx, y * 2 + dy,
+                               self.theme.get_image(corridor_tile))
             else:
                 # FIXED: Correctly paired x with dx, and y with dy
                 y_start = (y * 2 + dy + 1) * self.tile_size
@@ -333,21 +347,29 @@ class MazeRenderer(Renderer):
                 x_start = (x * 2 + dx + 1) * self.tile_size
                 x_end = x_start + self.tile_size
 
-                img_arr = self.theme.get_img_raw(tile)
-                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+                img_arr = self.theme.get_img_raw(corridor_tile)
+                self.canvas.copy_to_buffer(y_start,
+                                           y_end,
+                                           x_start,
+                                           x_end,
+                                           img_arr)
 
         self.canvas.syncro()
         # --- 2. Draw the turns and straight segments at cell centers ---
         for (x, y), directions in connections.items():
-            tile = SOLUTION_TILES.get(frozenset(directions))
+            center_tile = SOLUTION_TILES.get(frozenset(directions))
 
-            if tile is None:
-                raise ValueError(f"Invalid solution path connection at {(x, y)}: {directions}")
+            if center_tile is None:
+                raise ValueError(
+                    f"Invalid solution path connection at {(x, y)}: "
+                    f"{directions}"
+                )
 
             if self.animated:
-                #time.sleep(0.1)
-                # FIXED: Restored to original working center placement (x*2, y*2)
-                self.draw_cell(x * 2, y * 2, self.theme.get_image(tile))
+                # time.sleep(0.1)
+                # FIXED: Restored to original working
+                # center placement (x*2, y*2)
+                self.draw_cell(x * 2, y * 2, self.theme.get_image(center_tile))
                 self.canvas.syncro()
             else:
                 # FIXED: Removed the stray dx/dy offsets entirely for centers
@@ -356,11 +378,16 @@ class MazeRenderer(Renderer):
                 x_start = (x * 2 + 1) * self.tile_size
                 x_end = x_start + self.tile_size
 
-                img_arr = self.theme.get_img_raw(tile)
-                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+                img_arr = self.theme.get_img_raw(center_tile)
+                self.canvas.copy_to_buffer(y_start,
+                                           y_end,
+                                           x_start,
+                                           x_end,
+                                           img_arr)
 
         # --- 3. Final Render Step ---
-        # FIXED: Blit the buffer exactly ONCE at the end instead of spamming it inside the loops
+        # FIXED: Blit the buffer exactly ONCE at the end
+        # instead of spamming it inside the loops
         if not self.animated:
             self.canvas.print_screen(0, 0)
 
@@ -379,6 +406,6 @@ class MazeRenderer(Renderer):
         """ Draw start and End point in the maze """
         pass
 
-    def decoding_data(self):
+    def decoding_data(self) -> None:
         pass
         # 4hex = 9 positions (h * 2 = 1)

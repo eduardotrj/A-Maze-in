@@ -1,7 +1,7 @@
 import os
 import sys
 from pydantic import ValidationError
-from mlx import Mlx
+from mlx import Mlx  # type: ignore[import-untyped]
 
 from Graphics.window import MLXWindow
 from Graphics.canvas import MLXCanvas
@@ -187,7 +187,7 @@ class MazeApplication:
         """ Only for testing """
         print("Test")
 
-    def get_themes(self):
+    def get_themes(self) -> None:
         cwd = os.getcwd()
         # Get filesname
         # filenames = next(os.walk(f"{cwd}/Assets/"), (None, None, []))[2]
@@ -195,7 +195,7 @@ class MazeApplication:
         self.themes = [f for f in os.listdir(dir_path) if os.path.isdir(
             os.path.join(dir_path, f))]
 
-    def select_theme(self, next: int):
+    def select_theme(self, next: int) -> None:
         self.theme_index = (self.theme_index + next) % len(self.themes)
         if self.theme_index < 0:
             self.theme_index = len(self.themes)
@@ -204,13 +204,13 @@ class MazeApplication:
         #   self.renderer.theme = self.themes[self.theme_index]
 
     # ! Manage to fix fake namings
-    def change_algorithm(self):
+    def change_algorithm(self) -> None:
         list = Generator.list_generators()
         new_index = (list.index(self.algorithm_name) + 1) % len(list)
         self.algorithm_name = list[new_index]
         self.create_maze()
 
-    #def change_solving(self):
+    # def change_solving(self):
     #    list = MazeSolver.list_solvers()
     #    new_index = (list.index(self.algorithm_name) + 1) % len(list)
     #    self.solver_name = list[new_index]
@@ -229,7 +229,7 @@ class MazeApplication:
             self.solution_visible
             and self.solution is not None
         ):
-            #self.renderer.load_full_screen(self.maze)
+            # self.renderer.load_full_screen(self.maze)
             self.renderer.draw_solution(
                 self.maze,
                 self.solution,
