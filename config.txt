@@ -1,13 +1,13 @@
 # A-Maze-ing configuration file
 
 # Maze size
-WIDTH=20
+WIDTH=15
 HEIGHT=15
 
 # Entry and exit coordinates
 # Format: x,y
 ENTRY=0,0
-EXIT=19,14
+EXIT=14,14
 
 # Output file
 OUTPUT_FILE=maze.txt
@@ -20,7 +20,7 @@ PERFECT=True
 ### Algorithm
 GENERATOR=Prim
 ### Show animation
-ANIMATION=True
+ANIMATION=False
 ### Speed to show animation
 SPEED=300
 ### Color for walls

@@ -17,6 +17,7 @@ class EventManager():
 
         # R -> Remake
         elif keynum == 114 or keynum == 82:
+            self.owner.solution_visible = False  # Disable for new Maze
             self.owner.create_maze()
 
             # A -> Choose algorithm for maze
@@ -25,11 +26,13 @@ class EventManager():
 
             # S -> Style Back
         elif keynum == 115 or keynum == 82:
+            #self.owner.solution_visible = False
             self.owner.select_theme(-1)
             self.owner.update_style()
 
             # D -> Style Next
         elif keynum == 100 or keynum == 68:
+            #self.owner.solution_visible = False
             self.owner.select_theme(1)
             self.owner.update_style()
 

@@ -169,8 +169,9 @@ class MazeApplication:
 
     def update_style(self) -> None:
         """Redraw the maze after a visual update."""
-        self.redraw()
-        # self.renderer.draw(self.maze, self.animation)
+        self.renderer.draw(self.maze, self.animation)
+        if self.solution_visible:
+            self.redraw()
 
     def run(self) -> None:
         """Run the application."""
@@ -210,19 +211,26 @@ class MazeApplication:
 
     def redraw(self) -> None:
         """Redraw the current maze without replaying generation."""
-        self.renderer.draw(
-            self.maze,
-            animation=False,
-        )
 
+        if not self.animation:
+            self.renderer.draw(
+                self.maze,
+                animation=False,
+            )
         if (
             self.solution_visible
             and self.solution is not None
         ):
+            #self.renderer.load_full_screen(self.maze)
             self.renderer.draw_solution(
                 self.maze,
                 self.solution,
             )
+            self.renderer.draw_marks(self.maze)
+        else:
+            # Disable animation to hidde path smoothly.
+            self.renderer.load_full_screen(self.maze)
+            self.renderer.draw_marks(self.maze)
 
     def toggle_solution(self) -> None:
         """Show or hide the existing solution."""

@@ -75,6 +75,7 @@ class MazeRenderer(Renderer):
         # 2. Fill area.\
         # 3. Put external Wall
         self.canvas.clear(self.window)
+        self.animated = animation
 
         # If Animation
         if animation:
@@ -129,15 +130,16 @@ class MazeRenderer(Renderer):
 ########################################################
 
     def load_full_screen(self, maze) -> None:
+        """ Load of the map to print at once """
         self.canvas.clean_buffer()
 
         # 1. Draw Paths, Start, and Exit tiles
         for y in range(1, maze.height * 2):
             for x in range(1, maze.width * 2):
-
-                if (x == maze.entry[0] * 2 and y == maze.entry[1] * 2):
+                if (x == maze.entry[0] * 2 + 1 and y == maze.entry[1] * 2 + 1):
+                    print(f"entrx: {maze.entry[0] * 2}, entry: {maze.entry[1] * 2}")
                     img_arr = self.theme.get_img_raw(Tile.START)
-                elif (x == maze.exit[0] * 2 and y == maze.exit[1] * 2):
+                elif (x == maze.exit[0] * 2 + 1 and y == maze.exit[1] * 2 + 1):
                     img_arr = self.theme.get_img_raw(Tile.EXIT)
                 else:
                     img_arr = self.theme.get_img_raw(Tile.PATH)
@@ -285,81 +287,34 @@ class MazeRenderer(Renderer):
                 y * 2,
                 mark,
             )
-        # """ Fill the core of the Pattern """
-        # # px, py = int((maze.width + 2) / 2), int((maze.height + 2) / 2)
-        # # py: int = (maze.height - len(PATTERN["CORE"])) // 2 + 4
-        # # px: int = (maze.width - len(PATTERN["CORE"][0])) // 2 + 4
 
-        # def position(side: int, p_size: int):
-        #     print(f"Side: {side}, Pattern: {p_size}")
-        #     pos = side - int(p_size / 2)
-        #     if pos % 2:
-        #         pos -= 1
-        #     return max(pos, 1)
-
-        # pos_x = position(maze.width, len(PATTERN["CORE"][0]))
-        # pos_y = position(maze.height, len(PATTERN["CORE"]))
-
-        # for dy, row in enumerate(PATTERN["CORE"]):
-        #     for dx, value in enumerate(row):
-        #         if value == 'X':
-        #             self.draw_cell(
-        #                 pos_x + dx + 1,
-        #                 pos_y + dy - 1,
-        #                 self.theme.get_image(Tile.MARK)
-        #             )
-
-    def draw_solution(
-        self,
-        maze: Maze,
-        path: str,
-    ) -> None:
+    def draw_solution(self, maze: Maze, path: str) -> None:
         """Draw a solution path over the maze."""
-        connections: dict[
-            tuple[int, int],
-            set[str],
-        ] = {}
+        connections: dict[tuple[int, int], set[str]] = {}
+        steps: list[tuple[tuple[int, int], str]] = []
 
-        steps: list[
-            tuple[tuple[int, int], str]
-        ] = []
-
+        #self.canvas.clean_buffer()
         current = maze.entry
 
-        for direction in path:
+        for direction in path:        
             if direction not in DIRECTIONS:
-                raise ValueError(
-                    f"Invalid solution direction: {direction}"
-                )
+                raise ValueError(f"Invalid solution direction: {direction}")
 
             dx, dy, _ = DIRECTIONS[direction]
+            next_position = (current[0] + dx, current[1] + dy)
 
-            next_position = (
-                current[0] + dx,
-                current[1] + dy,
-            )
-
-            connections.setdefault(
-                current,
-                set(),
-            ).add(direction)
-
-            connections.setdefault(
-                next_position,
-                set(),
-            ).add(OPPOSITE_DIRECTION[direction])
+            connections.setdefault(current, set()).add(direction)
+            connections.setdefault(next_position, set()).add(OPPOSITE_DIRECTION[direction])
 
             steps.append((current, direction))
             current = next_position
 
         if current != maze.exit:
-            raise ValueError(
-                "Solution path does not reach the maze exit"
-            )
+            raise ValueError("Solution path does not reach the maze exit")
 
         self.canvas.syncro()
 
-        # Draw the corridors between logical cells.
+        # --- 1. Draw the corridors between logical cells ---
         for (x, y), direction in steps:
             dx, dy, _ = DIRECTIONS[direction]
 
@@ -368,30 +323,46 @@ class MazeRenderer(Renderer):
             else:
                 tile = Tile.S_NS
 
-            self.draw_cell(
-                x * 2 + dx,
-                y * 2 + dy,
-                self.theme.get_image(tile),
-            )
+            if self.animated:
+                self.canvas.syncro()
+                self.draw_cell(x * 2 + dx, y * 2 + dy, self.theme.get_image(tile))
+            else:
+                # FIXED: Correctly paired x with dx, and y with dy
+                y_start = (y * 2 + dy + 1) * self.tile_size
+                y_end = y_start + self.tile_size
+                x_start = (x * 2 + dx + 1) * self.tile_size
+                x_end = x_start + self.tile_size
 
-        # Draw the turns and straight segments
-        # at logical cell centers.
+                img_arr = self.theme.get_img_raw(tile)
+                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+
+        self.canvas.syncro()
+        # --- 2. Draw the turns and straight segments at cell centers ---
         for (x, y), directions in connections.items():
-            tile = SOLUTION_TILES.get(
-                frozenset(directions)
-            )
+            tile = SOLUTION_TILES.get(frozenset(directions))
 
             if tile is None:
-                raise ValueError(
-                    "Invalid solution path connection "
-                    f"at {(x, y)}: {directions}"
-                )
+                raise ValueError(f"Invalid solution path connection at {(x, y)}: {directions}")
 
-            self.draw_cell(
-                x * 2,
-                y * 2,
-                self.theme.get_image(tile),
-            )
+            if self.animated:
+                #time.sleep(0.1)
+                # FIXED: Restored to original working center placement (x*2, y*2)
+                self.draw_cell(x * 2, y * 2, self.theme.get_image(tile))
+                self.canvas.syncro()
+            else:
+                # FIXED: Removed the stray dx/dy offsets entirely for centers
+                y_start = (y * 2 + 1) * self.tile_size
+                y_end = y_start + self.tile_size
+                x_start = (x * 2 + 1) * self.tile_size
+                x_end = x_start + self.tile_size
+
+                img_arr = self.theme.get_img_raw(tile)
+                self.canvas.copy_to_buffer(y_start, y_end, x_start, x_end, img_arr)
+
+        # --- 3. Final Render Step ---
+        # FIXED: Blit the buffer exactly ONCE at the end instead of spamming it inside the loops
+        if not self.animated:
+            self.canvas.print_screen(0, 0)
 
         # Keep entry and exit graphics above the solution.
         self.draw_pointers(maze)
@@ -411,30 +382,3 @@ class MazeRenderer(Renderer):
     def decoding_data(self):
         pass
         # 4hex = 9 positions (h * 2 = 1)
-
-
-"""
-50 -> 43
-40 -> 33
-36 -> 29
-30 -> 23
-28 -> 22
-25 -> 17
-23 -> 15
-22 -> 15
-20 -> 13
-19 -> 11
-18 -> 11
-17 -> 9
-16 -> 9
-15 -> 7
-14 -> 7
-12 -> 5
-10 -> 3
-9 -> 1
-8 -> 1
-
-remove 8, add 1
-
-width - 8
-"""
