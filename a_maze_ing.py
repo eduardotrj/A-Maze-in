@@ -132,6 +132,7 @@ class MazeApplication:
             name=self.algorithm_name,
             pattern=PATTERN["P_42"],
             seed=self.seed,
+            perfect=self.perfect
         )
 
         self.solution = MazeSolver.solve(

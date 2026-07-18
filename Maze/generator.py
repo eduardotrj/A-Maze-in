@@ -117,6 +117,7 @@ class Generator:
         name: str = "prim",
         pattern: tuple[tuple[Any, ...], ...] | None = None,
         seed: int | None = None,
+        perfect: bool = True
     ) -> Maze:
         """Generate and return a Maze object."""
         internal_entry = (
@@ -158,7 +159,7 @@ class Generator:
             record=generator.get_record(),
             algorithm=name.strip().lower(),
             seed=generator.get_seed(),
-            perfect=True,
+            perfect=generator.is_perfect(),
             pattern=generator.get_pattern(),
             pattern_cells=generator.get_pattern_cells(),
         )

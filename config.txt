@@ -13,7 +13,7 @@ EXIT=14,14
 OUTPUT_FILE=maze.txt
 
 # Perfect maze means exactly one path between entry and exit
-PERFECT=True
+PERFECT=False
 TILE=32
 # Optional settings
 # SEED=42

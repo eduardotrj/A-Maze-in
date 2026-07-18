@@ -16,13 +16,14 @@ class Prim(MazeGenerator):
 
     def generate(self, width: int, height: int, entry: tuple[int, int],
                  exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
-                 seed: int | None) -> None:
+                 seed: int | None, perfect: bool = True) -> None:
         """Generate a maze using randomized Prim's algorithm."""
         self.width = width
         self.height = height
         self.seed = seed
         self.entry = entry
         self.exit = exit
+        self.perfect = perfect
         self.record: list[list[int]] = []
         self.pattern = None
         # Fill the maze with 1
@@ -79,6 +80,8 @@ class Prim(MazeGenerator):
                 frontier_y,
                 frontier,
             )
+            if not self.perfect:
+                self.braid(0.1, "dead_end")
 
         # while frontier:
         #     # Pick a random frontier cell

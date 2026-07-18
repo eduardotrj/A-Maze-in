@@ -23,11 +23,12 @@ class MazeGenerator(ABC):
         self.pattern: tuple[tuple[Any], ...] | None = None
         self._locked: set[tuple[int, int]] = set()
         self.pattern_cells: set[tuple[int, int]] = set()
+        self.perfect: bool
 
     @abstractmethod
     def generate(self, width: int, height: int, entry: tuple[int, int],
                  exit: tuple[int, int], pattern: tuple[tuple[Any]] | None,
-                 seed: int | None) -> None:
+                 seed: int | None, perfect: bool = True) -> None:
         """ Generate a maze with the given width and height """
         pass
 
@@ -52,6 +53,9 @@ class MazeGenerator(ABC):
     def get_dimensions(self) -> tuple[int, int]:
         """ Return the dimensions fo the maze """
         return self.width, self.height
+
+    def is_perfect(self) -> bool:
+        return self.perfect
 
     def get_record(self) -> list[list[int]]:
         return self.record
@@ -207,3 +211,93 @@ class MazeGenerator(ABC):
     def get_pattern_cells(self) -> set[tuple[int, int]]:
         """Return logical cells occupied by the pattern."""
         return self.pattern_cells.copy()
+    
+    def braid(self, factor: float = 0.1, method: str = "random") -> None:
+        """
+        Break extra walls to open new paths.
+
+        factor: 0.0-1.0, chance/fraction of candidate walls that get removed
+        method: "random"   -> factor chance to any random wall be opened
+                "dead_end" -> `factor` fraction of dead-end cells get opened
+        """
+        locked = getattr(self, "_locked", set())
+        if not hasattr(self, "record"):
+            self.record = []
+
+        if method == "dead_end":
+            self._braid_dead_ends(factor, locked)
+        else:
+            self._braid_random_walls(factor, locked)
+
+    def _braid_random_walls(self, factor: float, locked: set) -> None:
+        """ Remove some walls between already-open neighboring cells at random """
+        for wy in range(1, self.height - 1):
+            for wx in range(1, self.width - 1):
+                if self.maze[wy][wx] != 1 or (wx, wy) in locked:
+                    continue
+
+                # Check if the wall is between 2 neightbors cells
+                if wx % 2 == 0 and wy % 2 == 1:
+                    c1, c2 = (wx - 1, wy), (wx + 1, wy)
+                elif wx % 2 == 1 and wy % 2 == 0:
+                    c1, c2 = (wx, wy - 1), (wx, wy + 1)
+                else:
+                    continue
+
+                # Check if is in the pattern or out of the maze
+                if c1 in locked or c2 in locked:
+                    continue
+                if not (0 <= c1[0] < self.width and 0 <= c1[1] < self.height):
+                    continue
+
+                if not (0 <= c2[0] < self.width and 0 <= c2[1] < self.height):
+                    continue
+
+                
+                if (self.maze[c1[1]][c1[0]] == 0
+                        and self.maze[c2[1]][c2[0]] == 0
+                        and self._random.random() < factor):
+                    self.maze[wy][wx] = 0
+                    self.record.append([wx, wy])
+
+    def _find_dead_ends(self, locked: set) -> list[tuple[int, int]]:
+        """ Return all logical cells with exactly one open connection """
+        dead_ends = []
+        for y in range(1, self.height, 2):
+            for x in range(1, self.width, 2):
+                if (x, y) in locked or self.maze[y][x] != 0:
+                    continue
+
+
+                # COunt how many apertures have
+                open_count = 0
+                for dx, dy in [(2, 0), (-2, 0), (0, 2), (0, -2)]:
+                    nx, ny = x + dx, y + dy
+                    wx, wy = x + dx // 2, y + dy // 2
+                    if (0 <= nx < self.width and 0 <= ny < self.height
+                            and self.maze[wy][wx] == 0):
+                        open_count += 1
+                # Only open if have only 1
+                if open_count == 1:
+                    dead_ends.append((x, y))
+        return dead_ends
+
+    def _braid_dead_ends(self, factor: float, locked: set) -> None:
+        """ Remove a fraction of dead ends by opening one extra wall from each """
+        dead_ends = self._find_dead_ends(locked)
+        self._random.shuffle(dead_ends)
+        n = int(len(dead_ends) * factor)
+
+        for x, y in dead_ends[:n]:
+            candidates = []
+            for dx, dy in [(2, 0), (-2, 0), (0, 2), (0, -2)]:
+                nx, ny = x + dx, y + dy
+                wx, wy = x + dx // 2, y + dy // 2
+                if (0 <= nx < self.width and 0 <= ny < self.height
+                        and self.maze[wy][wx] == 1
+                        and (nx, ny) not in locked and (wx, wy) not in locked):
+                    candidates.append((wx, wy))
+            if candidates:
+                wx, wy = self._random.choice(candidates)
+                self.maze[wy][wx] = 0
+                self.record.append([wx, wy])
