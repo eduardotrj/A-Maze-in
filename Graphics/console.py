@@ -13,15 +13,17 @@ class PrintTerminal():
     RS: str = "\033[0m"
 
     @classmethod
-    def clean_terminal(self) -> None:
+    def clean_terminal(cls) -> None:
         print(chr(27) + "[2J")
 
-    def print_separator(self) -> None:
+    @classmethod
+    def print_separator(cls) -> None:
         print("--------------------------------------")
 
-    def print_controls(self) -> None:
-        print(f"{self.INT_1}{self.BHWHT}CONTROLS:{self.RS}")
-        self.print_separator()
+    @classmethod
+    def print_controls(cls) -> None:
+        print(f"{cls.INT_1}{cls.BHWHT}CONTROLS:{cls.RS}")
+        cls.print_separator()
         print("""
     Q -> Des/Activate Animation     W -> Show solution
     E -> Change solver              A -> Change generator
@@ -31,25 +33,30 @@ class PrintTerminal():
 """)
 
     @classmethod
-    def print_maze_data(self, maze: Maze, theme: Any, solver: Any) -> None:
+    def print_maze_data(cls, maze: Maze, theme: Any, solver: Any,
+                        pattern: str | None) -> None:
         """ Print basic Maze Data """
-        print(f"MAZE INFORMATION:")
-        print(f"{self.INT_1}Algorithm:{self.INT_2}{maze.algorithm}"
-              f"{self.INT_3}Theme:{self.INT_2}{theme}")
-        print(f"{self.INT_1}Size:{self.INT_2}{maze.height}x{maze.width}"
-              f"{self.INT_3}Seed:{self.INT_2}{maze.seed}")
-        print(f"{self.INT_1}Start:{self.INT_2}{maze.entry[0]}x{maze.entry[1]}"
-              f"{self.INT_3}Exit:{self.INT_2}{maze.exit[0]}x{maze.exit[1]}")
-        print(f"{self.INT_1}Perfect:{self.INT_2}{maze.perfect}"
-              f"{self.INT_3}Pattern:{self.INT_2}{maze.pattern}")
-        print(f"{self.INT_3}Solver:{self.INT_2}{solver}")
+        print(f"{cls.BHWHT}MAZE INFORMATION:{cls.RS}")
 
-    def print_title(self):
-        print("""\ 
-\033[0;91;1;40m▄\033[0;91;1;41m▒▒▒▒\033[0;91;1;40m▄\033[0;37;40m \033[0;31;40m    \033[0;37;40m \033[0;91;1;41m▒▒\033[0;91;1;40m▄\033[0;37;40m \033[0;91;1;40m▄\033[0;91;1;41m▒▒\033[0;37;40m \033[0;91;1;40m▄\033[0;91;1;41m▒▒▒▒\033[0;91;1;40m▄\033[0;37;40m \033[0;91;1;41m▒▒\033[0;31;40m▀▀\033[0;91;1;41m▒\033[0;31;40m▄\033[0;37;40m \033[0;31;40m▄\033[0;91;1;41m▒▒▒▒▒\033[0;37;40m \033[0;31;40m    \033[0;37;40m \033[0;91;1;41m▒▒\033[0;37;40m \033[0;91;1;41m▒▒\033[0;91;1;40m▄\033[0;37;40m  \033[0;91;1;41m▒▒\033[0;37;40m   \033[0;91;1;40m▄\033[0;91;1;41m▒▒▒\033[0m
-\033[0;91;1;41m▓▓\033[0;37;40m  \033[0;91;1;41m▓▓\033[0;37;40m \033[0;31;40m    \033[0;37;40m \033[0;91;1;41m▓▓▓▓▓▓▓\033[0;37;40m \033[0;91;1;41m▓▓\033[0;37;40m  \033[0;91;1;41m▓▓\033[0;37;40m \033[0;91;1;40m▀▀\033[0;37;40m  \033[0;91;1;41m▓▓\033[0;37;40m \033[0;91;1;41m▓▓\033[0;37;40m  \033[0;91;1;41m▓▓\033[0;37;40m \033[0;31;40m    \033[0;37;40m \033[0;91;1;41m▓▓\033[0;37;40m \033[0;91;1;41m▓▓\033[0;91;1;40m▀\033[0;91;1;41m▓\033[0;91;1;40m▄\033[0;91;1;41m▓▓\033[0;37;40m \033[0;91;1;40m▄\033[0;91;1;41m▓\033[0;91;1;40m▀\033[0;37;40m \033[0;91;1;41m▓▓\033[0m
-\033[0;91;1;40m▀▀\033[0;37;40m \033[0;30;40m┘\033[0;91;1;40m▀▀\033[0;37;40m \033[0;31;40m    \033[0;37;40m \033[0;91;1;40m▀▀\033[0;30;40m┘\033[0;91;1;40m▀\033[0;30;40m┘\033[0;91;1;40m▀▀\033[0;37;40m \033[0;91;1;40m▀▀\033[0;37;40m \033[0;30;40m┘\033[0;91;1;40m▀▀\033[0;37;40m    \033[0;91;1;40m▀▀▀\033[0;37;40m \033[0;91;1;40m▀▀\033[0;30;40m┘┘┘\033[0;37;40m  \033[0;31;40m    \033[0;37;40m \033[0;91;1;40m▀▀\033[0;37;40m \033[0;91;1;40m▀▀\033[0;30;40m┘┘\033[0;91;1;40m▀▀▀\033[0;37;40m \033[0;91;1;40m▀▀\033[0;30;40m└└\033[0;91;1;40m▀▀\033[0m
-\033[0;97;1;47m▓▓\033[0;97;1;40m▀▀\033[0;97;1;47m▓▓\033[0;37;40m \033[0;97;1;40m▀▀▀▀\033[0;37;40m \033[0;97;1;47m▓▓\033[0;37;40m   \033[0;97;1;47m▓▓\033[0;37;40m \033[0;97;1;47m▓▓\033[0;97;1;40m▀▀\033[0;97;1;47m▓▓\033[0;37;40m \033[0;97;1;40m▄\033[0;97;1;47m▓\033[0;97;1;40m▀▀▀\033[0;37;40m  \033[0;97;1;47m▓▓\033[0;97;1;40m▀▀\033[0;37;40m   \033[0;97;1;40m▀▀▀▀\033[0;37;40m \033[0;97;1;47m▓▓\033[0;37;40m \033[0;97;1;47m▓▓\033[0;37;40m   \033[0;97;1;47m▓▓\033[0;37;40m \033[0;97;1;47m▓\033[0;97;1;40m▌\033[0;37;40m \033[0;97;1;40m▀\033[0;97;1;47m▓▓\033[0m
-\033[0;97;1;47m▒▒\033[0;37;40m  \033[0;97;1;47m▒▒\033[0;37;40m      \033[0;97;1;47m▒▒\033[0;37;40m   \033[0;97;1;47m▒▒\033[0;37;40m \033[0;97;1;47m▒▒\033[0;37;40m  \033[0;97;1;47m▒▒\033[0;37;40m \033[0;97;1;47m▒▒\033[0;37;40m  ▄▄ \033[0;97;1;47m▒▒\033[0;37;40m  \033[0;97;1;47m▒▒\033[0;37;40m      \033[0;97;1;47m▒▒\033[0;37;40m \033[0;97;1;47m▒▒\033[0;37;40m   \033[0;97;1;47m▒▒\033[0;37;40m ▀\033[0;97;1;41m▒\033[0;37;40m▄ \033[0;97;1;47m▒▒\033[0m
-\033[0;97;1;47m░░\033[0;37;40m  \033[0;97;1;47m░░\033[0;37;40m      \033[0;97;1;47m░░\033[0;37;40m   \033[0;97;1;47m░░\033[0;37;40m \033[0;97;1;47m░░\033[0;37;40m  \033[0;97;1;47m░░\033[0;37;40m \033[0;97;1;40m▀\033[0;97;1;47m░░\033[0;97;1;40m▄\033[0;97;1;47m░░\033[0;37;40m \033[0;97;1;40m▀\033[0;97;1;47m░░░░░\033[0;37;40m      \033[0;97;1;47m░░\033[0;37;40m \033[0;97;1;47m░░\033[0;37;40m   \033[0;97;1;47m░░\033[0;37;40m   ▀\033[0;97;1;47m░░░\033[0m
-""")  # noqa: E731
+        algorithm = (
+            "Recursive Backtracker"
+            if maze.algorithm == "recursive_backtracker"
+            else maze.algorithm)
+
+        print(f" Size:{cls.INT_2}{maze.height}x{maze.width}"
+              f"{cls.INT_3}Seed:{cls.INT_2}{maze.seed}")
+
+        print(f" Start:{cls.INT_2}{maze.entry[0]}x{maze.entry[1]}"
+              f"{cls.INT_3}Algorithm:{cls.INT_1}{algorithm}")
+
+        print(f" Exit:{cls.INT_2}{maze.exit[0]}x{maze.exit[1]}"
+              f"{cls.INT_3}Theme:{cls.INT_2}{theme}")
+
+        print(f" Perfect:{cls.INT_1}{maze.perfect}"
+              f"{cls.INT_3}Pattern:{cls.INT_1}{pattern}")
+
+        print(f" Solver:{cls.INT_1}{solver}")
+
+    @classmethod
+    def print_title(cls, logo: str):  # noqa: E731
+        print(logo)
