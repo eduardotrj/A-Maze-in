@@ -1,30 +1,12 @@
  *This project has been created as part of 42 curriculum by ecakiray, etrujill.*
 
 
----
-Duties for Docs (Index will come from this):
-- [ ] Docs with:
-    - [ ] Init and use maze instructions.
-    - [ ] Pass custom parameters.
-    - [ ] Access to generate structure and least 1 solution.
-    - [ ] Structure, format of config file.
-    - [ ] Maze generator algorith
-    - [ ] WHy got this algorithm
-    - [ ] What and how use reusable code
-    - [ ] Roles for each team member
-    - [ ] Anticipate planning and project development.
-    - [ ] What works well and what can be improved
-    - [ ] Specific tools used.
----
-
-
-
-
 # A-Maze-ing
 
-Visuals ...
 
-Overview ...
+
+<img src="Utils/A-Maze_Ing.png" alt="A-Maze-Ing project" width="600">
+
 
 
 ---
@@ -36,9 +18,12 @@ Overview ...
 
 ---
 ## Description
-...
+
+A-Maze-Ing is a maze generator that by using a default values in a `config.txt` file, generate mazes with specific size and position for entry and output. It using different algorithms and predesign themes to show the different mazes. It generates a txt file with the maze information.
 
 ## Quick Start
+
+
 
 ### Prerequisites & Setup
 
@@ -46,6 +31,18 @@ Overview ...
 
 ### Usage
 
+```bash
+	CONTROLS:
+--------------------------------------
+
+    Q -> Des/Activate Animation     W -> Show solution
+    E -> Change solver              A -> Change generator
+    R -> Remake                     T -> Print Maze Info
+    S -> Style Before               D -> Next style
+    F -> Random Exit                G -> Active/Disable Perfect
+    Esc -> exit
+
+```
 
 ## Structure
 
@@ -90,8 +87,6 @@ Coordinates all the application from here.
 
 Load the configuration from the file
 
-// Create the maze file
-
 **Generator:**
 
 Control all the algorithms to generate Maze and solve them
@@ -113,23 +108,67 @@ Send orders to generate Graphics
 Comunicate the orders directly with MlxLib
 
 
-
-
-
-
-
 ### Environment Variables
+
+This project is designed to work with Poetry and the followed versions:
+
+```bash
+    python          (>=3.11,<3.12)
+    flake8          (>=7.3.0,<8.0.0)
+    mypy            (>=2.1.0,<3.0.0)
+    pydantic        (>=2.13.4,<3.0.0)
+    pynput          (>=1.8.2,<2.0.0)
+    opencv-python   (>=4.13.0)
+	mlx             (=2.2)
+```
 
 ### External Tools
 
+- `Flake8`: Python syntax control.
+- `Mypy`: Python arguments and types checker.
+- `Minilib` or `Mlx`: Library used to generate Graphic resources.
+- `OpenCV` or `cv2`: Library to manage graphic data.
+- `Pydantic`: Used to validate data from config file.
+
+
+
 ### Maze Generator Algorithms
 
+Algorithms used:
+
+- `Recursive Backtracker` – Starts in one cell and keeps moving to a random unvisited neighbor. When it gets stuck, it goes back until it finds a new path.
+- `Kruskal` – Treats every cell as its own group and randomly removes walls only if doing so connects two different groups, avoiding loops.
+- `Prim` – Starts from one cell and grows the maze by randomly connecting new neighboring cells to the existing maze.
+- `Eller` – Builds the maze one row at a time, joining cells horizontally and vertically while making sure every area stays connected.
+- `Wilson` – Starts with one finished cell. Every new cell takes a random walk until it reaches the maze, removing any loops made during the walk.
+
+Algorithms descarted:
+
+- `Hunt and Kill` – Walks randomly through unvisited cells until stuck. Then it hunts for another unvisited cell next to the maze and starts walking again.
+
+### Solving Algorithms
+
+Algorithms used:
+
+- `Breadth-First Search (BFS)` – Explores all nearby paths first, then moves farther away. It always finds the shortest path in an unweighted maze.
+- `Depth-First Search (DFS)` – Follows one path as far as possible before going back and trying another. It finds a path, but not always the shortest one.
+- `A*` or `Astar` – Uses the distance to the goal as a guide, choosing the paths that seem most promising. It usually finds the shortest path very quickly.
+- `Dijkstra` – Expands paths by always choosing the one with the lowest total cost so far. It always finds the shortest path, even when paths have different costs.
+
+Algorithms descarted:
+
+- `Wall Follower` – Keeps one hand on the left or right wall and follows it until reaching the exit. It works only if the maze is simply connected (all walls are connected).
+
 ### Reusability Code
+
+To keep the rehusability, the project use a class structure trying to keep all modules as much uncoumpled as possible
 
 ### Testing
 
 
 ## Design & Development
+
+
 
 ### Planing
 
@@ -170,6 +209,11 @@ Then, we decided that by our skills we working mainly in one part of the project
 
 **Edu:**
 - Graphic generation of Mazes
+- Animation
+- Graphic assets
+- Generation algorithms
+- Console style
+- Structure Design
 - README file
 
 
@@ -177,6 +221,10 @@ Then, we decided that by our skills we working mainly in one part of the project
 - Parsing
 - Settings
 - Generation Algorithms
+- Sorting algorints
+- Solution show
+- Mypy & Flake8 corrections
+- Makefile and packaging
 
 
 ### Features archieve

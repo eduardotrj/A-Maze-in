@@ -126,7 +126,7 @@ graph TB;
 
 ## Duties:
 
-- [ ] () Load Settings
+- [X] () Load Settings
 - [X] () Generate windows
 - [X] () Algorithm Gener: Recursive Backtracker
 - [X] () Algorithm Gener: Prim
@@ -157,21 +157,21 @@ algorithms
 ### Specifics
 - [X] Maze generator in Python (1 single perfect path)
 - [X] Work by reading a confg file: `config.txt`
-- [ ] Write file using hexadecimal wall representation.
-- [ ] Imput: `python3 a_maze_ing.py config.txt`.
+- [X] Write file using hexadecimal wall representation.
+- [X] Imput: `python3 a_maze_ing.py config.txt`.
 - [X] Main: `a_maze_ing.py`.
-- [ ] Randomly by seeds.
-- [ ] By Cells (with 0 - 4 walls)
-- [ ] Entry and exit inside maze bounds.
+- [X] Randomly by seeds.
+- [X] By Cells (with 0 - 4 walls)
+- [X] Entry and exit inside maze bounds.
 - [X] Coherent data generated (Related walls between cells)
-- [ ] Not corridors > 2 cells.
-- [ ] Not larger empty areas than 3x3.
-- [ ] 42 representation (closed cells) if is space.
-- [ ] PERFECT flag for generate 1 possible path.
-- [ ] ASCII or MiniLibX library (Visual)
-- [ ] User interactions:
+- [X] Not corridors > 2 cells.
+- [X] Not larger empty areas than 3x3.
+- [X] 42 representation (closed cells) if is space.
+- [X] PERFECT flag for generate 1 possible path.
+- [X] ASCII or MiniLibX library (Visual)
+- [X] User interactions:
     - [X]  Re-generate new maze.
-    - [ ] Show/hide shortest path.
+    - [X] Show/hide shortest path.
     - [X] Change walls colours.
     - [X] Set color for 42
 
@@ -207,7 +207,7 @@ SWSSENW   -> shortest path
     - Impossible parameters.
     - Syntax errors.
 - [ ] Context managers for external resources -> Auto Cleanup
-- [ ] Flake8
+- [X] Flake8
 - [ ] Mypy --strict
 - [ ] Docstrings:
     - PEP 257 (Google | NumPy style)
@@ -218,7 +218,7 @@ SWSSENW   -> shortest path
     - Extra information: args, returns, side effects, exceptions or restrictions.
     - Use `override when subclasses remplace superclass methods.
     - Use `extend` when calls superclass method.
-- [ ] Makefile:
+- [X] Makefile:
     - `install` -> dependencies by pip, **uv**, pipx
     - `run` -> Execute main script by pip
     - `debug` -> Run in debug mode like pdb.
