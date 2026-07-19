@@ -1,9 +1,9 @@
 UV              := uv
 PYTHON_VERSION  := 3.11
-PYTHON          := python3.11
 POETRY          := poetry
 MAIN            := a_maze_ing.py
 VENV            := .venv
+VENV_PYTHON     := $(VENV)/bin/python
 CONFIG          := config.txt
 
 PACKAGE_DIR        := mazegen_package
@@ -14,17 +14,25 @@ PACKAGE_TEST_VENV  := .venv-package-test
 .PHONY: install run debug clean clean-all lint lint-strict \
 	package package-test package-clean
 
-install:
-	$(POETRY) config virtualenvs.in-project true --local
-	$(POETRY) env use $(PYTHON)
-	$(POETRY) install
-	$(POETRY) run python -m pip install -e $(PACKAGE_DIR)
+$(VENV_PYTHON):
+	rm -rf "$(VENV)"
+	$(UV) venv --python $(PYTHON_VERSION) "$(VENV)"
+
+install: $(VENV_PYTHON)
+	env \
+		VIRTUAL_ENV="$(abspath $(VENV))" \
+		PATH="$(abspath $(VENV))/bin:$$PATH" \
+		$(POETRY) install --no-interaction
+
+	$(UV) pip install \
+		--python "$(VENV_PYTHON)" \
+		-e "$(PACKAGE_DIR)"
 
 run: install
-	$(POETRY) run python $(MAIN) $(CONFIG)
+	"$(VENV_PYTHON)" "$(MAIN)" "$(CONFIG)"
 
 debug: install
-	$(POETRY) run python -m pdb $(MAIN) $(CONFIG)
+	"$(VENV_PYTHON)" -m pdb "$(MAIN)" "$(CONFIG)"
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
@@ -39,11 +47,11 @@ clean-all: clean package-clean
 	rm -rf $(VENV)
 	rm -f poetry.toml
 
-lint:
-	$(POETRY) run flake8 . \
+lint: install
+	$(VENV)/bin/flake8 . \
 		--exclude=.venv,.venv-package-build,.venv-package-test,logo.py,Test,Tests,mlx,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
 
-	MYPYPATH=$(PACKAGE_DIR)/src $(POETRY) run mypy \
+	MYPYPATH=$(PACKAGE_DIR)/src $(VENV)/bin/mypy \
 		$(MAIN) Config Graphics \
 		--exclude '(^|/)(\.venv|\.venv-package-build|\.venv-package-test|__pycache__|Test|Tests|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist|mazegen_package)/' \
 		--warn-return-any \
@@ -52,7 +60,7 @@ lint:
 		--disallow-untyped-defs \
 		--check-untyped-defs
 
-	MYPYPATH=$(PACKAGE_DIR)/src $(POETRY) run mypy \
+	MYPYPATH=$(PACKAGE_DIR)/src $(VENV)/bin/mypy \
 		-p mazegen \
 		--warn-return-any \
 		--warn-unused-ignores \
@@ -60,16 +68,16 @@ lint:
 		--disallow-untyped-defs \
 		--check-untyped-defs
 
-lint-strict:
-	$(POETRY) run flake8 . \
+lint-strict: install
+	$(VENV)/bin/flake8 . \
 		--exclude=.venv,.venv-package-build,.venv-package-test,logo.py,Test,Tests,mlx,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,build,dist
 
-	MYPYPATH=$(PACKAGE_DIR)/src $(POETRY) run mypy \
+	MYPYPATH=$(PACKAGE_DIR)/src $(VENV)/bin/mypy \
 		$(MAIN) Config Graphics \
 		--exclude '(^|/)(\.venv|\.venv-package-build|\.venv-package-test|__pycache__|Test|Tests|\.mypy_cache|\.pytest_cache|\.ruff_cache|build|dist|mazegen_package)/' \
 		--strict
 
-	MYPYPATH=$(PACKAGE_DIR)/src $(POETRY) run mypy \
+	MYPYPATH=$(PACKAGE_DIR)/src $(VENV)/bin/mypy \
 		-p mazegen \
 		--strict
 
