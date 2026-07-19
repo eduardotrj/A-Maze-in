@@ -1,26 +1,26 @@
 # A-Maze-ing configuration file
 
 # Maze size
-WIDTH=16
-HEIGHT=16
+WIDTH=20
+HEIGHT=12
 
 # Entry and exit coordinates
 # Format: x,y
 ENTRY=0,0
-EXIT=15,15
+EXIT=10,11
 
 # Output file
 OUTPUT_FILE=maze.txt
 
 ### Maze behavior
 # Perfect maze means exactly one path between entry and exit
-PERFECT=False
+PERFECT=True
 
 ## Optional settings
 # SEED=9108020386451911994
 # Algorithm
 GENERATOR=prim
-PATTERN=P_42
+PATTERN=None
 # Show animation
 ANIMATION=True
 TILE=32
