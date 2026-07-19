@@ -222,7 +222,6 @@ class MazeApplication:
             random.randint(0, self.grid_width - 1),
             random.randint(0, self.grid_height - 1))
 
-
     def redraw(self) -> None:
         """Redraw the current maze without replaying generation."""
 

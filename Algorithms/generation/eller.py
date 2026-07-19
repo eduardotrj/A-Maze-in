@@ -22,7 +22,8 @@ class Eller(MazeGenerator):
         seed: int | None,
         perfect: bool = True
     ) -> None:
-        """ Generate a maze using Eller's algorithm (row by row, no recursion) """
+        """ Generate a maze using Eller's algorithm
+        (row by row, no recursion) """
         self.width = width
         self.height = height
         self.entry = entry

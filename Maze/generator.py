@@ -83,7 +83,7 @@ class Generator:
 
         if normalized_name == "huntandkill":
             return "huntandkill"
-        
+
         if normalized_name == "eller":
             return "eller"
 

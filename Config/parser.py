@@ -35,7 +35,7 @@ class ConfigParser:
                         )
 
                     config[key] = value
-        except:
+        except Exception:
             raise FileNotFoundError(
                 f"File '{self.path}' not found"
             )
