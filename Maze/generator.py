@@ -6,6 +6,8 @@ from Algorithms.generation.kruskal import Kruskal
 from Algorithms.generation.maze_generator import MazeGenerator
 from Algorithms.generation.prim import Prim
 from Algorithms.generation.recursive_backtracker import Backtracker
+from Algorithms.generation.hunt_and_kill import HuntAndKill
+from Algorithms.generation.eller import Eller
 from Maze.model import Maze
 
 # def generate_maze(
@@ -39,6 +41,8 @@ GeneratorName: TypeAlias = Literal[
     "recursive_backtracker",
     "kruskal",
     "prim",
+    "huntandkill",
+    "eller"
 ]
 
 Pattern: TypeAlias = tuple[tuple[Any, ...], ...]
@@ -54,6 +58,8 @@ class Generator:
         "recursive_backtracker": Backtracker,
         "kruskal": Kruskal,
         "prim": Prim,
+        "huntandkill": HuntAndKill,
+        "eller": Eller
     }
 
     @classmethod
@@ -74,6 +80,12 @@ class Generator:
 
         if normalized_name == "prim":
             return "prim"
+
+        if normalized_name == "huntandkill":
+            return "huntandkill"
+        
+        if normalized_name == "eller":
+            return "eller"
 
         available = ", ".join(cls.list_generators())
 
