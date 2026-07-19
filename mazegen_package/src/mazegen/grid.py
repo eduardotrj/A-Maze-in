@@ -1,4 +1,4 @@
-from Utils.constants import ALL_WALLS, DIRECTIONS, OPPOSITE_WALL
+from .utils.constants import ALL_WALLS, DIRECTIONS, OPPOSITE_WALL
 
 
 Position = tuple[int, int]

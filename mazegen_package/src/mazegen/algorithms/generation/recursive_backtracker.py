@@ -1,6 +1,8 @@
 from typing import Any
-
+import sys
 from .maze_generator import MazeGenerator
+
+sys.setrecursionlimit(10**6)
 
 
 class Backtracker(MazeGenerator):
@@ -45,7 +47,7 @@ class Backtracker(MazeGenerator):
         self._carve_passages_from(start_x, start_y)
 
         if not self.perfect:
-            self.braid(0.1, "dead_end")
+            self.braid(0.2, "random")
 
     def _carve_passages_from(self, x: int, y: int) -> None:
         """Carve passages recursively from the current cell."""

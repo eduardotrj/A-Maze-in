@@ -1,11 +1,16 @@
-import re
 from typing import Any, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic import field_validator, model_validator
 
 
-HEX_COLOR_PATTERN = re.compile(r"^#[0-9a-fA-F]{6}$")
+GeneratorName = Literal[
+    "recursive_backtracker",
+    "kruskal",
+    "prim",
+    "huntandkill",
+    "eller",
+]
 
 
 class MazeConfig(BaseModel):
@@ -26,23 +31,13 @@ class MazeConfig(BaseModel):
     is_pattern: str | None = Field(default="P_42", alias="PATTERN")
 
     seed: int | None = Field(default=None, alias="SEED", ge=0)
-    generator: Literal[
-        "recursive_backtracker",
-        "kruskal",
-        "prim",
-    ] | None = Field(
-        default=None,
+    generator: GeneratorName | None = Field(
+        default="prim",
         alias="GENERATOR",
     )
 
     animation: bool | None = Field(default=None, alias="ANIMATION")
     speed: int | None = Field(default=None, alias="SPEED", ge=0)
-
-    wall_color: str | None = Field(default=None, alias="WALL_COLOR")
-    floor_color: str | None = Field(default=None, alias="FLOOR_COLOR")
-    solution_color: str | None = Field(default=None, alias="SOLUTION_COLOR")
-    entry_color: str | None = Field(default=None, alias="ENTRY_COLOR")
-    exit_color: str | None = Field(default=None, alias="EXIT_COLOR")
 
     @field_validator("entry", "exit_", mode="before")
     @classmethod
@@ -83,26 +78,6 @@ class MazeConfig(BaseModel):
             return None
 
         return value.strip().lower()
-
-    @field_validator(
-        "wall_color",
-        "floor_color",
-        "solution_color",
-        "entry_color",
-        "exit_color",
-    )
-    @classmethod
-    def validate_hex_color(cls, value: str | None) -> str | None:
-        """Validate hexadecimal color values."""
-        if value is None:
-            return None
-
-        if not HEX_COLOR_PATTERN.fullmatch(value):
-            raise ValueError(
-                "color values must be in #RRGGBB format"
-            )
-
-        return value
 
     @field_validator("output_file")
     @classmethod

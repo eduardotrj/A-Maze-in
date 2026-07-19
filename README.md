@@ -1,4 +1,4 @@
- *This project has been created as part of 42 curriculum by ecakiray, etrujill.*
+*This project has been created as part of the 42 curriculum by etrujill, ecakiray.*
 
 
 # A-Maze-ing
@@ -13,16 +13,44 @@
 ## Table of Contents
 
 - [Description](#description)
-- [ws](#QuickStart)
-- [Description](#description)
+- [Quick Start](#quick-start)
+- [Configuration File](#configuration-file)
+- [Controls](#controls)
+- [Project Structure](#project-structure)
+- [Maze Generator Algorithms](#maze-generator-algorithms)
+- [Solving Algorithms](#solving-algorithms)
+- [Reusable Package](#reusable-package)
+- [Testing](#testing)
+- [Design and Development](#design-and-development)
+- [Resources](#resources)
 
 ---
 ## Description
 
-A-Maze-Ing is a maze generator that by using a default values in a `config.txt` file, generate mazes with specific size and position for entry and output. It using different algorithms and predesign themes to show the different mazes. It generates a txt file with the maze information.
+A-Maze-Ing is a maze generation and visualization project. It reads settings from a `config.txt` file, generates a maze with the selected size, entry, exit, algorithm, theme, and pattern options, displays it in a graphical window, solves it, and exports the maze data to a text file.
 
 ## Quick Start
 
+## Configuration File
+
+The program reads a plain text configuration file in `KEY=VALUE` format.
+
+Comment lines must start with `#`.
+
+Example:
+
+```text
+WIDTH=16
+HEIGHT=16
+ENTRY=0,0
+EXIT=15,15
+OUTPUT_FILE=maze.txt
+PERFECT=True
+SEED=42
+GENERATOR=prim
+ANIMATION=True
+SPEED=300
+TILE=32
 
 
 ### Prerequisites & Setup
@@ -56,13 +84,13 @@ Renderer -> Canvas
 
 ```mermaid
 ---
-title ft_printf Processing Flow
+title A-Maze-Ing Processing Flow
 ---
 graph TB;
     id1([A_maze_ing.py
     Main])--Load-->Config
     Config-->Generator
-    Generator-->Krugal
+    Generator-->Kruskal
     Generator-->Prim
     Generator-->Backtracker
     Generator-->Solver
@@ -95,7 +123,7 @@ Control all the algorithms to generate Maze and solve them
 
 Generate and control window obj
 
-**EvenManager:**
+**EventManager:**
 
 Manage the keyboard control
 
@@ -105,7 +133,7 @@ Send orders to generate Graphics
 
 **Canvas:**
 
-Comunicate the orders directly with MlxLib
+Communicates the orders directly with MlxLib
 
 
 ### Environment Variables
@@ -159,9 +187,15 @@ Algorithms descarted:
 
 - `Wall Follower` – Keeps one hand on the left or right wall and follows it until reaching the exit. It works only if the maze is simply connected (all walls are connected).
 
-### Reusability Code
+### Reusable Package
 
-To keep the rehusability, the project use a class structure trying to keep all modules as much uncoumpled as possible
+The maze generation and solving logic is separated into a reusable Python package called `mazegen`.
+
+The package source code is located under:
+
+```text
+mazegen_package/src/mazegen/
+```
 
 ### Testing
 
@@ -220,8 +254,8 @@ Then, we decided that by our skills we working mainly in one part of the project
 **Eray:**
 - Parsing
 - Settings
-- Generation Algorithms
-- Sorting algorints
+- Generation algorithms
+- Solving algorithms
 - Solution show
 - Mypy & Flake8 corrections
 - Makefile and packaging

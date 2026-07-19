@@ -9,11 +9,8 @@ from Graphics.renderer import MazeRenderer
 from Graphics.eventManager import EventManager
 from Graphics.console import PrintTerminal as prt
 from Graphics.logo import LOGO
-from Maze.generator import Generator
-from Maze.patterns import PATTERN
-from Config import ConfigParser, MazeConfig
-from Maze.solver import MazeSolver
-from Maze.exporter import MazeExporter
+from Config import ConfigParser, MazeConfig, GeneratorName
+from mazegen import Generator, PATTERN, MazeSolver, MazeExporter
 
 
 class MazeApplication:
@@ -47,7 +44,7 @@ class MazeApplication:
             else None
         )
 
-        self.algorithm_name = settings.generator or "prim"
+        self.algorithm_name: GeneratorName = settings.generator or "prim"
 
         self.animation = (
             settings.animation
@@ -212,9 +209,14 @@ class MazeApplication:
 
     # ! Manage to fix fake namings
     def change_algorithm(self) -> None:
-        list = Generator.list_generators()
-        new_index = (list.index(self.algorithm_name) + 1) % len(list)
-        self.algorithm_name = list[new_index]
+        """Select the next generation algorithm."""
+        # generators: list[GeneratorName] = Generator.list_generators()
+        generators = Generator.list_generators()
+        new_index = (
+            generators.index(self.algorithm_name) + 1
+        ) % len(generators)
+
+        self.algorithm_name = generators[new_index]
         self.create_maze()
 
     def random_exit(self) -> None:

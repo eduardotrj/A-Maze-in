@@ -1,5 +1,5 @@
 from typing import Any
-from Algorithms.generation.maze_generator import MazeGenerator
+from .maze_generator import MazeGenerator
 
 
 class Eller(MazeGenerator):

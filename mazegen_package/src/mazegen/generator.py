@@ -1,10 +1,14 @@
+"""Provide a common interface for maze generation algorithms."""
+
 from typing import Any, Literal, TypeAlias
 
-from .algorithms.generation.recursive_backtracker import Backtracker
-from .algorithms.generation.kruskal import Kruskal
-from .algorithms.generation.prim import Prim
-# from algorithms.generation import generate_recursive_backtracker_dfs
-from .algorithms.generation.maze_generator import MazeGenerator
+from .algorithms import (
+    MazeGenerator,
+    Eller,
+    HuntAndKill,
+    Kruskal,
+    Prim,
+    Backtracker,)
 from .model import Maze
 
 # def generate_maze(
@@ -34,11 +38,12 @@ from .model import Maze
 #        perfect=perfect,
 #    )
 
-
 GeneratorName: TypeAlias = Literal[
     "recursive_backtracker",
     "kruskal",
     "prim",
+    "huntandkill",
+    "eller"
 ]
 
 Pattern: TypeAlias = tuple[tuple[Any, ...], ...]
@@ -54,12 +59,20 @@ class Generator:
         "recursive_backtracker": Backtracker,
         "kruskal": Kruskal,
         "prim": Prim,
+        "huntandkill": HuntAndKill,
+        "eller": Eller
     }
 
     @classmethod
     def list_generators(cls) -> list[GeneratorName]:
         """Return the available generator names."""
-        return list(cls._generators)
+        return [
+            "recursive_backtracker",
+            "kruskal",
+            "prim",
+            "huntandkill",
+            "eller",
+        ]
 
     @classmethod
     def normalize_name(cls, name: str) -> GeneratorName:
@@ -74,6 +87,12 @@ class Generator:
 
         if normalized_name == "prim":
             return "prim"
+
+        if normalized_name == "huntandkill":
+            return "huntandkill"
+
+        if normalized_name == "eller":
+            return "eller"
 
         available = ", ".join(cls.list_generators())
 

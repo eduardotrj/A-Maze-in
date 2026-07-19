@@ -6,6 +6,7 @@ import secrets
 
 class MazeGenerator(ABC):
     """ Root Design for any Maze Generator Algorithm """
+
     @abstractmethod
     def __init__(self, width: int, height: int,
                  seed: int | None = None) -> None:
@@ -13,14 +14,17 @@ class MazeGenerator(ABC):
         self.width = width
         self.height = height
         self.maze = [[1 for _ in range(width)] for _ in range(height)]
-        self.seed = seed
+
         self.entry: tuple[int, int]
         self.exit: tuple[int, int]
+
+        self.seed = seed
         if self.seed is None:
             self.generate_seed()
         self._random = random.Random(self.seed)
+
         self.record: list[list[int]]
-        self.pattern: tuple[tuple[str, ...], ...] | None = None
+        self.pattern: tuple[tuple[Any], ...] | None = None
         self._locked: set[tuple[int, int]] = set()
         self.pattern_cells: set[tuple[int, int]] = set()
         self.perfect: bool
@@ -44,7 +48,7 @@ class MazeGenerator(ABC):
     def get_seed(self) -> int | None:
         return self.seed
 
-    def get_pattern(self) -> tuple[tuple[str, ...], ...] | None:
+    def get_pattern(self) -> tuple[tuple[Any], ...] | None:
         return self.pattern
 
     def get_points(self) -> tuple[tuple[int, int], ...]:
@@ -160,7 +164,7 @@ class MazeGenerator(ABC):
 
     def lock_pattern(
         self,
-        pattern: tuple[tuple[str, ...], ...] | None,
+        pattern: tuple[tuple[Any], ...] | None,
         entry: tuple[int, int],
         exit_: tuple[int, int],
     ) -> None:
@@ -201,9 +205,11 @@ class MazeGenerator(ABC):
                 internal_position = (internal_x, internal_y)
 
                 if internal_position in (entry, exit_):
-                    raise ValueError(
-                        "Entry or exit overlaps the 42 pattern"
-                    )
+                    #   raise ValueError(
+                    #       "Entry or exit overlaps the 42 pattern"
+                    #   )
+                    print("Warning: Start or exit in the Pattern area.")
+                    return
 
                 self.pattern_cells.add((logical_x, logical_y))
                 self._locked.add(internal_position)
@@ -260,7 +266,8 @@ class MazeGenerator(ABC):
 
                 if (self.maze[c1[1]][c1[0]] == 0
                         and self.maze[c2[1]][c2[0]] == 0
-                        and self._random.random() < factor):
+                        and self._random.random() < factor
+                        and not self._completes_open_block(wx, wy)):
                     self.maze[wy][wx] = 0
                     self.record.append([wx, wy])
 
@@ -302,9 +309,40 @@ class MazeGenerator(ABC):
                 wx, wy = x + dx // 2, y + dy // 2
                 if (0 <= nx < self.width and 0 <= ny < self.height
                         and self.maze[wy][wx] == 1
-                        and (nx, ny) not in locked and (wx, wy) not in locked):
+                        and (nx, ny) not in locked and (wx, wy) not in locked
+                        and not self._completes_open_block(wx, wy)):
                     candidates.append((wx, wy))
             if candidates:
                 wx, wy = self._random.choice(candidates)
                 self.maze[wy][wx] = 0
                 self.record.append([wx, wy])
+
+    def _completes_open_block(self, wx: int, wy: int) -> bool:
+        """
+        Check if opening the wall at (wx, wy) would complete a fully-open
+        2x2 block of cells (Avoid those ugly open spacesS).
+        """
+        blocks = []
+        # vertical wall: connects left/right cells, wy is odd
+        if wx % 2 == 0:
+            blocks.append((wx - 1, wy))
+            blocks.append((wx - 1, wy - 2))
+        # horizontal wall: connects up/down cells, wx is odd
+        else:
+            blocks.append((wx, wy - 1))
+            blocks.append((wx - 2, wy - 1))
+
+        for cx, cy in blocks:
+            if not (0 <= cx and cx + 2 < self.width
+                    and 0 <= cy and cy + 2 < self.height):
+                continue
+
+            cells = [(cx, cy), (cx + 2, cy), (cx, cy + 2), (cx + 2, cy + 2)]
+            walls = [(cx + 1, cy), (cx, cy + 1),
+                     (cx + 2, cy + 1), (cx + 1, cy + 2)]
+
+            if all(self.maze[y][x] == 0 for x, y in cells) and \
+               all(self.maze[y][x] == 0 for x, y in walls
+                   if (x, y) != (wx, wy)):
+                return True   # the other 3 edges are already open
+        return False

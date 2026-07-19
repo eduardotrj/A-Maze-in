@@ -1,5 +1,4 @@
-from Maze.model import Maze
-from Maze.solver import MazeSolver
+from mazegen import Maze, MazeSolver
 
 # to test:
 # go to root folder and run:

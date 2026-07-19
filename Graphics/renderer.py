@@ -7,8 +7,8 @@ from typing import Any
 from Graphics.theme import ThemeManager
 # from Utils.constants import Tile, HexaWall, WALL_SEGMENTS
 # from Maze.patterns import PATTERN
-from Maze.model import Maze
-from Utils.constants import (
+from mazegen import Maze
+from mazegen.utils import (
     DIRECTIONS,
     OPPOSITE_DIRECTION,
     SOLUTION_TILES,

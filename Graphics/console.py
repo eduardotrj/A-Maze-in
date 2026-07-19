@@ -1,5 +1,5 @@
 from typing import Any
-from Maze.model import Maze
+from mazegen import Maze
 
 
 class PrintTerminal():
@@ -60,5 +60,5 @@ class PrintTerminal():
         print(f" Solver:{cls.INT_1}{solver}")
 
     @classmethod
-    def print_title(cls, logo: str):  # noqa: E731
+    def print_title(cls, logo: str) -> None:  # noqa: E731
         print(logo)

@@ -109,4 +109,4 @@ class Kruskal(MazeGenerator):
             self.record.append([wall_x, wall_y])
 
         if not self.perfect:
-            self.braid(0.5, "random")
+            self.braid(0.1, "dead_end")

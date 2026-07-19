@@ -1,7 +1,6 @@
 """Test maze generation and seed reproducibility."""
 
-from Maze.generator import Generator
-from Maze.solver import MazeSolver
+from mazegen import Generator, MazeSolver
 
 
 # To test from the project root:

@@ -7,30 +7,20 @@ HEIGHT=16
 # Entry and exit coordinates
 # Format: x,y
 ENTRY=0,0
-EXIT=8,6
+EXIT=15,15
 
 # Output file
 OUTPUT_FILE=maze.txt
 
+### Maze behavior
 # Perfect maze means exactly one path between entry and exit
-# PATTERN=None
 PERFECT=False
-TILE=32
-# Optional settings
+
+## Optional settings
 # SEED=9108020386451911994
-### Algorithm
-GENERATOR=Prim
-### Show animation
-ANIMATION=False
-### Speed to show animation
-SPEED=300
-### Color for walls
-WALL_COLOR=#000000
-### Color for floor
-FLOOR_COLOR=#FFFFFF
-### Color for solution
-SOLUTION_COLOR=#00AAFF
-### Color for entry
-ENTRY_COLOR=#00FF00
-### Color for exit
-EXIT_COLOR=#ff5100
+# Algorithm
+GENERATOR=prim
+PATTERN=P_42
+# Show animation
+ANIMATION=True
+TILE=32

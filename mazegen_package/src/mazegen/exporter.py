@@ -1,6 +1,6 @@
 """Export a maze to the required output file format."""
 
-from Maze.model import Maze
+from .model import Maze
 
 
 class MazeExporter:

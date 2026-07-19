@@ -22,7 +22,7 @@ class Prim(MazeGenerator):
         """Generate a maze using randomized Prim's algorithm."""
         self.width = width
         self.height = height
-        self.seed = seed
+        # self.seed = seed
         self.entry = entry
         self.exit = exit
         self.perfect = perfect
@@ -83,7 +83,7 @@ class Prim(MazeGenerator):
                 frontier,
             )
             if not self.perfect:
-                self.braid(0.1, "dead_end")
+                self.braid(0.02, "random")
 
         # while frontier:
         #     # Pick a random frontier cell
