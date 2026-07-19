@@ -1,13 +1,16 @@
 *This project has been created as part of the 42 curriculum by etrujill, ecakiray.*
 
+<style>
+pr { color: #7F58AF }
+cy { color: #64C5EB }
+mg { color: #E84D8A }
+yw { color: #FEB326 }
+h2 {color: pr}
+</style>
 
 # A-Maze-ing
 
-
-
 <img src="Utils/A-Maze_Ing.png" alt="A-Maze-Ing project" width="600">
-
-
 
 ---
 ## Table of Contents
@@ -15,12 +18,13 @@
 - [Description](#description)
 - [Quick Start](#quick-start)
 - [Configuration File](#configuration-file)
-- [Controls](#controls)
+- [Prerequisites & Setup](#prerequisites-&-setup)
+- [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Maze Generator Algorithms](#maze-generator-algorithms)
 - [Solving Algorithms](#solving-algorithms)
 - [Reusable Package](#reusable-package)
-- [Testing](#testing)
+- [Design & Development](#design-&-development)
 - [Design and Development](#design-and-development)
 - [Resources](#resources)
 
@@ -29,33 +33,62 @@
 
 A-Maze-Ing is a maze generation and visualization project. It reads settings from a `config.txt` file, generates a maze with the selected size, entry, exit, algorithm, theme, and pattern options, displays it in a graphical window, solves it, and exports the maze data to a text file.
 
+### Funtionalities:
+
+- 5 Different algorithms to create mazes
+- 4 Solving algorithms
+- 10 predesigned themes + infinite more
+- Animated by choice
+- Support huge sizes
+- Multiple configuration options
+- Controls to change the generation in real time
+- Size confiuration
+- Seed generator
+
 ## Quick Start
 
-## Configuration File
+1. First install it:
+`make install`
+
+2. Run it!
+`make run`
+
+* By using Poetry as venv, may face some problems along install process due Python versions and corrupt files. Some computers may experiment few problems along installation.
+
+
+## Prerequisites & Setup
+
+Requires Python 3.11 to work properly.
+
+### Configuration File
 
 The program reads a plain text configuration file in `KEY=VALUE` format.
 
 Comment lines must start with `#`.
 
-Example:
+Attributes:
 
-```text
-WIDTH=16
-HEIGHT=16
-ENTRY=0,0
-EXIT=15,15
-OUTPUT_FILE=maze.txt
-PERFECT=True
-SEED=42
-GENERATOR=prim
-ANIMATION=True
-SPEED=300
-TILE=32
+| <yw>Key</yw>   | <yw>Example</yw>   | <yw>Limits</yw>   |
+| :---  | :--- | :--- |
+| WIDTH | WIDTH=14   | > 2 *For big screens 40-60 should be enough|
+| HEIGHT| HEIGHT=10   | > 2 *For big screens 40-60 should be enough|
+| ENTRY | ENTRY=0,1  | (width, heigh): 0 < number > Maze size. |
+| EXIT  | EXIT=7,7  | (width, heigh): 0 < number > Maze size. |
+| OUTPUT_FILE|OUTPUT_FILE=maze.txt| name for the exported maze file |
+| PERFECT|PERFECT=True| True -> Only 1 path. False -> Many paths |
+| --- | <mg>OPTIONALS</mg> | ---
+| GENERATOR | GENERATOR=Prim | Algorithm used: [recursive_backtracker, prim, kruskal, eller, huntandkill] |
+| SEED | SEED=212521555321 | Seed to generate a Maze. None by default |
+| ANIMATION|ANIMATION=TRUE| Show animation or disable it. By default is True|
+| PATTERN | PATTERN=None| None or Pattern name. By default is P_42|
+| TILE | TILE=16 | Render size. By default is 32 |
 
+<cy>*\*Seeds are dependent of each algorithm and entries to generate same maze.*</cy>
 
-### Prerequisites & Setup
+<cy>*\*Eller algorithm not always can generate perfect or possible maze due his nature when a pattern is used.*</cy>
 
-### Installation
+<cy>*\*When ENTRY or EXIT be located in the PATTERN AREA, this will be disabled partially or totally.*</cy>
+
 
 ### Usage
 
@@ -72,14 +105,13 @@ TILE=32
 
 ```
 
-## Structure
+## Diagram
 
-### Diagram
-
-load settings -> Generator -> Algorithm -> Maze
+Steps:
+<mg>Load settings -> Generator -> Algorithm -> Maze
 Windows -> MLX
 Event
-Renderer -> Canvas
+Renderer -> Canvas</mg>
 
 
 ```mermaid
@@ -105,35 +137,48 @@ graph TB;
     Renderer-->Canvas
     Canvas-->MiniLibX
 ```
+## Project Structure
+
+By requirements is using a main function <yw>'a_maze_ing.py'</yw>.
+From here is initialled any other elements.
+
+The code was developed by classes and abstract classes, allowing to update the code easily with new algorithms.
+
+This design is specially good on the graphic part. Here is Renderer which have not direct comunication with the visual library, only with canvas. Canvas comunicate directly with the visual library. Both classes coming from a abstract class. This would make the project easy to adapt to another visual library by creating a new canvas or using the same canvas to a different project.
+
+The generator part was added in a package to allow exportation and use into others projects.
+
+All modules were to keep as minimun as possible coupled.
+
 ### Functions:
 
-**A_maze_ing:**
+<cy>**A_maze_ing:**</cy>
 
-Coordinates all the application from here.
+Coordinates all the application from here, calling any other functions. It's for obvious reasons the more coupled module.
 
-**Config:**
+<cy>**Config:**</cy>
 
-Load the configuration from the file
+Load the configuration from the file and parse it. It makes sure that the configuration is correct.
 
-**Generator:**
+<cy>**Generator:**</cy>
 
-Control all the algorithms to generate Maze and solve them
+Control all the algorithms to generate Maze and solve it.
 
-**Window:**
+<cy>**Window:**</cy>
 
-Generate and control window obj
+Generate and control window obj and control his size.
 
-**EventManager:**
+<cy>**EventManager:**</cy>
 
-Manage the keyboard control
+Manage the keyboard control and other possible interruptions.
 
-**Renderer:**
+<cy>**Renderer:**</cy>
 
-Send orders to generate Graphics
+Send orders to the used canvas, to generate Graphics without specify how to do it.
 
-**Canvas:**
+<cy>**Canvas:**</cy>
 
-Communicates the orders directly with MlxLib
+Communicates the orders directly with MlxLib or any other visual library.
 
 
 ### Environment Variables
@@ -168,11 +213,11 @@ Algorithms used:
 - `Kruskal` – Treats every cell as its own group and randomly removes walls only if doing so connects two different groups, avoiding loops.
 - `Prim` – Starts from one cell and grows the maze by randomly connecting new neighboring cells to the existing maze.
 - `Eller` – Builds the maze one row at a time, joining cells horizontally and vertically while making sure every area stays connected.
-- `Wilson` – Starts with one finished cell. Every new cell takes a random walk until it reaches the maze, removing any loops made during the walk.
+- `Hunt and Kill` – Walks randomly through unvisited cells until stuck. Then it hunts for another unvisited cell next to the maze and starts walking again.
 
 Algorithms descarted:
 
-- `Hunt and Kill` – Walks randomly through unvisited cells until stuck. Then it hunts for another unvisited cell next to the maze and starts walking again.
+- `Wilson` – Starts with one finished cell. Every new cell takes a random walk until it reaches the maze, removing any loops made during the walk. I can take ages to make a big maze -> Descarted.
 
 ### Solving Algorithms
 
@@ -197,32 +242,51 @@ The package source code is located under:
 mazegen_package/src/mazegen/
 ```
 
-### Testing
+### Maze information printed:
 
+The maze update the information along his use.
+```bash
+--------------------------------------
+	MAZE INFORMATION:
+--------------------------------------
+
+ Size:		30x50		Seed:		7300308836006591109
+ Start:		0x0		    Algorithm:	huntandkill
+ Exit:		42x19		Theme:		default
+ Perfect:	False		Pattern:	None
+ Solver:	dfs
+
+```
 
 ## Design & Development
 
-
-
 ### Planing
+
+1. Get information about the project.
+2. Get information about Maze algorithms.
+3. Define the requirements for this project in a todolist.
+4. Design a project structure.
+5. Design a guide to follow in order to don't mess with git.
+6. Split duties in order to work in parallel
+
 
 ### Python Version
 
 For Python version, we decided to use a more modern version over 3.10. After check all the different versions and the different improvements. For this project, was not required to use multicore. We could not get an important advantage of the main features from the lastest versions, while we should require to work with different unknown external libraries. For these follow reasons, we decided keep the version 3.11 that we already knew and allowed us to have the followed advantages:
 
-**Python 3.11**
+<cy>**Python 3.11**</cy>
 - Stable and madure version
 - Excellent support for scientific and graphics libraries (Most of the used for this project)
 - Compatible with most packages like Numpy, SciPy, OpenCv, Pygame, etc...
 - Widely used in many projects → More information and code examples
 
-**New from 3.10**
+<cy>**New from 3.10**</cy>
 - Faster CPython up to 10-60%.
 - Fine-Grained Tracebacks: Error messages pipoint the exact failed character or expression.
 - Exception Group: Allow to use `ExceptionGroup` and `except*` to handle multiple exceptions simultaneously (wonderful to use).
 - TOML Support: Support to read TOML configuration files → Perfect to use with Poetry 😬👉👉.
 
-**Disadvantages**
+<cy>**Disadvantages**</cy>
 - Not included newest language features.
 - Not proper multithread support.
 - Lower performance than newest versions.
@@ -241,7 +305,7 @@ On this point, the first thing we did, is a short guide to work more properly an
 
 Then, we decided that by our skills we working mainly in one part of the project, but in some point, our roles will be exchanged, to have a more deep learning experience about this project.
 
-**Edu:**
+<yw>**Edu:**</yw>
 - Graphic generation of Mazes
 - Animation
 - Graphic assets
@@ -251,7 +315,7 @@ Then, we decided that by our skills we working mainly in one part of the project
 - README file
 
 
-**Eray:**
+<yw>**Eray:**</yw>
 - Parsing
 - Settings
 - Generation algorithms
@@ -263,7 +327,18 @@ Then, we decided that by our skills we working mainly in one part of the project
 
 ### Features archieve
 
+- Works with up to 5 algorithms and 4 to resolve.
+- Lot of styles or possibility to create randomly more by empty folders.
+- Fast generation of maze.
+- Nice controls for maze generation.
+- Files easy to adapt to new algorithms or styles. Flexible project structure.
+
 ### Future Features and Improvements
+
+- Added interface with menu to avoid dependency of terminal.
+- Add new patterns.
+- Option to edit and create your own themes.
+- Interactive resolution controlling by arrows and with timer.
 
 ---
 ## Resources
@@ -276,6 +351,7 @@ Then, we decided that by our skills we working mainly in one part of the project
 - [PIL Library](https://pillow.readthedocs.io/en/stable/reference/Image.html)    - Docs of PIL: to work with images with Python.
 - [OpenCV](https://opencv-opencv.mintlify.app/introduction)     - Docs of OpenCV: Image manage library with Python.
 - [Maze Algorithms](https://en.wikipedia.org/wiki/Maze_generation_algorithm)    - Explanation of different algorithms to generate a Maze.
-
-
-# source $(poetry env info --path)/bin/activate     
+- [Eller Algorithm](http://www.neocomputer.org/projects/eller.html)     - Extensive Guide to make Eller.
+- [Keys attrb](https://docs.oracle.com/cd/E67482_01/oscar/pdf/45/OnlineHelp_45/helpOnPS2keyCodes.html)      - List of all keyboard numbers to catch it.
+- [Mlx](https://harm-smits.github.io/42docs/libs/minilibx)      - Official Mlx for documentation.
+- [Mlx](https://github.com/dde-fite/42_MiniLibX_Python_Manual)      - Minilib for Python documentation.
